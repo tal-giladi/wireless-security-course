@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    A manager reads only the executive summary of your wireless report and must decide whether to fund
+    remediation. What does that fact require of how the summary is written?
+  options:
+    - It must be true and complete on its own in plain language — what was tested, overall risk, the top fixes, whether exploitation was shown, and residual risk in one line.
+    - It must reproduce the full command transcript so the manager can independently confirm the technical work before funding anything.
+    - It must defer all risk statements to the findings section so the summary stays short and commits to nothing specific.
+    - It must open with the recovered passphrase, because that is the clearest proof that the engagement succeeded.
+  correct: 0
+  explanation: >-
+    Many decision-makers read only the summary, so it has to stand alone: jargon-free, honest about demonstrated
+    vs inferred exploitation, naming the few most important fixes and the residual risk. A transcript or a bare key serves neither decision.
+- id: q2
+  question: >-
+    Eight months after a clean wireless test, a company insists it is "still covered because we fixed
+    everything." Which reasoning best explains why the course treats defence as an ongoing program?
+  options:
+    - Penetration tests are unreliable, so the company should commission a new test from a different firm every quarter.
+    - A test is a snapshot and controls drift — firmware ages, new APs appear, profiles loosen — so each control needs an owner, a cadence, and re-verification over time.
+    - Once the findings are fixed the network is secure, so the only ongoing task is renewing the Wi-Fi passphrase annually.
+    - A program is only needed for enterprise networks; a 20-person company is adequately protected by the one-time remediation.
+  correct: 1
+  explanation: >-
+    The test captured one moment; the attacker gets every day after. Firmware ages into new CVEs, unsegmented
+    SSIDs appear, client profiles loosen — a program with owners, cadence, and verification keeps the controls true.
+- id: q3
+  question: >-
+    You write a finding for a recovered WPA2 passphrase. Which combination makes it useful to both the
+    engineer and the decision-maker, rather than just reporting the key?
+  options:
+    - The recovered passphrase, the wordlist used, and a statement that the network is "insecure, High," which together prove the work was done.
+    - The CVSS base score and the tool version, which are all the engineer needs to reproduce and the manager needs to decide.
+    - Affected configuration, evidence with artifact and checksum, why-it-works/why-it-may-fail, and asset-framed impact — the key is evidence inside this, not the finding.
+    - The time taken to crack and the hashrate achieved, so the client can compare the tester against other vendors.
+  correct: 2
+  explanation: >-
+    The engineer needs the precise affected configuration, verifiable evidence, and the mechanism; the
+    decision-maker needs asset-framed impact. The recovered key is the proof inside the finding, not the deliverable.
+- id: q4
+  question: >-
+    During a WPA3-SAE assessment, PMF rejects every forged deauthentication you send and a correctly
+    configured enterprise client refuses your rogue RADIUS and logs why. How should the report handle these?
+  options:
+    - Omit them, because no key was recovered and no client was disconnected, so there is nothing to report.
+    - Record them as inconclusive and recommend repeating the engagement with more powerful hardware.
+    - Report them as High-severity gaps, since being unable to deauthenticate or capture credentials indicates a broken test rig.
+    - Record them as findings that the controls work — positive evidence that PMF and server-certificate validation are effective.
+  correct: 3
+  explanation: >-
+    A rejected deauth under PMF and a refused rogue RADIUS are the controls working. The course lets a report
+    demonstrate that a protection is effective; these are recorded as positive evidence, not dropped as failures.
+- id: q5
+  question: >-
+    A remediation roadmap item reads only "Fixed: PMF enabled." What is missing, and what would make it
+    a properly verifiable remediation?
+  options:
+    - The vulnerable-vs-hardened retest — a forged deauth that disconnected the client before now being rejected — so the fix is proven, not merely asserted.
+    - The brand and model of every access point touched, so the client can confirm the firmware supports PMF.
+    - A note that PMF cannot be verified without physical hardware, so the item should be marked untestable and closed.
+    - The recovered passphrase from the original finding, repeated here so the two sections cross-reference each other.
+  correct: 0
+  explanation: >-
+    "Fixed" is an assertion. A verifiable item names the before/after measurement: with PMF off a forged deauth
+    disconnected the client; with PMF required it is rejected. That before/after is the proof the control took effect.
+- id: q6
+  question: >-
+    A client deprioritises a crackable WPA2 passphrase because an online CVSS calculator returns 5.3
+    Medium. The network is flat and also carries the point-of-sale system. What is the best response?
+  options:
+    - Accept the 5.3, since a published CVSS base score is authoritative and should override the tester's own rating entirely.
+    - Argue from exposure — a base score shows intrinsic properties, not this flat network where the flaw reaches POS — and pair it with a verifiable fix.
+    - Re-enter inputs into the calculator until it produces a higher number that matches the severity you first assigned.
+    - Lower the finding to Medium to match the client's figure, to preserve the relationship for future engagements.
+  correct: 1
+  explanation: >-
+    A base CVSS score reflects intrinsic properties, not environmental risk. Re-open the conversation on what the
+    flaw reaches in this network, provide the vector for comparability, and lead with asset-framed impact plus a verifiable fix.
+- id: q7
+  question: >-
+    After remediation, an SAE-only migration leaves three legacy scanners that cannot do WPA3 on a
+    separate WPA2 SSID. How should the report's residual-risk statement handle this?
+  options:
+    - Omit it, because the main network is now WPA3-SAE and the legacy segment is a separate, unrelated system entirely.
+    - State generally that some residual risk remains, so the client is aware of it without being alarmed by any specifics.
+    - State it specifically — fixed, remains, and why — the segmented WPA2 island stays crackable until the scanners are replaced, so the client can act.
+    - Raise the whole engagement's severity to Critical, since any remaining WPA2 means the remediation failed overall.
+  correct: 2
+  explanation: >-
+    Residual risk always exists and must be actionable. Fixed/remains/why — SAE on the main SSID, a segmented
+    WPA2 island for legacy scanners that stays crackable until they are replaced — gives the decision-maker something to own.
+- id: q8
+  question: >-
+    You must deliver a serious finding to a client whose staff configured the vulnerable network. Which
+    approach best fits the lesson's guidance on communicating bad news constructively?
+  options:
+    - Emphasise how sophisticated the attack was, so the client appreciates the severity and the skill involved.
+    - Inflate the severity slightly to make sure the finding gets attention and is not ignored by management.
+    - Withhold the finding until the next engagement, giving the staff time to fix it quietly without embarrassment.
+    - Lead with impact and the fix, separate the finding from the people, pair it with a proportionate verifiable remediation, and acknowledge their constraints.
+  correct: 3
+  explanation: >-
+    The goal is action, not blame: lead with impact and the fix, say "this configuration allows X" rather than
+    "you misconfigured X," pair every finding with a proven remediation, and reflect real constraints in the roadmap. Inflating severity costs credibility.

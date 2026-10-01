@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    A remediation section states, for a weak-passphrase finding, "Fixed: passphrase changed." What does
+    this lesson say is missing, and what would make the item properly verifiable?
+  options:
+    - The retest that proves it — the vulnerable-vs-hardened measurement, so a bounded crack that recovered the old key is now exhausted against the new one.
+    - The new passphrase itself, which should be printed in the report so the client can confirm that it was changed.
+    - Nothing is missing; once a passphrase has been changed the finding is closed and no further evidence is needed.
+    - A CVSS score for the remediation, so the client can compare the fix's severity against the original finding rating.
+  correct: 0
+  explanation: >-
+    "Fixed" is an assertion; a verifiable item names the before/after measurement. For a weak passphrase that
+    is the bounded crack succeeding before and being exhausted after — proof the control took effect.
+- id: q2
+  question: >-
+    When ordering a remediation roadmap, what principle does this lesson use to prioritise the items?
+  options:
+    - Fix the findings with the highest raw CVSS base scores first, regardless of what each one actually reaches in this network.
+    - Order by risk reduction for the effort, framed to the client's assets, so a weakness on the segment with sensitive data outranks a cosmetic one.
+    - Fix the largest number of low-effort findings first, to maximise the count of closed items shown in the final report.
+    - Address the findings in the order they were discovered, so the engagement timeline stays consistent and easy to follow.
+  correct: 1
+  explanation: >-
+    Priority follows risk reduction per effort, framed to the assets. The same technical flaw matters more on
+    the network carrying sensitive systems than on an isolated guest SSID, even if a generic score looks similar.
+- id: q3
+  question: >-
+    A client replies, "Your CVSS calculator gives this crackable passphrase a 5.3 Medium, so we are
+    deprioritising it," for a flat network that also carries the point-of-sale system. What is the best response?
+  options:
+    - Accept the 5.3 rating, since a published CVSS base score is authoritative and should override the tester's judgement.
+    - Re-run the calculator with different inputs until it outputs a higher number that supports the original rating here.
+    - Argue from exposure — a base score shows intrinsic properties, not this network where the flaw reaches POS; pair it with a verifiable fix.
+    - Drop the finding to Medium to match the client's own number, to preserve the relationship and the chance of future work.
+  correct: 2
+  explanation: >-
+    A base CVSS score reflects intrinsic properties, not environmental risk. Re-open the conversation on what
+    the flaw reaches in this network, offer the vector for comparability, and pair it with a verifiable fix and the residual risk.
+- id: q4
+  question: >-
+    Why does this lesson insist that residual risk be stated specifically ("what was fixed, what
+    remains, and why") rather than as a general caveat like "some risk remains"?
+  options:
+    - Because a general caveat is required for legal indemnity, whereas a specific statement exposes the tester to liability.
+    - Because specific residual risk makes the report longer, which signals a more thorough engagement to the client.
+    - Because only a specific statement can be converted directly into a CVSS environmental score for the client's records.
+    - Because a specific statement gives the decision-maker something actionable to accept, mitigate, or budget to close, while a vague caveat tells them nothing to decide on.
+  correct: 3
+  explanation: >-
+    Residual risk always exists; stated specifically — e.g. "WPS still enabled on two APs pending firmware" —
+    it is a decision the client can own. "Some risk remains" is useless because it names no action.

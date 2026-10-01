@@ -99,3 +99,22 @@
   - [54 · FragAttacks and Kr00k — fragment and clear-key classes](lessons/module-12/lesson-03.md)
   - [55 · Reading a wireless CVE and turning it into a check](lessons/module-12/lesson-04.md)
   - [Module 12 quiz](assessments/module-12-quiz.md)
+
+- Stage 8 — Professional practice
+- **Module 13 — Wireless engagements & methodology**
+  - [56 · Scoping and authorisation for wireless](lessons/module-13/lesson-01.md)
+  - [57 · Methodology and evidence capture](lessons/module-13/lesson-02.md)
+  - [58 · Impact assessment and limitations](lessons/module-13/lesson-03.md)
+  - [Module 13 quiz](assessments/module-13-quiz.md)
+- **Module 14 — Defence program & reporting**
+  - [59 · The defence program](lessons/module-14/lesson-01.md)
+  - [60 · Writing the wireless pentest report](lessons/module-14/lesson-02.md)
+  - [61 · Remediation roadmap, residual risk, and client communication](lessons/module-14/lesson-03.md)
+  - [Module 14 quiz](assessments/module-14-quiz.md)
+
+- Stage 9 — Adjacent wireless (awareness)
+- **Module 15 — Adjacent wireless (elective, awareness)**
+  - [62 · BLE and Bluetooth — scope and where to go deeper](lessons/module-15/lesson-01.md)
+  - [63 · Zigbee, Thread, RFID, and NFC](lessons/module-15/lesson-02.md)
+  - [64 · SDR — what it unlocks and the legal limits](lessons/module-15/lesson-03.md)
+  - [Module 15 quiz](assessments/module-15-quiz.md)

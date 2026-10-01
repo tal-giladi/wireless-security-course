@@ -1,0 +1,105 @@
+- id: q1
+  question: >-
+    A client hands you a wireless scope reading only "SSID `Acme-Guest`, in a shared twelve-storey
+    building — test everything." What is the first correction a professional makes before starting?
+  options:
+    - Replace the SSID-only target with an allowlist of specific BSSIDs, and scope the collateral explicitly.
+    - Accept it as written, since the client is the system owner and has authorised the whole SSID already.
+    - Begin a passive survey of every network in the building to discover which ones belong to the client.
+    - Escalate to the strongest technique immediately, because "test everything" authorises any method.
+  correct: 0
+  explanation: >-
+    An SSID is a name, not a target — several APs can broadcast it, and a shared building guarantees collateral.
+    The allowlist must use specific BSSIDs, and transmission limits and stop conditions must scope the collateral.
+- id: q2
+  question: >-
+    During an authorised test on three owned BSSIDs, your monitor-mode survey records beacons and probe
+    requests from a dozen neighbouring networks. What does correct scoping require you to do?
+  options:
+    - Add the two strongest neighbours to the allowlist so the captured data is not wasted.
+    - Anticipate the incidental observation, take no action on those networks, and minimise that data in evidence.
+    - Treat each neighbouring network as an informational finding, since the frames were lawfully received.
+    - Halt the engagement, because capturing any out-of-scope beacon has already voided your authorisation.
+  correct: 1
+  explanation: >-
+    Monitor mode hears everything on a channel, so incidental observation is unavoidable and should be expected
+    in scope. You do not act on, expand to, or report out-of-scope networks, and you minimise that data in evidence.
+- id: q3
+  question: >-
+    A learner insists their wireless test is fully contained because the target AP is on an isolated VLAN
+    with no Internet route. Why does this reasoning fail for a wireless engagement specifically?
+  options:
+    - It is correct; an isolated VLAN with no Internet route does fully contain a wireless test.
+    - It forgets to pin the target by BSSID, which is the only real containment problem in this setup.
+    - A VLAN contains traffic on the wire, but deauth, beacons, and probes radiate to any device in range.
+    - It relies on MAC randomisation, which neighbouring clients can disable to re-enter the test's scope.
+  correct: 2
+  explanation: >-
+    Network isolation bounds the wire, not the air. Over-the-air frames reach any device in range, so TX-power
+    limits, a set channel, controlled clients, and stop conditions — not a VLAN — bound a wireless test's collateral.
+- id: q4
+  question: >-
+    You harden an owned AP after a successful bounded crack and write the recommended control into the
+    report. A reviewer says the finding is not yet provable. Which phase of the engagement loop is missing?
+  options:
+    - Recon, because every in-scope BSSID must be re-enumerated before a recommendation can be written.
+    - Capture, because the recommendation needs a fresh handshake taken after the hardening change.
+    - Analysis, because the RSN element has to be re-parsed before any control can be recommended.
+    - Retest, because you must repeat the attempt against the hardened config and measure the difference.
+  correct: 3
+  explanation: >-
+    Hardening without retest is an assertion. Retesting the same attempt against the hardened configuration —
+    the strong passphrase now exhausts the wordlist — produces the vulnerable-vs-hardened evidence that proves it.
+- id: q5
+  question: >-
+    A capture is shipped with a recorded SHA-256 checksum but no other metadata. Why is the checksum alone
+    insufficient as defensible evidence?
+  options:
+    - It proves the bytes are unchanged but not the origin, tool, expected result, or licence of the file.
+    - It is sufficient on its own; provenance is a formality that adds nothing a reviewer can actually use.
+    - It must be recomputed every day, so one recorded value is already stale and cannot be trusted.
+    - It applies only to `.pcapng` files, so a `.hc22000` artifact needs a completely different integrity check.
+  correct: 0
+  explanation: >-
+    SHA-256 proves byte-for-byte integrity since it was recorded, nothing about where the file came from.
+    Provenance (how it was made, tool/version, expected result, licence) is a separate, required record.
+- id: q6
+  question: >-
+    A tester analysed a supplied `.pcapng` on the recorded-data path and writes: "I captured and cracked
+    the WPA2 handshake from the target AP." What is the honest correction?
+  options:
+    - The sentence is acceptable, because analysing a supplied capture is equivalent to capturing it live.
+    - They cracked a supplied handshake on path R and should say so; they did not perform the live capture.
+    - They should instead claim frame injection, which more accurately reflects the effort the work took.
+    - They should drop the finding entirely, since recorded-data work can never support a report claim.
+  correct: 1
+  explanation: >-
+    Path R proves interpretation and the cracking workflow on a supplied capture, not live capture. Recording
+    the path honestly keeps the claim accurate; recorded-data and virtual work never earn physical-capture credit.
+- id: q7
+  question: >-
+    On a WPA3 network with PMF required, your deauth-assisted capture could not run because the forged
+    deauth was rejected. How should this appear in the report?
+  options:
+    - As a critical finding, since an AP that refuses a deauth is clearly misconfigured in some way.
+    - As nothing, because only techniques that actually succeed have any place in the engagement report.
+    - As both a limitation (the technique was not exercised) and evidence that PMF is working as intended.
+    - As a tool failure, because the deauth frame did not take effect and the capture attempt did not complete.
+  correct: 2
+  explanation: >-
+    PMF legitimately blocking a forged deauth is a control working, and it also bounds what you tested. Record
+    it as a limitation and as positive evidence — not as a failure of the engagement or a finding against the AP.
+- id: q8
+  question: >-
+    Two offices have the identical finding — WPA2-PSK, PMF off, weak passphrase recovered by a bounded
+    crack — but one is flat with the finance server on that SSID and the other segments it to a guest VLAN.
+    How should impact and limitations be written?
+  options:
+    - Give both the same base severity score, because the underlying technical vulnerability is identical.
+    - Report only the flat network, since a segmented network cannot produce a reportable finding at all.
+    - Defer both until a physical-path capture confirms the crack works over real RF at range.
+    - Trace impact to what the PSK reaches in each topology, and state the path's proof limits for both.
+  correct: 3
+  explanation: >-
+    Impact follows what the vulnerability reaches: the flat network exposes the finance server, segmentation
+    does not. Limitations must note the recorded-data path proved the workflow, not live capture over real RF.

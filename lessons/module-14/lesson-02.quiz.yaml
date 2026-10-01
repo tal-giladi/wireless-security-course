@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A tester hands the client a terminal transcript ending in the recovered passphrase and calls it the
+    report. According to this lesson, what is the core problem with treating the recovered key as the deliverable?
+  options:
+    - The transcript proves a finding but drives no decision and no verifiable fix; the deliverable is the justified finding, asset-framed impact, verifiable remediation, and residual risk.
+    - The transcript is the deliverable, but it should also include the wordlist used so the client can repeat the crack themselves.
+    - The problem is only that the passphrase was not redacted; with redaction a recovered key is a complete report.
+    - The transcript is fine for the engineer but should be translated into a different language for the decision-maker.
+  correct: 0
+  explanation: >-
+    A recovered key is evidence inside a finding. On its own it tells the decision-maker nothing to decide
+    and the engineer nothing provable to change. The deliverable is the justified finding, impact, verifiable remediation, and residual risk.
+- id: q2
+  question: >-
+    When writing the evidence part of a finding, why does the report name the artifact file together
+    with its SHA-256 checksum rather than just describing what was captured?
+  options:
+    - Because the checksum encrypts the capture so the client cannot read the synthetic credentials stored inside the evidence file.
+    - Because the checksum lets the client confirm they are examining the exact same bytes the tester analysed, so the evidence is verifiable.
+    - Because the checksum is what the retest tool needs in order to replay the capture against the access point during verification.
+    - Because naming the file lets the course importer attach the capture to the module zip automatically for other learners to reuse.
+  correct: 1
+  explanation: >-
+    A SHA-256 over the artifact ties the finding to specific, unaltered bytes. The client can recompute it
+    and confirm they and the tester are looking at the same evidence — integrity, not confidentiality.
+- id: q3
+  question: >-
+    A WPA3-SAE network with PMF required rejects every forged deauthentication the tester sends. How
+    should the report treat this result?
+  options:
+    - As an inconclusive test, omitted from the report because no disconnection was achieved against the target.
+    - As a methodology failure, noted only so a future tester knows to bring a different adapter next time.
+    - As a finding that the control works — PMF rejected the forged frame as designed — recorded as evidence that a defence is effective.
+    - As a High-severity finding, because the inability to deauthenticate indicates the monitoring interface is misconfigured.
+  correct: 2
+  explanation: >-
+    A rejected deauth under PMF is the control working, not a failed test. The course lets a learner (and a
+    report) demonstrate that a protection works; it is recorded as positive evidence, not dropped.
+- id: q4
+  question: >-
+    The executive summary is written last but read first, often by a decision-maker who reads nothing
+    else. What does that imply about how it must be written?
+  options:
+    - It should contain the full command transcript so the decision-maker can verify the technical work independently.
+    - It should defer all risk statements to the findings section so the summary stays short and avoids commitment.
+    - It should list every tool and version used, because that is the first thing a manager needs in order to act.
+    - It must be true and complete on its own in plain language — what was tested, the overall risk, the top fixes, whether exploitation was shown, and residual risk.
+  correct: 3
+  explanation: >-
+    Because many readers see only the summary, it has to stand alone: jargon-free, honest about demonstrated
+    vs inferred exploitation, naming the few most important fixes and the residual risk in one line.

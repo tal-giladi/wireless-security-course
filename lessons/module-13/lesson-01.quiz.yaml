@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    A client scopes a wireless test as "SSID `Corp-WiFi`, test everything." Why is identifying the
+    target by SSID alone inadequate, and what should the allowlist use instead?
+  options:
+    - An SSID can be advertised by several APs or cloned by a neighbour or evil twin, so list the specific BSSIDs.
+    - An SSID is fine on its own; adding a BSSID only duplicates information already carried in the name.
+    - An SSID changes on every beacon, so you should instead scope the test by the client's IP range.
+    - An SSID is case-sensitive, so the only fix needed is to record it in the exact letter case.
+  correct: 0
+  explanation: >-
+    SSID is a name, not a unique target — multiple APs (yours, a neighbour's, an evil twin) can share it.
+    The BSSID (the AP's MAC) plus band/channel is what unambiguously pins each in-scope target.
+- id: q2
+  question: >-
+    Your authorisation sheet lists three BSSIDs you own. During the survey you also capture beacons and
+    probe requests from several neighbouring networks. What does a correctly scoped engagement do about them?
+  options:
+    - Add the strongest neighbouring network to the allowlist so the capture is not wasted effort.
+    - Note that incidental observation was expected, take no action against them, and minimise that data in evidence.
+    - Report each neighbouring network as an informational finding since the data was lawfully captured.
+    - Stop the engagement entirely, because capturing any out-of-scope beacon voids the authorisation.
+  correct: 1
+  explanation: >-
+    Monitor mode hears everything on a channel, so incidental observation is unavoidable and should be
+    anticipated in scope. You do not act on, expand to, or report out-of-scope networks; you minimise that
+    data in evidence.
+- id: q3
+  question: >-
+    A learner argues their wireless test is safe because the lab AP sits on an isolated VLAN with no
+    Internet route. Which part of wireless scoping does this reasoning get wrong?
+  options:
+    - Nothing — an isolated VLAN with no Internet route is exactly what contains a wireless test.
+    - It confuses the time window with stop conditions, which are the controls that actually matter here.
+    - It assumes network isolation contains radio, but transmissions leave the wire and reach devices in range.
+    - It over-scopes by listing a BSSID, when for an owned lab the SSID alone would have been enough.
+  correct: 2
+  explanation: >-
+    A VLAN contains traffic on the wire, not radio. Deauth, beacons, and probes propagate over the air to
+    any device in range, so transmission limits and stop conditions — not network isolation — bound the collateral.
+- id: q4
+  question: >-
+    You are drafting the rules of engagement for a wireless test in a shared office building. Which item
+    most directly limits the collateral impact on bystander devices?
+  options:
+    - A clause requiring the final report to be delivered within ten business days of the test.
+    - A statement that the tester holds a current wireless-security certification and prior experience.
+    - A list of the tools and versions that will be used during the capture and analysis phases.
+    - Transmission limited to minimum TX power on the target channel, with a stop condition for out-of-scope devices.
+  correct: 3
+  explanation: >-
+    Collateral is bounded by what you radiate and when you stop: lowest workable TX power, a chosen channel,
+    shielded/virtual where practical, and a trigger to halt the moment an out-of-scope device is affected.

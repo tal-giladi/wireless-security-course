@@ -31,6 +31,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   key evidence separating "the rogue AP is on air" from "a client actually joined it."
 - **asleap** — a tool that recovers the password behind a captured MSCHAPv2/MS-CHAP challenge/response by
   exploiting the method's DES weakness against a wordlist.
+- **Asset-framed impact** — stating what an exploited finding reaches in the client's own systems and
+  data ("reaches the finance share from the car park"), following topology, rather than a generic score.
 - **Association** — the final step by which a client joins a BSS after authentication.
 - **Authentication server** — the back-end RADIUS server (e.g. FreeRADIUS) that runs the EAP method and
   decides accept/reject; in 802.1X it, not the AP, authenticates the user.
@@ -51,6 +53,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   redirects to a sign-in page; abused by a rogue AP to harvest a secret — social engineering, not a crypto break.
 - **CCMP / AES** — the modern 802.11 cipher (AES in CCMP mode) for WPA2/WPA3 confidentiality and
   integrity, replacing deprecated TKIP/RC4; GCMP is its counterpart for the newest modes.
+- **Chain of custody (lite)** — the lightweight record, one line per artifact, of who captured it, when,
+  on which device/interface, and where it has been stored — so evidence cannot be quietly swapped or edited.
 - **Channel** — a named centre frequency within a band that a radio tunes to; a receiver hears only the
   channel (and width) it is set to.
 - **Channel hopping** — a scanner cycling its radio across channels to survey everything in range; good
@@ -61,18 +65,28 @@ reference. Terms are added here by the main session as modules land (agents prop
   power and overlaps more neighbours, and a capture must match it.
 - **Chipset-first buying rule** — choose a Wi-Fi adapter by its chipset (known-good Linux support), not
   its model/marketing name, then verify the exact model + hardware revision before buying.
+- **Collateral networks / clients** — the out-of-scope networks and devices a wireless test unavoidably
+  observes because radio crosses property lines; scoped honestly (expected, no action, data minimised).
 - **Commit / confirm (SAE)** — the two SAE phases: each peer sends a commit (its key-agreement
   contribution), then a confirm proving it derived the same key — revealing no offline-crackable value.
+- **Configuration drift** — the gradual return of a hardened network to a vulnerable state as firmware
+  ages, new APs/SSIDs appear, or client profiles are loosened; what monitoring and re-verification catch.
+- **Control cadence** — how often a defence control is re-checked or renewed (firmware monthly, client
+  policy quarterly, monitoring continuous); the schedule that keeps a snapshot from drifting.
 - **Credential capture (enterprise)** — an attack where a rogue RADIUS server logs a non-validating
   client's inner EAP credential (e.g. MSCHAPv2) for offline cracking; no live access at capture time.
 - **Credential relay (enterprise)** — an attack where a rogue server forwards a client's inner EAP exchange
   to the real RADIUS server in real time to gain live access without recovering the password.
+- **CVSS (Common Vulnerability Scoring System)** — a standard severity-scoring framework (FIRST); its base
+  score describes intrinsic properties, not environmental risk, so it summarises but does not alone justify severity.
 - **dB (decibel)** — a logarithmic *ratio* of two powers; gains/losses add instead of multiplying.
   +3 dB ≈ double power, +10 dB = ten times. Distinct from dBm (which is absolute).
 - **dBi** — antenna gain relative to an ideal isotropic radiator; describes how an antenna focuses
   energy into a direction, trading coverage angle for reach (it adds no energy).
 - **Deauthentication** — a management frame that ends a client's session. Forgeable unless management
   frames are protected (PMF / 802.11w).
+- **Defence program** — the secure baseline (02.3) run as an ongoing effort: every control carries an
+  owner, a cadence, and a verification method (the vulnerable-vs-hardened measurement that proves it works).
 - **DFS (Dynamic Frequency Selection)** — a regulatory requirement on radar-shared 5 GHz channels: an AP
   must listen and vacate on radar. A regulatory behaviour, not a security feature.
 - **dBm** — decibels relative to one milliwatt; the unit for RF signal power. +3 dBm ≈ double power.
@@ -90,6 +104,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   name, so a valid certificate for some *other* name is rejected — the second half of "validate the server."
 - **Dragonblood** — a class of side-channel and downgrade vulnerabilities in early SAE/WPA3
   implementations (2019), with vendor mitigations; not a break of SAE's design. See `references/`.
+- **Drift log** — the record of events (firmware update, new AP, a loosened client profile) that force
+  re-verifying a control before its next scheduled review.
 - **EAP** — Extensible Authentication Protocol; the method negotiated inside 802.1X (PEAP, EAP-TTLS,
   EAP-TLS, …). Determines where trust lives and what a client must validate.
 - **EAP-TLS** — mutual certificate authentication (RFC 5216): server and client both present
@@ -101,12 +117,18 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **EAPOL** — EAP over LAN; carries the 4-way handshake messages (and 802.1X EAP) over 802.11.
 - **EAPOL message pair (complete vs partial handshake)** — a captured handshake is crackable only with a
   consistent message pair (M1+M2 or M2/M3, matching nonces); a partial one has no testable MIC.
+- **Engagement loop** — the six-phase methodology applied to each in-scope network: recon → capture →
+  analysis → attempt → harden → retest; circular, because hardening without a measured retest is an assertion.
 - **Evil twin** — a rogue AP impersonating a legitimate SSID to attract clients. Success is conditional
   on the target client's behaviour and configuration.
+- **Executive summary** — the 3–6 sentence, jargon-free opening of a report, written last and often the
+  only part a decision-maker reads; states what was tested, overall risk, top fixes, and residual risk.
 - **Exhausted (hashcat status)** — the end state of a run that tried every candidate without a match; it
   proves the passphrase was not in that keyspace, not that the passphrase is strong against another list.
 - **FCS (Frame Check Sequence)** — the 4-byte CRC ending an 802.11 frame; a receiver uses it to discard
   corrupted frames.
+- **Finding (report)** — one documented issue: title + justified severity, affected configuration,
+  evidence (artifact + checksum), why-it-works/why-it-may-fail, and asset-framed impact. A recovered key is evidence, not the finding.
 - **FragAttacks** — a 2021 class of design and implementation flaws in 802.11 frame aggregation and
   fragmentation. See `references/`.
 - **Fragment-cache attack (CVE-2020-24586)** — a FragAttacks design flaw: fragments left in the reassembly
@@ -165,6 +187,8 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Lab paths (R / V / P)** — the three separately-credited ways to do a lab: **R** recorded-data
   (supplied captures, no hardware), **V** virtual (`mac80211_hwsim`, no hardware), **P** physical (owned
   adapter + AP + client). R and V never grant physical-capture/injection credit.
+- **Limitations statement** — the report section recording what was not tested and why (out of scope, no
+  hardware for a path, a control such as PMF blocked a technique, time box); a finding's absence is not a guarantee of safety.
 - **Link budget** — the running sum in dB/dBm of transmit power plus antenna gains minus path and other
   losses, giving the signal level at the receiver; compared against receiver sensitivity.
 - **Lure AP** — a rogue AP advertising an attractive *generic* SSID (e.g. a common open name) to tempt
@@ -254,6 +278,10 @@ reference. Terms are added here by the main session as modules land (agents prop
   (`reaver -K`); the `-l` option controls lock-detection/wait behaviour.
 - **Regulatory domain** — an ISO 3166 country code setting which channels and transmit powers are legal;
   enforced on Linux via `wireless-regdb` and `iw reg`. Spoofing it can be unlawful.
+- **Remediation roadmap** — the prioritised, verifiable plan of fixes: items ordered by risk reduction for
+  the effort (framed to the client's assets), each naming the control and the retest that proves it took effect.
+- **Residual risk** — the risk remaining after the agreed remediation and retest, stated specifically as
+  what was fixed, what remains, and why, in a sentence a decision-maker can accept, mitigate, or budget to close.
 - **Robust management frames** — the management frames PMF protects: deauthentication, disassociation, and
   certain robust action frames (QoS, Block Ack, radio measurement, BSS transition).
 - **Rogue AP** — any AP not sanctioned by the network owner, whether an evil twin or an unmanaged one.
@@ -265,6 +293,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   pairwise ciphers, AKM suites, and RSN Capabilities (incl. PMF bits); an Open network carries none.
 - **RSSI** — received signal strength, the power at which your receiver heard a frame (radiotap, in
   dBm); it is receiver metadata, not an announced transmit power.
+- **Rules of engagement (RoE)** — the agreed constraints and procedures of a test: transmission limits,
+  time window, stop conditions, forbidden actions, contacts, and how incidental third-party data is handled.
 - **SA Query procedure** — PMF's association-stage protection: an AP with a PMF-protected client that sees
   a new association request queries the existing one and accepts the new only if unanswered, blunting spoofed resets.
 - **SAE (Dragonfly)** — Simultaneous Authentication of Equals; WPA3-Personal's password-authenticated
@@ -273,22 +303,30 @@ reference. Terms are added here by the main session as modules land (agents prop
   certificate must carry; many supplicants (Windows, Android) reject a server cert that lacks it.
 - **Server certificate** — the certificate the RADIUS server presents inside the EAP TLS tunnel; the
   supplicant validates it (trusted CA + expected name) before sending any credential.
+- **Severity rationale** — the argument for a finding's severity based on exposure to the client's assets
+  rather than a bare score; where CVSS is used, the vector is offered for comparability but the asset rationale leads.
 - **SHA-256 checksum** — a 64-hex fingerprint of a file's exact bytes; comparing a computed hash to a
   recorded one proves byte-for-byte integrity, but nothing about where the file came from (see provenance).
 - **Shadow (unmanaged) AP** — an access point connected without the owner's authorisation (e.g. a staff
   travel router), outside policy but not impersonating a specific SSID; a rogue-detection target.
 - **SSID** — the human-readable network name advertised by an AP.
+- **Stop conditions** — the explicit triggers that end a test immediately: an out-of-scope device
+  associates or is disrupted, interference with a production/neighbouring network is seen, or the time window ends.
 - **Strong-password (no-crack) case** — a teaching setup where the passphrase is in no supplied list and
   high-entropy, so recovery is not expected; the correct outcome is to conclude infeasibility and
   recommend the control. Failing to crack is the right answer.
 - **Supplicant** — the client-side 802.1X/EAP entity (e.g. `wpa_supplicant`).
 - **TKIP** — a transitional WPA cipher built on RC4; deprecated. Legacy note only, no lab.
+- **Target allowlist** — the positively-defined scope of an engagement: a table of the exact networks you
+  may touch, keyed on BSSID (plus SSID, band, channel); everything not listed is out of scope.
 - **ToDS / FromDS** — two Frame Control bits (DS = distribution system) that set what each address field
   means and the frame's direction (uplink, downlink, or AP-to-AP bridging).
 - **Traffic analysis (metadata)** — drawing conclusions from the cleartext parts of a capture (MACs,
   SSIDs, timing, handshake/PMKID presence) without reading the encrypted payload — the key-less limit.
 - **Transition mode** — a BSS advertising both WPA3-SAE and WPA2-PSK for compatibility; the real
   downgrade surface for WPA3-Personal.
+- **Transmission limits** — the agreed ceiling on what a test radiates: channel(s), lowest workable TX
+  power, and any directional antenna/attenuation/shielding or preference for the virtual path — what actually bounds collateral.
 - **Triangulation (AP location estimation)** — inferring an AP's likely position from many observations
   of its BSSID at different GPS points, weighted by signal; one observation only bounds where it was heard.
 - **tshark** — Wireshark's command-line counterpart; takes the same display filters
@@ -297,6 +335,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   authentication to the outer TLS tunnel, raising the bar against live relay attacks.
 - **USB passthrough** — detaching a USB device from the host so a guest VM can claim it; on VirtualBox it
   needs the Extension Pack, and Hyper-V has no general raw USB passthrough for a Wi-Fi adapter.
+- **Verifiable remediation (proof of fix)** — a remediation item paired with its before/after measurement
+  (bounded crack now exhausted; forged deauth now rejected; rogue RADIUS now refused), so "fixed" is proven not asserted.
 - **Version / behaviour check** — the two ways to test an advisory's conditions on an owned device:
   compare a version/build/chipset against the fixed value, or observe a property confirming a precondition
   is unmet — never by re-exploiting the flaw.

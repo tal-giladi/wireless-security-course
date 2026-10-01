@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    Two offices share the identical finding: WPA2-PSK, PMF off, an 8-character lowercase passphrase
+    recovered by a bounded crack. One is a flat network with the finance server on that SSID; the other
+    puts the SSID on a segmented guest VLAN. How should the impact be written?
+  options:
+    - Trace each finding to what the recovered PSK actually reaches; impact differs because topology differs.
+    - Give both the same CVSS base score, because the technical vulnerability is identical in each office.
+    - Report the flat network only, since a segmented network cannot produce any reportable finding.
+    - State that impact cannot be assessed until a physical-path capture confirms the crack over real RF.
+  correct: 0
+  explanation: >-
+    Impact is a property of what the vulnerability reaches in this environment, not of the vulnerability alone.
+    The flat network exposes the finance server; segmentation stops the same finding short of the valued asset.
+- id: q2
+  question: >-
+    You ran a WPA3 assessment and could not perform a deauth-assisted capture because the network has PMF
+    required, so the forged deauth was rejected. How should this appear in the report?
+  options:
+    - As a tool failure, since the deauth did not go through and the capture attempt was unsuccessful.
+    - As both a limitation (the technique was not exercised) and evidence that PMF is working as intended.
+    - As a critical finding, because being unable to deauthenticate indicates a misconfigured access point.
+    - As nothing at all, because only techniques that succeed belong anywhere in the engagement report.
+  correct: 1
+  explanation: >-
+    PMF legitimately blocking a forged deauth is a control working, and it also bounds what you tested. Record
+    it as a limitation and as positive evidence — never as a failure of the engagement.
+- id: q3
+  question: >-
+    A reviewer reads a wireless report that lists three findings and nothing else, and concludes the rest
+    of the estate is secure. What was missing from the report?
+  options:
+    - A higher CVSS score on each finding, which would have signalled that more issues likely remain.
+    - An appendix of raw captures, without which no reader can judge the completeness of the testing.
+    - A limitations section stating what was not tested and why, and that absence of a finding is not safety.
+    - A longer executive summary, since brevity is what led the reviewer to over-read the three findings.
+  correct: 2
+  explanation: >-
+    Every engagement leaves gaps — out of scope, no hardware for a path, control-blocked techniques, time box.
+    The limitations section records them and states that a finding's absence is not a guarantee of safety.
+- id: q4
+  question: >-
+    After strengthening a passphrase and verifying the fix by retest, what belongs in the residual-risk
+    line handed to Module 14?
+  options:
+    - A restatement of the original CVSS vector, so the reader sees how severe the issue was before the fix.
+    - A promise that the network is now fully secure, since the retest confirmed the control took effect.
+    - The full command history of the retest, so the client can reproduce the verification independently.
+    - The specific risk that remains, e.g. "passphrase fixed and verified, but WPS still enabled on two APs."
+  correct: 3
+  explanation: >-
+    Residual risk is the honest remainder after the fixes, in one actionable sentence. It names what still
+    needs attention and is the hand-off into the defence program and remediation roadmap in Module 14.

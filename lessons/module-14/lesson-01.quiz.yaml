@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A client says, "We fixed every finding from last year's wireless test, so our Wi-Fi is secure."
+    Why does this course frame defence as an ongoing program rather than accepting that statement?
+  options:
+    - Because a test is a snapshot and controls drift — firmware ages, new APs appear, profiles get loosened — so defence must be run and re-verified continuously.
+    - Because penetration tests are unreliable, so their findings should be re-tested by a second firm before any remediation is trusted.
+    - Because fixing findings is unnecessary once WPA3-SAE is enabled, as SAE removes the need for the other controls entirely.
+    - Because the only durable wireless control is raising transmit power, which a one-off remediation cannot keep adjusted over time.
+  correct: 0
+  explanation: >-
+    A test captures one moment; the attacker gets every day after it. Firmware ages into new CVEs, new
+    SSIDs appear unsegmented, client profiles loosen — a program with owners, a cadence, and verification keeps the controls true.
+- id: q2
+  question: >-
+    In the defence program, what distinguishes a "control" in the program document from the same item
+    on the one-off baseline checklist from Lesson 02.3?
+  options:
+    - The program states the control in stronger language, but it is checked only during the next scheduled penetration test.
+    - The program adds an owner, a cadence, and a verification method, so each control is a maintained commitment with evidence it still works.
+    - The program replaces the configuration setting with a policy statement, so no technical measurement is needed any more.
+    - The program moves every control onto the access point, since client-side settings cannot be governed over time.
+  correct: 1
+  explanation: >-
+    A program is the baseline plus governance: who owns the control, how often it is checked, and the
+    vulnerable-vs-hardened measurement that proves it still holds. That is what makes it ongoing rather than point-in-time.
+- id: q3
+  question: >-
+    An administrator applies a firmware update to an access point to close a published CVE. Which other
+    program control most needs re-verification immediately afterward, and why?
+  options:
+    - Segmentation, because a firmware update always moves the guest VLAN onto the internal subnet by default.
+    - The passphrase entropy control, because updating firmware shortens the stored PSK and weakens offline resistance.
+    - WPS configuration, because firmware updates and factory resets frequently re-enable WPS, undoing the disabled baseline.
+    - MAC randomisation, because new firmware disables the client's randomised address during the reboot window.
+  correct: 2
+  explanation: >-
+    Firmware updates and factory resets commonly re-enable WPS. The program's cadence for the WPS control
+    is "after each firmware update/reset," verified by a scan showing WPS off or push-button only.
+- id: q4
+  question: >-
+    Why does the program treat monitoring and rogue detection as the control that makes the whole
+    defence effort "ongoing" rather than just one control among seven?
+  options:
+    - Because monitoring encrypts management frames, which is what prevents forged deauthentication across the whole network.
+    - Because monitoring replaces the need for firmware patching by blocking exploits for known CVEs at the air interface.
+    - Because monitoring authenticates clients to the RADIUS server, which is where enterprise trust ultimately lives.
+    - Because monitoring is what detects drift in the other controls — a new rogue AP, an unexpected SSID, a deauth flood — between scheduled reviews.
+  correct: 3
+  explanation: >-
+    Monitoring continuously surfaces the drift that the other point-in-time controls would miss between
+    reviews: a rogue or shadow AP, an unsegmented new SSID, or a deauth flood. It turns a set of settings into a running program.

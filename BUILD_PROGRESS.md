@@ -37,8 +37,8 @@ Run `npm run check-course` until 0 problems before declaring done.
 - [x] M10 Enterprise I — architecture, EAP & building the lab (core) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M11 Enterprise II — attack, harden & retest (core) — 5 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M12 Protections & residual attacks (elective) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
-- [ ] M13 Wireless engagements & methodology (core)
-- [ ] M14 Defence program & reporting (core)
+- [x] M13 Wireless engagements & methodology (core) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
+- [x] M14 Defence program & reporting (core) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [ ] M15 Adjacent wireless (elective, awareness)
 - [ ] Capstone — recorded-data (projects/)
 - [ ] Capstone — physical-lab (projects/)

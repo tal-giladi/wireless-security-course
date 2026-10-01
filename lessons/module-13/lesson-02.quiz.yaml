@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    You hardened an owned AP after a successful bounded crack and wrote the control into your report.
+    A reviewer says the finding is not yet provable. What step of the engagement loop is missing?
+  options:
+    - Recon, because you must re-enumerate every in-scope BSSID before any recommendation is valid.
+    - Retest, because you must repeat the attempt against the hardened config and measure the difference.
+    - Capture, because a recommendation requires a second handshake taken after the hardening change.
+    - Analysis, because the RSN element must be re-parsed before the control can be written down.
+  correct: 1
+  explanation: >-
+    Hardening without retest is an assertion. Retesting the same attempt against the hardened configuration —
+    e.g. the strong passphrase now exhausts the wordlist — is what produces the vulnerable-vs-hardened evidence.
+- id: q2
+  question: >-
+    A capture ships with a recorded SHA-256 but no note of how it was generated or what it should produce.
+    Why is the checksum alone insufficient for defensible evidence?
+  options:
+    - A checksum alone is sufficient; provenance is a formality that adds nothing a reviewer can use.
+    - A checksum must be recomputed daily, so a single recorded value is already stale and untrustworthy.
+    - A checksum proves the bytes are unchanged but not the origin, expected result, or licence of the file.
+    - A checksum only applies to `.pcapng` files, so a separate record is needed for any `.hc22000` artifact.
+  correct: 2
+  explanation: >-
+    SHA-256 proves byte-for-byte integrity since it was recorded, nothing more. Provenance (how it was made,
+    tool/version, expected result, licence) is a separate requirement, which is why both must accompany a capture.
+- id: q3
+  question: >-
+    A tester analysed a supplied `.pcapng` on the recorded-data path and writes in the report: "I captured
+    and cracked the WPA2 handshake from the target." What is the honest correction?
+  options:
+    - The sentence is fine; on the recorded-data path, analysing a capture is equivalent to capturing it.
+    - They should instead claim they performed frame injection, which better reflects the work's difficulty.
+    - They should delete the finding, because recorded-data work cannot support any report claim at all.
+    - They cracked a supplied handshake on path R and must say so; they did not perform the live capture.
+  correct: 3
+  explanation: >-
+    Path R proves interpretation and the cracking workflow on a supplied capture, not live capture. Recording
+    the path honestly — "supplied handshake, path R" — keeps the claim accurate; R and V never earn physical credit.
+- id: q4
+  question: >-
+    When naming evidence artifacts across an engagement, what makes a naming scheme most useful to a
+    reviewer who has not opened the files?
+  options:
+    - Encoding the target, phase, and lab path in each name, e.g. `bssid-..._m6_pmkid_R.hc22000`.
+    - Using a random unique id per file so that no two artifacts can ever collide in storage.
+    - Naming every file after the tool that produced it, since the tool implies the rest of the context.
+    - Keeping names as short as possible, such as `cap1`, `cap2`, to reduce transcription errors later.
+  correct: 0
+  explanation: >-
+    A name that encodes target, phase, and path tells a reviewer what the artifact is and which path produced
+    it without opening it, and keeps the honest per-path credit visible throughout the evidence set.
