@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    Why can WPS undermine the strong-passphrase control that Module 6 established, even on a network with
+    a long random WPA2 passphrase?
+  options:
+    - Because a recovered WPS PIN makes the AP hand over the WPA2 passphrase regardless of its strength.
+    - Because WPS replaces the passphrase with a 4-digit code that the AP stores in every beacon frame.
+    - Because enabling WPS silently downgrades the network from CCMP to the deprecated TKIP cipher.
+    - Because WPS disables PMF, which is the only thing protecting a strong passphrase from capture.
+  correct: 0
+  explanation: >-
+    WPS is a parallel way in: recover the PIN and the AP returns the PSK, so passphrase entropy becomes
+    irrelevant to that path. That is why disabling WPS is the clean fix.
+- id: q2
+  question: >-
+    A client insists WPS must stay enabled for staff convenience. Which configuration best reduces the
+    risk while honouring that constraint?
+  options:
+    - Keep the PIN method but shorten the PIN to 4 digits so lockout triggers sooner on attackers.
+    - Use push-button (PBC) only, disable the PIN method, and keep firmware patched with lockout verified.
+    - Leave WPS fully enabled but change the passphrase weekly to outpace any brute force.
+    - Enable both PIN and PBC so the AP can fall back if one method is being attacked.
+  correct: 1
+  explanation: >-
+    PBC-only removes the remotely brute-forceable PIN and requires physical button access; patched
+    firmware plus lockout are defence-in-depth. It is a real reduction, short of simply disabling WPS.
+- id: q3
+  question: >-
+    After you disable WPS on an owned AP, which observation confirms the remediation actually took effect?
+  options:
+    - The AP's signal strength drops, showing the WPS radio component has been powered down.
+    - The WPA2 passphrase changes automatically, proving the registrar was removed from the firmware.
+    - A `wash` scan no longer shows a WPS information element (or the registrar refuses), so Pixie Dust cannot start.
+    - The AP stops responding to pings, indicating the management interface disabled itself.
+  correct: 2
+  explanation: >-
+    The verifiable signal is the WPS IE disappearing from a `wash` scan (or the registrar refusing to
+    engage); then the offline and online PIN paths have no registrar to attack.
+- id: q4
+  question: >-
+    In a ten-router office with an excellent passphrase policy but WPS enabled and Pixie-Dust-vulnerable,
+    how should the report frame the core issue?
+  options:
+    - As a weak-passphrase finding, recommending even longer passphrases across the fleet.
+    - As a monitoring gap, recommending a wireless IDS instead of any configuration change.
+    - As acceptable residual risk, since a strong passphrase compensates for the exposed WPS.
+    - As WPS bypassing a strong passphrase, remediated by disabling WPS fleet-wide and retesting with wash and Pixie Dust.
+  correct: 3
+  explanation: >-
+    The issue is not the passphrase — WPS defeats it. The report should recommend disabling WPS on all
+    devices and retest with the same before/after `wash` and Pixie Dust measurement.

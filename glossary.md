@@ -39,6 +39,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   power and overlaps more neighbours, and a capture must match it.
 - **Chipset-first buying rule** — choose a Wi-Fi adapter by its chipset (known-good Linux support), not
   its model/marketing name, then verify the exact model + hardware revision before buying.
+- **Commit / confirm (SAE)** — the two SAE phases: each peer sends a commit (its key-agreement
+  contribution), then a confirm proving it derived the same key — revealing no offline-crackable value.
 - **dB (decibel)** — a logarithmic *ratio* of two powers; gains/losses add instead of multiplying.
   +3 dB ≈ double power, +10 dB = ten times. Distinct from dBm (which is absolute).
 - **dBi** — antenna gain relative to an ideal isotropic radiator; describes how an antenna focuses
@@ -83,6 +85,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   sides know the key, without sending it.
 - **Hardware revision trap (TL-WN722N)** — the canonical example: v1 = AR9271 (monitor/injection) but
   v2/v3 = RTL8188EUS (different chip, commonly not monitor-capable). Same box name, tiny version marking.
+- **Hash-to-Element (H2E)** — the constant-time replacement for SAE's hunting-and-pecking, standardised
+  into WPA3; it removes the data-dependent timing/cache behaviour Dragonblood exploited.
 - **hc22000 / `-m 22000`** — hashcat's modern mode and file format for WPA-PBKDF2 PMKID+EAPOL cracking.
 - **hcxdumptool** — the hcxtools capture utility that actively engages an AP to collect a PMKID or
   handshake (not passive); distinct from `hcxpcapngtool`, and its flags change across major versions.
@@ -91,6 +95,10 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Hidden SSID** — a network whose beacons omit the SSID name (the length may still leak); obscurity,
   not security — resolved passively from an associating client or actively with a directed probe.
 - **hostapd** — user-space daemon that turns an interface into an AP; configures WPA2/WPA3/OWE/enterprise.
+- **Hunting-and-pecking** — SAE's original password-to-group mapping, which iterates until it finds a
+  valid curve point; its password-dependent timing was the basis of the Dragonblood side-channels.
+- **`ieee80211w` / `sae_pwe`** — hostapd settings: `ieee80211w=2` sets PMF required; `sae_pwe` selects the
+  SAE password-element method (hunting-and-pecking, H2E, or both).
 - **iw reg** — the Linux command to read (`iw reg get`) or set (`iw reg set <COUNTRY>`) the regulatory
   domain that governs legal channels and TX power.
 - **Join state machine** — the 802.11 progression a client follows: unauthenticated/unassociated →
@@ -129,16 +137,23 @@ reference. Terms are added here by the main session as modules land (agents prop
   WPA2/WPA3; verifies no credential and always succeeds — not the security handshake.
 - **OWE (Enhanced Open)** — opportunistic wireless encryption; encrypts traffic on "open" networks
   **without authenticating the network** — stops passive sniffing, not an active rogue/MITM.
+- **OWE transition mode** — a deployment pairing a hidden OWE BSS with an open BSS so legacy clients use
+  open while OWE-capable clients get encryption; aids migration but leaves legacy clients unencrypted.
 - **Passive vs active scanning** — discovery by listening for beacons (client transmits nothing) versus
   sending probe requests (faster, but the client transmits and may reveal preferred SSIDs).
 - **Passphrase entropy** — the number of equally-likely possibilities a guesser must cover; for
   human-chosen WPA2 secrets, length raises it far more than character-class rules. The decisive control.
+- **Password partitioning attack** — the Dragonblood technique: each timing/cache measurement rules out
+  some candidate passwords, after which an offline dictionary attack finishes recovery.
 - **PBKDF2** — the key-derivation function turning a WPA2-Personal passphrase + SSID (salt, 4096
   iterations) into the PMK; deterministic, so a guessed passphrase can be recomputed offline.
 - **pcap (classic)** — the original libpcap file format: a global header then one record per packet, with
   a single link-layer type for the whole file; read everywhere but carries no per-packet annotations.
 - **pcapng** — the next-generation capture format (Wireshark's default): typed blocks holding multiple
   interfaces and per-packet comments; converting pcapng → pcap is lossy.
+- **Pixie Dust** — an offline WPS attack that recovers the PIN from a single exchange when the AP's
+  registrar nonces (E-S1/E-S2) are weak or zero; chipset/firmware dependent, not universal.
+- **pixiewps** — the tool that performs the Pixie Dust computation, driven by `reaver -K` or `bully`.
 - **PMF / 802.11w** — Protected Management Frames; cryptographically protects deauth/disassoc and other
   management frames. Required in WPA3. Changes which attacks are possible.
 - **PMK / PTK / GTK** — Pairwise Master Key (derived from the PSK or 802.1X); Pairwise Transient Key
@@ -158,11 +173,15 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Provenance (of a capture)** — the record of how and by whom a capture was generated (owned equipment,
   synthetic credentials) plus its redistribution licence; required alongside a checksum before shipping.
 - **PSK** — pre-shared key; the passphrase-derived secret in WPA2/WPA3-Personal.
+- **Push-button configuration (PBC)** — the WPS method requiring a physical button press within a short
+  window; not remotely brute-forceable like the PIN, so the preferred mode if WPS must stay enabled.
 - **Radiotap** — a header prepended to captured 802.11 frames carrying RF metadata (channel, signal,
   rates); present in monitor-mode captures.
 - **RADIUS** — the AAA server protocol used as the 802.1X authentication server (e.g. FreeRADIUS).
 - **RC4** — the stream cipher underneath WEP and TKIP; fast but with documented keystream biases and
   deprecated in Wi-Fi — seeing RC4 signals a legacy WEP/TKIP configuration.
+- **reaver / bully** — WPS attack tools: the online PIN brute (legacy) and the Pixie Dust driver
+  (`reaver -K`); the `-l` option controls lock-detection/wait behaviour.
 - **Regulatory domain** — an ISO 3166 country code setting which channels and transmit powers are legal;
   enforced on Linux via `wireless-regdb` and `iw reg`. Spoofing it can be unlawful.
 - **Rogue AP** — any AP not sanctioned by the network owner, whether an evil twin or an unmanaged one.
@@ -196,9 +215,17 @@ reference. Terms are added here by the main session as modules land (agents prop
   needs the Extension Pack, and Hyper-V has no general raw USB passthrough for a Wi-Fi adapter.
 - **Wardriving** — surveying wireless networks while moving, logging each AP/client's broadcast metadata
   (BSSID, SSID, channel, security) tagged with a GPS position; passive observation, not interception.
+- **wash** — the reaver-suite scanner that lists nearby APs and their WPS state (present, version,
+  locked); passive, used to inventory WPS exposure.
 - **WEP** — the original, broken 802.11 encryption. Legacy note only, no lab (OSWP-prep gap disclosed).
 - **WiGLE (Wireless Geographic Logging Engine)** — a public database aggregating GPS-tagged network
   metadata into a searchable map; it stores metadata and estimated locations, not traffic or credentials,
   and a listing is information, not authorisation to test.
 - **WPS** — Wi-Fi Protected Setup; PIN/push-button onboarding with a long history of flaws (Pixie Dust,
   online PIN brute). Elective module; recommend disabling.
+- **WPS lockout (AP Setup Locked)** — a state entered after failed PIN attempts that refuses further WPS
+  registration for a cooldown; the main mitigation that defeated the online PIN brute.
+- **WPS PIN split-half validation** — the design flaw: the 8-digit PIN is checked as two halves (last
+  digit a checksum), cutting the effective keyspace to ~10^4 + 10^3 instead of 10^8.
+- **WPS registrar / enrollee** — the two WPS roles: the registrar (usually the AP) hands credentials to
+  an enrollee (the joining client) once the PIN or push-button exchange succeeds.

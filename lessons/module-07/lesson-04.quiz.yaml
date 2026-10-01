@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    What does OWE (Enhanced Open) actually provide compared with a traditional open network?
+  options:
+    - Per-client encryption via an unauthenticated Diffie-Hellman exchange, with no password required.
+    - A shared password that every client must enter before the network will grant encryption.
+    - Certificate-based authentication of the access point to every joining client.
+    - Protection of management frames equivalent to enabling PMF on a WPA2 network.
+  correct: 0
+  explanation: >-
+    OWE adds an unauthenticated DH key agreement so each client's traffic is encrypted, even though the
+    network still looks open and no credential is entered.
+- id: q2
+  question: >-
+    An attacker stands up a rogue AP broadcasting the same SSID as a legitimate OWE network. What
+    happens to a client that connects, and why?
+  options:
+    - The client rejects the rogue because OWE pins the legitimate AP's public key on first use.
+    - The client is protected, since OWE encryption makes the rogue unable to read any traffic.
+    - The client completes OWE with the attacker and is MITM'd, because OWE authenticates no network identity.
+    - The client refuses to connect because OWE requires a server certificate the rogue cannot forge.
+  correct: 2
+  explanation: >-
+    OWE has no credential to verify, so a client cannot tell a legitimate OWE AP from a same-SSID rogue;
+    the rogue completes OWE as the AP and sits in the middle.
+- id: q3
+  question: >-
+    Which threat does OWE genuinely mitigate relative to plain open Wi-Fi?
+  options:
+    - An active evil-twin attacker who impersonates the SSID and relays the victim's traffic.
+    - A passive eavesdropper on the same open SSID trying to read other users' traffic.
+    - A WPS PIN brute force against the access point's external registrar.
+    - A Dragonblood timing side-channel against the network's SAE handshake.
+  correct: 1
+  explanation: >-
+    OWE's per-client keys stop a passive listener on the same network from reading traffic. It does not
+    address active impersonation, WPS, or SAE — those are different problems.
+- id: q4
+  question: >-
+    A café wants to stop evil-twin attacks and asks if switching their open network to OWE will do it.
+    What is the correct recommendation?
+  options:
+    - Yes — OWE's encryption prevents any attacker from standing up a usable duplicate of the SSID.
+    - Yes — OWE transition mode specifically blocks rogue APs while keeping legacy clients working.
+    - No — but only because the café's clients are too old to support OWE in the first place.
+    - No — OWE helps against passive sniffing only; network authentication (a verified credential) plus rogue monitoring addresses evil twins.
+  correct: 3
+  explanation: >-
+    OWE authenticates no network, so it cannot stop evil twins. Addressing them needs a credential the
+    client verifies (PSK or Enterprise cert validation) plus rogue-AP monitoring.

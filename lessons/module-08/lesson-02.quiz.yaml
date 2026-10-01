@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A tester runs reaver -K against an owned router and pixiewps returns the PIN in two seconds. Which
+    property of this specific AP made the offline recovery possible?
+  options:
+    - Its WPS lockout was disabled, which by itself lets pixiewps invert the E-Hash values offline.
+    - It generated weak or zero E-S1/E-S2 nonces, so the captured E-Hash values became offline oracles.
+    - It used a short 4-digit PIN instead of 8, which halved the keyspace enough to solve instantly.
+    - It transmitted the WPA2 passphrase in message M3, so pixiewps simply read it from the capture.
+  correct: 1
+  explanation: >-
+    Pixie Dust works only when E-S1/E-S2 are predictable or zero; then E-Hash1/E-Hash2 can be brute-forced
+    offline. A disabled lockout only lets the exchange complete; it is not the root cause.
+- id: q2
+  question: >-
+    On the virtual mac80211_hwsim path with hostapd, a learner drives reaver -K but never recovers a
+    PIN and asks whether their setup is broken. What is the correct explanation?
+  options:
+    - The setup is broken, because hwsim cannot carry WPS frames and the exchange never truly runs.
+    - Reaver needs a second radio on hwsim, so Pixie Dust cannot start until another interface is added.
+    - Nothing is broken — hostapd seeds nonces properly, so the virtual path shows the flow but not a vulnerable chipset.
+    - Nothing is broken, but hwsim always locks WPS after one attempt, so you must wait sixty seconds to retry.
+  correct: 2
+  explanation: >-
+    The virtual path reproduces the WPS exchange but hostapd uses proper nonces, so it cannot
+    demonstrate a vulnerable chipset. Showing a real Pixie Dust success needs a physical vulnerable AP.
+- id: q3
+  question: >-
+    Against an owned current-firmware router, pixiewps completes but recovers no PIN. The client asks
+    if this proves their Wi-Fi is safe from WPS attacks. What is the most accurate response?
+  options:
+    - Yes — a resistant Pixie Dust result proves the passphrase itself is high-entropy and uncrackable.
+    - It shows this AP resists Pixie Dust, but WPS PIN may still allow a slower online brute if unlocked.
+    - Yes — once Pixie Dust fails, WPS is cryptographically sound and needs no further configuration change.
+    - No — an empty result just means you must re-run pixiewps for longer until the nonces are recovered.
+  correct: 1
+  explanation: >-
+    An empty pixiewps result means well-seeded nonces, so this AP resists Pixie Dust. It does not rule
+    out the (slower, often-mitigated) online PIN brute; the clean fix is still to disable WPS.
+- id: q4
+  question: >-
+    A report draft states "WPS is exploitable via Pixie Dust on all tested APs." You tested four
+    routers: two legacy ones cracked, two current ones did not. How should the claim be corrected?
+  options:
+    - Keep it as written, since any successful crack proves the Pixie Dust class applies to every AP.
+    - Broaden it — because WPS is a protocol flaw, all APs running WPS are inherently Pixie-Dust-vulnerable.
+    - Drop WPS from the report, because a mixed result means the attack is too unreliable to document.
+    - Scope it per device — Pixie Dust depends on the AP's implementation and failed on the two current routers.
+  correct: 3
+  explanation: >-
+    Pixie Dust is a chipset/firmware property, not a universal WPS flaw. The finding must be scoped
+    per device: vulnerable on the two legacy APs, resistant on the two current ones.

@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Why does configuring a WPA3 network as SAE-only (rather than transition mode) remove a real attack
+    surface?
+  options:
+    - Because SAE-only increases transmit power, putting the network out of an attacker's capture range.
+    - Because transition mode also advertises WPA2-PSK, leaving the crackable 4-way handshake path available.
+    - Because SAE-only disables beacons entirely, so no attacker can discover or profile the network.
+    - Because transition mode uses TKIP, and only SAE-only forces the modern CCMP cipher to be used.
+  correct: 1
+  explanation: >-
+    Transition mode advertises both SAE and WPA2-PSK, so a WPA2 client still produces a crackable
+    handshake (Module 6). SAE-only removes that downgrade path.
+- id: q2
+  question: >-
+    In a hardened WPA3-Personal configuration, what is the correct setting for Protected Management
+    Frames, and why?
+  options:
+    - PMF disabled, so the handshake completes faster and legacy clients can still associate cleanly.
+    - PMF capable-but-not-required, matching transition mode so both WPA2 and WPA3 clients are served.
+    - PMF required (`ieee80211w=2`), which WPA3 mandates and which blocks forged deauth/disassoc.
+    - PMF required only on the guest SSID, since the main SSID relies on the passphrase alone.
+  correct: 2
+  explanation: >-
+    WPA3 mandates PMF; setting it required (not merely capable) protects management frames and is part of
+    why WPA3 labs should not depend on a successful deauth.
+- id: q3
+  question: >-
+    You capture the beacon of a network you are hardening and still see both SAE and WPA2-PSK AKMs
+    advertised after your change. What does this tell you?
+  options:
+    - The network is SAE-only and correctly hardened; both AKMs always appear in SAE beacons.
+    - The capture is corrupt, because a WPA3 beacon can never list more than one AKM suite.
+    - PMF has been disabled, which is the only thing that causes two AKMs to be advertised at once.
+    - The AP is still in transition mode, so the WPA2 downgrade surface has not actually been removed.
+  correct: 3
+  explanation: >-
+    Both AKMs in the beacon means transition mode is still active. A hardened SAE-only network advertises
+    only the SAE AKM, with MFPR set.
+- id: q4
+  question: >-
+    An office has mostly WPA3-capable devices plus a few WPA2-only IoT units. Which approach best
+    hardens the main network without stranding the IoT devices?
+  options:
+    - Put modern devices on an SAE-only SSID and move the WPA2-only IoT to a separate segmented SSID/VLAN.
+    - Keep one transition-mode SSID for everything, since compatibility outweighs the downgrade risk.
+    - Disable WPA3 entirely and run WPA2-PSK everywhere so all devices share one consistent configuration.
+    - Put every device on the SAE-only SSID and accept that the IoT units will simply retry until they join.
+  correct: 0
+  explanation: >-
+    SAE-only for the modern network removes the downgrade, while a separate segmented WPA2 SSID contains
+    the legacy IoT risk — consistent with the secure baseline's segmentation principle.

@@ -1,0 +1,102 @@
+- id: q1
+  question: >-
+    A tester passively captures a full WPA3-SAE exchange on an owned network and plans to crack it
+    offline like a WPA2 handshake. Why will this not work?
+  options:
+    - Because SAE encrypts the capture with the GTK, which the tester does not possess.
+    - Because SAE's commit/confirm exchange yields no directly offline-crackable hash from a passive capture.
+    - Because PMF strips the EAPOL frames from the capture before they can be written to disk.
+    - Because the capture needs a fourth handshake message that SAE sends only to authenticated clients.
+  correct: 1
+  explanation: >-
+    SAE is a password-authenticated key exchange; a passive observer does not obtain a value they can
+    hash candidate passphrases against, unlike WPA2's handshake MIC.
+- id: q2
+  question: >-
+    A network labelled "WPA3" is found to advertise both SAE and WPA2-PSK AKMs in its beacon. What is
+    the practical consequence for an assessor?
+  options:
+    - The WPA2-PSK path is still available, so the Module 6 handshake-capture-and-crack attack applies.
+    - None — advertising both AKMs is required by WPA3 and carries no additional risk.
+    - The network is OWE underneath, so the assessor should test for passive sniffing instead.
+    - PMF is automatically disabled, so the only viable attack is a management-frame deauth flood.
+  correct: 0
+  explanation: >-
+    Both AKMs means transition mode: a WPA2 client still produces a crackable 4-way handshake, so the
+    WPA2-Personal attack path is live despite the WPA3 label.
+- id: q3
+  question: >-
+    How should a report characterise Dragonblood for a current, fully-patched WPA3 router that negotiates
+    hash-to-element?
+  options:
+    - As a permanent design break in SAE that no configuration or patch can remediate.
+    - As irrelevant, since Dragonblood only ever affected WPA2 and EAP-TLS, not SAE.
+    - As a mitigated 2019 implementation side-channel class that H2E and patches have closed on this device.
+    - As an active threat requiring the passphrase to be rotated daily to stay ahead of the attack.
+  correct: 2
+  explanation: >-
+    Dragonblood was implementation side-channels in the password mapping; H2E (constant-time) plus the
+    patched CVEs remove the exposure, so a current H2E device is not exposed to the 2019 class.
+- id: q4
+  question: >-
+    A café switches its open guest network to OWE and asks whether evil-twin attacks are now prevented.
+    What is accurate?
+  options:
+    - OWE encrypts per client but authenticates no network, so a same-SSID rogue can still MITM clients.
+    - OWE pins the AP's key on first use, so any later rogue with the same SSID is automatically rejected.
+    - OWE requires a server certificate, so a rogue without the café's private key cannot be joined.
+    - OWE blocks rogues by broadcasting a signed beacon that clients verify before associating.
+  correct: 0
+  explanation: >-
+    OWE adds encryption without authenticating the network; with no credential to verify, a client cannot
+    distinguish a legitimate OWE AP from a same-SSID rogue, which can complete OWE and MITM it.
+- id: q5
+  question: >-
+    Which single OWE property most explains why it is "better than open" but not "anti-evil-twin"?
+  options:
+    - It uses a weaker cipher than WPA2, so it only resists casual rather than determined sniffers.
+    - It authenticates the client to the AP but never encrypts the resulting data frames.
+    - It only works in transition mode, so legacy clients always fall back to plaintext anyway.
+    - It encrypts each client's traffic but performs no authentication of the access point's identity.
+  correct: 3
+  explanation: >-
+    Per-client encryption stops passive sniffing (better than open); the absence of any network
+    authentication is exactly why it cannot stop an active rogue.
+- id: q6
+  question: >-
+    In a hardened WPA3-Personal configuration, why is PMF set to required rather than merely capable?
+  options:
+    - Because capable mode advertises WPA2, which would silently re-enable the downgrade path.
+    - Because required mode is the only setting that enables the SAE handshake to run at all.
+    - Because WPA3 mandates PMF, and required protects management frames instead of leaving it optional.
+    - Because required mode doubles the key length, which is what actually stops offline cracking.
+  correct: 2
+  explanation: >-
+    WPA3 mandates PMF; setting it required (not merely capable) ensures management frames are protected
+    and is why WPA3 labs do not depend on a working deauth.
+- id: q7
+  question: >-
+    You reconfigure an owned AP to SAE-only and want to prove the downgrade surface is gone. Which piece
+    of evidence best demonstrates it?
+  options:
+    - The AP's uptime counter resets, showing the WPA2 subsystem was unloaded from memory.
+    - A beacon capture showing only the SAE AKM with MFPR set, plus a WPA2-only client being refused.
+    - A speed test showing higher throughput, confirming the single-AKM configuration took effect.
+    - A hashcat run that fails on the captured SAE frames, proving no handshake was produced.
+  correct: 1
+  explanation: >-
+    SAE-only + PMF-required shows as a single SAE AKM with MFPR in the beacon, and a WPA2 client that can
+    no longer associate — directly evidencing the removed downgrade path.
+- id: q8
+  question: >-
+    An office must keep a few WPA2-only IoT devices working while hardening its main WPA3 network. Which
+    plan best fits the course's guidance?
+  options:
+    - Run one transition-mode SSID for everything, accepting the WPA2 path as unavoidable.
+    - Disable WPA3 and standardise on WPA2-PSK so every device shares one configuration.
+    - Put all devices on the SAE-only SSID and let the IoT units keep retrying until they associate.
+    - SAE-only SSID for modern devices, with the WPA2-only IoT on a separate segmented SSID/VLAN.
+  correct: 3
+  explanation: >-
+    SAE-only removes the main network's downgrade surface, and segmenting the legacy IoT onto its own
+    SSID/VLAN contains their WPA2 risk — the baseline's segmentation principle applied.

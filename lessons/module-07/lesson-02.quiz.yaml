@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A beacon's RSN element lists both SAE and PSK as AKM suites, with MFP marked capable but not
+    required. What deployment mode is this, and what does it mean for a WPA2-only client?
+  options:
+    - SAE-only mode; a WPA2-only client is refused and no WPA2 handshake can be captured on the BSS.
+    - Transition mode; a WPA2-only client associates over WPA2-PSK and produces a crackable handshake.
+    - Plain WPA2 mode; the SAE entry is cosmetic and every client uses WPA2-PSK regardless of support.
+    - Enterprise mode; clients authenticate to a RADIUS server rather than with any shared passphrase.
+  correct: 1
+  explanation: >-
+    Both SAE and PSK advertised with PMF only capable is transition mode. A WPA2-only client takes the
+    WPA2-PSK path, yielding an ordinary 4-way handshake whose MIC is the Module 6 offline oracle.
+- id: q2
+  question: >-
+    Why is transition mode described as the real WPA3-Personal downgrade surface, even though SAE itself
+    has no offline-crackable hash?
+  options:
+    - Because SAE secretly falls back to PBKDF2 whenever a client is slow to answer the commit message.
+    - Because an attacker can forge a deauth to strip PMF and force every SAE client down to WPA2-PSK.
+    - Because the AP advertises WPA2-PSK alongside SAE, so a client using it produces a crackable handshake.
+    - Because transition mode weakens the SAE elliptic curve to a 128-bit group that brute-force can reach.
+  correct: 2
+  explanation: >-
+    The weakness is the advertised WPA2-PSK AKM, not SAE. A client that completes WPA2-PSK on the same
+    BSS yields a crackable handshake. SAE is never broken; the attacker uses the open WPA2 door.
+- id: q3
+  question: >-
+    On a transition-mode BSS with a weak shared passphrase, which client's natural join gives an
+    attacker a crackable handshake?
+  options:
+    - A modern WPA3 client, because it always completes SAE and then repeats the exchange over WPA2-PSK.
+    - No client, because PMF is capable on the BSS and therefore encrypts every 4-way handshake present.
+    - Any client at all, because transition mode encrypts the SAE confirm with the WPA2 passphrase directly.
+    - A WPA2-only legacy client, because it authenticates with WPA2-PSK and produces an offline-crackable MIC.
+  correct: 3
+  explanation: >-
+    A WPA2-only device uses the WPA2-PSK path and hands over a crackable handshake. A modern client
+    prefers SAE on the same BSS and yields no offline hash, so it is not downgraded.
+- id: q4
+  question: >-
+    You reconfigure a lab AP from transition mode to SAE-only and have a WPA2-only `wpa_supplicant`
+    profile attempt to join. What is the expected, hardened result?
+  options:
+    - The client is refused because there is no WPA2-PSK AKM to accept it, so no crackable handshake exists.
+    - The client joins over SAE automatically, because SAE-only mode transparently upgrades legacy clients.
+    - The client joins over WPA2-PSK but its handshake is now encrypted by PMF and cannot be converted.
+    - The client triggers a downgrade that forces the AP back into transition mode for compatibility.
+  correct: 0
+  explanation: >-
+    SAE-only advertises only the SAE AKM, so a WPA2-only client has nothing to associate with and is
+    refused. That is the hardened outcome: the downgrade surface is gone and no WPA2 handshake is produced.

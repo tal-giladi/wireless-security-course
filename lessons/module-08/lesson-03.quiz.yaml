@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Why was the original online WPS PIN brute force practical on early access points, needing at most
+    about 11,000 attempts rather than ten million?
+  options:
+    - The AP validates the PIN in two independently-checkable halves, collapsing the keyspace to 10^4 + 10^3.
+    - The AP transmits the full PIN in a beacon, so the attacker only confirms the value it already saw.
+    - The PIN is derived from the SSID, so guessing the SSID yields the PIN in a few hundred tries.
+    - The AP accepts the WPA2 passphrase directly in place of the PIN, removing the need to guess.
+  correct: 0
+  explanation: >-
+    The split-half validation lets an attacker solve the first four digits and the second half separately
+    (≤10^4 then ≤10^3), so at most ~11,000 guesses instead of 10^8.
+- id: q2
+  question: >-
+    A current-firmware router you own answers only a few WPS PIN guesses, then stops responding to WPS
+    registration for a cooldown. What is happening, and what does it mean for the online brute?
+  options:
+    - The router crashed under load, so the brute will resume automatically once it reboots itself.
+    - The router set WPS lockout after failures, stalling the online loop almost immediately.
+    - The router switched bands, so the brute must restart on 5 GHz to keep guessing at full speed.
+    - The router rotated its PIN, so every earlier guess must now be repeated from the beginning.
+  correct: 1
+  explanation: >-
+    WPS lockout (AP Setup Locked) after a few failed PINs is the main mitigation: it refuses further WPS
+    registration for a cooldown, so the thousands-of-guesses assumption no longer holds.
+- id: q3
+  question: >-
+    When is the slow online PIN brute still worth attempting against an owned AP, according to this
+    lesson's residual-risk framing?
+  options:
+    - Whenever WPS is enabled at all, since the online brute always outperforms Pixie Dust in the end.
+    - Only on 5 GHz APs, because lockout is not implemented above 2.4 GHz on any device.
+    - Never, because every AP manufactured since 2012 fully blocks the online brute without exception.
+    - Only when WPS PIN is enabled, the AP is unlocked with weak rate-limiting, and Pixie Dust already failed.
+  correct: 3
+  explanation: >-
+    It is a narrow residual case: WPS PIN enabled, unlocked and poorly rate-limited (e.g. a 60-second
+    lock that `reaver -l` waits out), and Pixie Dust having already failed. Otherwise disabling WPS is the answer.
+- id: q4
+  question: >-
+    Why does this course keep a full hands-on lab for Pixie Dust (08.2) but only a summary with no lab
+    for the online PIN brute?
+  options:
+    - Because the online brute is illegal to study whereas Pixie Dust is explicitly exempt from the law.
+    - Because the online brute requires two radios and Pixie Dust needs only one, which is simpler to teach.
+    - Because the online brute is mostly mitigated and noisy, while Pixie Dust (when it works) is a fast offline exchange.
+    - Because the online brute only affects WPA3 networks, which are out of scope for this module.
+  correct: 2
+  explanation: >-
+    The deprecation rule treats the online brute as mostly-mitigated legacy; Pixie Dust, where a chipset
+    is vulnerable, recovers the PIN offline in seconds, so it is the practical attack worth drilling.

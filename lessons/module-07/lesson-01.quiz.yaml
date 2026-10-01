@@ -1,0 +1,56 @@
+- id: q1
+  question: >-
+    A tester captures a full WPA3-Personal (SAE-only) association, including the 4-way handshake, and
+    plans to crack the passphrase offline with `hashcat`. Why does this not work?
+  options:
+    - SAE's PMK comes from the commit-confirm exchange, so the capture holds no passphrase-only value to recompute and compare.
+    - The capture is encrypted end to end by PMF, so `hashcat` cannot read any of the handshake fields at all.
+    - SAE uses a 384-bit key, so cracking is merely far slower rather than structurally impossible offline.
+    - The handshake is valid only for a few seconds, so the hashline expires before `hashcat` can test it.
+  correct: 0
+  explanation: >-
+    In WPA2 the PMK is PBKDF2 of the passphrase, so the captured MIC is an offline oracle. SAE derives
+    the PMK from commit-confirm values blinded by per-session randomness, so a passive capture has
+    nothing to recompute-and-compare — it is structural, not a matter of key length or speed.
+- id: q2
+  question: >-
+    In the SAE commit message, each side sends a scalar and an element. Why can an attacker who guesses
+    the passphrase still not reconstruct the confirm value from a passive capture?
+  options:
+    - The scalar and element are sent encrypted with the group key, so they are unreadable without the PMK.
+    - The commit values are blinded by a fresh per-session random secret that never leaves the device, and the confirm depends on it.
+    - The confirm value is transmitted only to the AP, so a passive observer off to the side never records it.
+    - The passphrase is salted with the SSID at 8192 iterations, so recomputing the element is too slow to attempt.
+  correct: 1
+  explanation: >-
+    Each side's commit is blinded by secret per-session randomness, and the confirm is a hash over the
+    commit values and the jointly-derived shared key, which depends on both secrets. The capture does not
+    contain that randomness, so a guessed passphrase cannot reproduce the confirm.
+- id: q3
+  question: >-
+    You are classifying a network from its beacon. Which combination most clearly identifies it as a
+    pure WPA3-SAE network rather than WPA2 or transition mode?
+  options:
+    - The beacon advertises both SAE and WPA2-PSK in its AKM list with PMF marked only as capable.
+    - The beacon shows the Open-System two-frame authentication followed directly by a 4-way handshake.
+    - The AKM list contains only SAE with PMF marked required, and the join uses commit-confirm authentication.
+    - The beacon hides its SSID and uses a 20-plus character passphrase advertised in the RSNXE element.
+  correct: 2
+  explanation: >-
+    A pure WPA3-SAE BSS advertises only the SAE AKM, sets PMF Required (MFPR), and authenticates with
+    commit-confirm frames. Both AKMs with PMF only capable is transition mode; passphrase length is
+    never advertised.
+- id: q4
+  question: >-
+    A WPA3-SAE lab AP has PMF required. A learner plans to force a reconnect with a targeted deauth so
+    they can capture the SAE exchange. What is the correct expectation?
+  options:
+    - The deauth will succeed because PMF protects only data frames, not management frames like deauth.
+    - The deauth will corrupt the SAE commit in flight, so the capture must be retried at lower TX power.
+    - The deauth will work once, because the first management frame after association is always unprotected.
+    - The deauth is rejected because PMF is mandatory in WPA3, so the capture must come from a natural join.
+  correct: 3
+  explanation: >-
+    PMF is mandatory in WPA3 and protects management frames including deauthentication, so a forged
+    deauth is rejected. No WPA3 lab should depend on a successful deauth; capture from a natural join
+    (or use the recorded/virtual paths) instead.

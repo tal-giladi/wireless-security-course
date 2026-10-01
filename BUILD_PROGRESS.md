@@ -31,8 +31,8 @@ Run `npm run check-course` until 0 problems before declaring done.
 - [x] M4 Wireless reconnaissance (core) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M5 Capturing & analysing 802.11 (core) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M6 WPA2-Personal: capture, PMKID & cracking (core) — 5 lessons + quizzes + module quiz, glossary merged, 0 problems
-- [ ] M7 WPA3-SAE (core)
-- [ ] M8 WPS (elective)
+- [x] M7 WPA3-SAE (core) — 5 lessons + quizzes + module quiz, glossary merged, 0 problems
+- [x] M8 WPS (elective) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [ ] M9 Rogue AP, evil twin & client-side (core)
 - [ ] M10 Enterprise I — architecture, EAP & building the lab (core)
 - [ ] M11 Enterprise II — attack, harden & retest (core)

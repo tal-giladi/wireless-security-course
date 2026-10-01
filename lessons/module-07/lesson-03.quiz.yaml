@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    Which statement most accurately characterises the Dragonblood findings of 2019?
+  options:
+    - They proved SAE's commit/confirm design is cryptographically broken and must be replaced.
+    - They were implementation side-channels in SAE/EAP-pwd that leaked password information, not a design break.
+    - They showed SAE transmits an offline-crackable hash just like WPA2's handshake MIC.
+    - They only affected WPA2 transition mode and never touched any SAE implementation.
+  correct: 1
+  explanation: >-
+    Dragonblood was a class of timing and cache side-channels in specific implementations of the
+    password-to-group mapping — SAE's design still sends no directly crackable hash.
+- id: q2
+  question: >-
+    The original timing side-channel (CVE-2019-9494) leaked password information because of which
+    behaviour in early SAE implementations?
+  options:
+    - The hunting-and-pecking mapping ran in variable time depending on the password and peer MAC.
+    - The AP broadcast the PMK in the first commit frame, which an attacker timed and read.
+    - The confirm frame included the passphrase length, which narrowed the dictionary directly.
+    - PMF was disabled, so the attacker could inject frames to measure the handshake timing.
+  correct: 0
+  explanation: >-
+    Hunting-and-pecking was not constant-time: iteration count (and thus timing) depended on the
+    password, so measuring response times partitioned the candidate dictionary.
+- id: q3
+  question: >-
+    What is the durable mitigation that removes the Dragonblood side-channels from SAE?
+  options:
+    - Rotating the WPA3 passphrase frequently so timing measurements become stale between runs.
+    - Disabling PMF so the handshake completes faster and leaks less timing information overall.
+    - Lowering AP transmit power so an attacker cannot measure response timing from a distance.
+    - Hash-to-Element (H2E), a constant-time password-to-group mapping replacing hunting-and-pecking.
+  correct: 3
+  explanation: >-
+    H2E computes the mapping in constant time, removing the data-dependent timing and cache behaviour the
+    attacks relied on; it is standardised into WPA3 and shipped by vendors.
+- id: q4
+  question: >-
+    A client asks whether their current, fully-patched WPA3-SAE router is "vulnerable to Dragonblood."
+    What is the most accurate answer?
+  options:
+    - Yes, because Dragonblood is a permanent design flaw in every WPA3 network regardless of patching.
+    - No device is ever affected, because Dragonblood was disproven shortly after publication in 2019.
+    - If it negotiates H2E and the CVEs are patched, it is not exposed to the 2019 side-channels.
+    - Only if the router uses CCMP; switching it to TKIP would remove the Dragonblood exposure entirely.
+  correct: 2
+  explanation: >-
+    Dragonblood is a per-device patch-level question. A current stack negotiating H2E with the CVEs
+    patched is not exposed to the 2019 class, though transition mode can still add a WPA2 downgrade surface.

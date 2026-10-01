@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    A home router's WPS PIN is 8 digits. A learner says the online keyspace is 10^8. What is the
+    real number of guesses an attacker needs, and why?
+  options:
+    - About 11,000, because the PIN is validated in two halves and the eighth digit is a checksum.
+    - About 10,000,000, because the checksum digit removes exactly one of the eight PIN positions.
+    - About 100,000,000, because every one of the eight independent digits must be guessed in turn.
+    - About 20,000, because both 4-digit halves are each searched across their full ten-thousand range.
+  correct: 0
+  explanation: >-
+    The eighth digit is a checksum (10^7 valid PINs), but the AP checks the first half (10^4) and the
+    second half (10^3, last digit being the checksum) separately, so 10,000 + 1,000 = 11,000 guesses.
+- id: q2
+  question: >-
+    During a review you are asked where the WPS PIN exchange happens relative to a normal client join.
+    How should you place it?
+  options:
+    - It replaces the 4-way handshake entirely, so a WPS network never performs WPA2 key derivation.
+    - It runs before association as a separate radio-layer authentication that skips open-system auth.
+    - It runs as an EAP exchange after association and delivers the WPA2 passphrase, then the handshake runs.
+    - It runs only after the 4-way handshake completes, as an optional post-connection credential refresh.
+  correct: 2
+  explanation: >-
+    WPS is a credential-delivery protocol: after open-system auth and association it runs an EAP
+    exchange that hands the enrollee the PSK, after which the device associates and runs the normal
+    4-way handshake.
+- id: q3
+  question: >-
+    An AP advertises WPS but its beacon lists only the push-button (PBC) config method, with no PIN.
+    What does this mean for the PIN attacks in this module?
+  options:
+    - PBC uses a shorter secret, so the online brute force is faster but Pixie Dust no longer applies.
+    - PBC still exposes an 8-digit value, so both the online brute and Pixie Dust remain fully in scope.
+    - PBC rotates its PIN each session, so an attacker must capture a fresh exchange for every guess.
+    - PBC has no PIN secret to guess, so the offline and online PIN attacks do not apply to this AP.
+  correct: 3
+  explanation: >-
+    Push-button onboarding has no guessable PIN; its only weakness is a short active-session window.
+    The PIN-based attacks (Pixie Dust, online brute) target the PIN method, which this AP does not offer.
+- id: q4
+  question: >-
+    You are explaining the root cause of WPS PIN brute-forcing to a client. Which property of the
+    protocol is the actual design flaw you should name?
+  options:
+    - The PIN is printed on a physical label, so anyone with brief physical access can simply read it.
+    - The PIN is reused across every enrollee, so one recovered value unlocks many different networks.
+    - The PIN is transmitted in cleartext EAP frames, so a passive sniffer reads it without any guessing.
+    - The PIN is validated in two halves, so a wrong first half fails distinguishably from a wrong second.
+  correct: 3
+  explanation: >-
+    Splitting validation into two independently-checked halves lets an attacker solve 10^4 then 10^3
+    separately (11,000 total) instead of the full space. That leak between halves is the core flaw.

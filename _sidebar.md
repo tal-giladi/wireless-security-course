@@ -53,3 +53,18 @@
   - [28 · Offline cracking with hashcat — bounded and strong-password cases](lessons/module-06/lesson-04.md)
   - [29 · Hardening WPA2-Personal and measuring the difference](lessons/module-06/lesson-05.md)
   - [Module 6 quiz](assessments/module-06-quiz.md)
+
+- Stage 4 — WPA3 & WPS
+- **Module 7 — WPA3-SAE**
+  - [30 · SAE (Dragonfly) — why there is no offline-crackable hash](lessons/module-07/lesson-01.md)
+  - [31 · SAE-only versus transition mode — the real downgrade surface](lessons/module-07/lesson-02.md)
+  - [32 · Dragonblood — timing and cache side-channels, versions, and mitigations](lessons/module-07/lesson-03.md)
+  - [33 · OWE (Enhanced Open) — encryption without authenticating the network](lessons/module-07/lesson-04.md)
+  - [34 · Configuring and verifying WPA3 securely](lessons/module-07/lesson-05.md)
+  - [Module 7 quiz](assessments/module-07-quiz.md)
+- **Module 8 — WPS (elective)**
+  - [35 · How WPS works](lessons/module-08/lesson-01.md)
+  - [36 · Pixie Dust — the offline WPS attack and why it may fail](lessons/module-08/lesson-02.md)
+  - [37 · Online PIN brute force — mostly-mitigated legacy](lessons/module-08/lesson-03.md)
+  - [38 · Prevalence and remediation — disabling and limiting WPS](lessons/module-08/lesson-04.md)
+  - [Module 8 quiz](assessments/module-08-quiz.md)

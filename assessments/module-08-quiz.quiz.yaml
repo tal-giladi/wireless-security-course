@@ -1,0 +1,102 @@
+- id: q1
+  question: >-
+    A router validates an 8-digit WPS PIN as two halves and leaks which half is wrong. Why does this
+    design choice matter to an attacker?
+  options:
+    - It encrypts each half separately, so breaking one half reveals the CCMP key for the whole PIN.
+    - It collapses the search from 10^8 to about 11,000 guesses by letting each half be solved separately.
+    - It means the PIN rotates after each failed half, forcing the attacker to restart every time.
+    - It ties the PIN to the SSID, so the attacker recovers it by guessing the network name instead.
+  correct: 1
+  explanation: >-
+    Independent validation of the two halves (plus the last digit being a checksum) reduces the effective
+    keyspace to ~10^4 + 10^3, which is what made both the online and offline PIN attacks feasible.
+- id: q2
+  question: >-
+    Pixie Dust recovers the PIN on one owned legacy router in seconds but fails on a current-firmware
+    one. What is the correct interpretation?
+  options:
+    - The current router simply needs a longer pixiewps run; the nonces will be recovered eventually.
+    - Pixie Dust failing proves the current router has WPS disabled and no registrar at all.
+    - Pixie Dust depends on weak/predictable E-S1/E-S2 nonces, so the result is per-chipset, not universal.
+    - The legacy router must have leaked its passphrase in a beacon, which pixiewps simply read.
+  correct: 2
+  explanation: >-
+    Pixie Dust exploits predictable or zero registrar nonces in certain chipsets/firmware. A failure
+    means well-seeded nonces on that device; the finding must be scoped per device.
+- id: q3
+  question: >-
+    Why does this course drill Pixie Dust hands-on but treat the online PIN brute as summary-only legacy?
+  options:
+    - The online brute is mostly mitigated and noisy, while Pixie Dust is a fast offline exchange when it works.
+    - The online brute only works against WPA3 networks, which this elective WPS module does not cover at all.
+    - The online brute is illegal in every country, whereas Pixie Dust is specifically exempted from that law.
+    - The online brute needs specialised radio hardware that the course explicitly does not recommend buying.
+  correct: 0
+  explanation: >-
+    Modern defaults (WPS lockout, rate-limiting) usually stall the online brute after a handful of
+    guesses, so Pixie Dust displaced it as the practical attack to teach.
+- id: q4
+  question: >-
+    On an owned AP, after a few failed WPS PIN attempts the router sets AP Setup Locked and stops
+    answering WPS for a cooldown. What does this demonstrate?
+  options:
+    - That the router is Pixie-Dust-vulnerable, since only vulnerable chipsets implement lockout.
+    - That the WPA2 passphrase has been rotated as a direct result of the failed attempts.
+    - That the router moved to a DFS channel to evade the attack and must be rescanned on 5 GHz.
+    - That WPS lockout is working, which is the main reason the online PIN brute is mostly mitigated today.
+  correct: 3
+  explanation: >-
+    AP Setup Locked after failures is the lockout mitigation; it stalls the online loop. (A weak lock of
+    only ~60 seconds can still be waited out, so lockout strength varies.)
+- id: q5
+  question: >-
+    A client with an excellent, long, random WPA2 passphrase also has WPS PIN enabled and
+    Pixie-Dust-vulnerable. How should you describe the impact?
+  options:
+    - Low impact, because the strong passphrase compensates for the exposed WPS feature.
+    - High impact, because WPS lets an attacker recover the PSK regardless of how strong it is.
+    - Low impact, because Pixie Dust only reveals the PIN and never the passphrase itself.
+    - High impact, because WPS downgrades the network to open with no encryption at all.
+  correct: 1
+  explanation: >-
+    A recovered PIN makes the AP return the PSK, so passphrase strength is bypassed entirely on that
+    path — a high-impact finding despite the good passphrase policy.
+- id: q6
+  question: >-
+    A client needs WPS for staff convenience and asks for the least-risk way to keep it. What do you
+    recommend?
+  options:
+    - Keep the PIN method but shorten the PIN so lockout triggers faster against attackers.
+    - Rotate the passphrase weekly and leave WPS fully enabled to outrun any brute force.
+    - Enable both PIN and PBC so the AP can fall back when one method is under attack.
+    - Use push-button (PBC) only, disable the PIN method, and keep firmware patched with lockout verified.
+  correct: 3
+  explanation: >-
+    PBC-only removes the remotely brute-forceable PIN and requires physical button access; patched
+    firmware and lockout are backstops. Disabling WPS entirely remains the strongest option.
+- id: q7
+  question: >-
+    After disabling WPS on an owned router, what is the right way to prove the remediation worked?
+  options:
+    - Re-scan with `wash` and confirm the WPS IE is gone (or the registrar refuses), so Pixie Dust cannot start.
+    - Confirm the AP's download speed increased, showing the WPS subsystem was powered off.
+    - Confirm the WPA2 passphrase changed by itself, proving the registrar was removed.
+    - Confirm the AP stopped answering pings, indicating the management plane reset.
+  correct: 0
+  explanation: >-
+    The verifiable before/after is the WPS information element disappearing from a `wash` scan (or the
+    registrar refusing); then neither the offline nor online PIN path has a registrar to attack.
+- id: q8
+  question: >-
+    Running the online PIN brute against an owned AP is only a reasonable residual-risk step under which
+    narrow combination of conditions?
+  options:
+    - Whenever WPS is enabled, since the online brute is always more reliable than Pixie Dust.
+    - On any AP older than 2012, because none of them implement lockout or rate-limiting.
+    - WPS PIN enabled, the AP unlocked with weak rate-limiting, and Pixie Dust having already failed.
+    - Only when the passphrase is also weak, since otherwise the recovered PIN would be useless.
+  correct: 2
+  explanation: >-
+    The online brute is worth attempting only in that narrow residual case (unlocked, poorly
+    rate-limited, Pixie Dust already failed). In almost all reports the recommendation is to disable WPS.
