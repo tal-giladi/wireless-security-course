@@ -1,0 +1,103 @@
+- id: q1
+  question: >-
+    During an authorised test, a twin of a synthetic open SSID drew an old tablet with auto-join on but
+    not two current-OS laptops. How should the finding be written?
+  options:
+    - As a conditional result — a client with that open SSID saved and auto-join on joined, while current clients did not.
+    - As proof the whole wireless network is inherently vulnerable to evil-twin attacks regardless of client.
+    - As a cryptographic break of the open network's encryption that the laptops happened to resist.
+    - As an inconclusive test, since not every device in range associated with the twin during the window.
+  correct: 0
+  explanation: >-
+    Evil-twin success is conditional on the client; the finding must name the condition (open SSID saved,
+    auto-join on) and note that current clients did not join, not generalise to the network.
+- id: q2
+  question: >-
+    A captive portal served by a rogue AP collects a user's Wi-Fi passphrase. A colleague writes "we
+    broke WPA2." Why is that wrong, and what is the right characterisation?
+  options:
+    - It is correct, because reaching the portal requires first decrypting the WPA2 4-way handshake.
+    - It is wrong; the portal harvests the key by deceiving a user — social engineering, not cryptanalysis.
+    - It is wrong only because WPA2 cannot be broken, though WPA3 portals do constitute a crypto break.
+    - It is correct, because the portal computes the passphrase from the PMKID it captured passively.
+  correct: 1
+  explanation: >-
+    No cipher was defeated; the passphrase arrived because a person typed it into a forged page. It is
+    social engineering, and the remediation is awareness and network-identity validation, not a longer key.
+- id: q3
+  question: >-
+    A tester stands up a rogue AP, sees it in a survey, and reports the engagement objective met. What
+    is the gap in this reasoning?
+  options:
+    - A survey cannot display rogue APs, so the tester must have misread a legitimate AP instead.
+    - The rogue must be cloned to every channel in the band before a survey will register it as live.
+    - Broadcasting the beacon is the easy half; impact needs a client to actually associate with the AP.
+    - Standing up the AP already grants full traffic interception, so the survey step was redundant.
+  correct: 2
+  explanation: >-
+    Appearing in a survey only proves the AP transmits; impact begins when a specific client associates,
+    which depends on that client's PNL, auto-join, and saved-network security.
+- id: q4
+  question: >-
+    You run a KARMA-style attack in a busy area and few modern phones respond. What best explains this?
+  options:
+    - KARMA only functions against enterprise networks, and the phones were all using WPA2-Personal.
+    - The phones encrypt their probe requests, so the rogue AP cannot read which SSIDs they want.
+    - A nearby WIDS is actively jamming the rogue AP's directed probe responses before they arrive.
+    - Modern clients passive-scan and probe less by name, leaving KARMA few directed probes to answer.
+  correct: 3
+  explanation: >-
+    Reduced directed probing and passive scanning were deployed to break KARMA; with little named
+    probing to answer, the classic technique is unreliable against current devices.
+- id: q5
+  question: >-
+    Your twin advertises a synthetic WPA2-PSK SSID the client has saved, but you do not have the
+    passphrase. What happens, and what does it imply for the attack plan?
+  options:
+    - The 4-way handshake fails without the key, so a silent join is impossible; a portal must ask for it.
+    - The client joins anyway, because WPA2-PSK verifies only that the SSID string matches the profile.
+    - PMF overrides the missing key and forces the client to complete association with the rogue.
+    - The twin derives the key from the client's probe request and completes the handshake automatically.
+  correct: 0
+  explanation: >-
+    A keyless twin cannot complete the PSK handshake, so there is no silent join; this is exactly why PSK
+    evil twins pair with a captive portal that asks the user for the passphrase.
+- id: q6
+  question: >-
+    A client probes very little, so you cannot read its PNL. Which technique still has a chance, and on
+    what condition?
+  options:
+    - KARMA, provided you first disable the client's MAC randomisation over the air remotely.
+    - The known-beacon attack, if the client has a guessable open SSID saved with auto-join enabled.
+    - A deauth flood, provided the target network has PMF required rather than merely capable.
+    - Offline SAE cracking, provided you captured a single beacon from the client's home network.
+  correct: 1
+  explanation: >-
+    The known-beacon attack brute-forces the SSID namespace by beaconing common names; it can draw a
+    client that has a guessable open network saved with auto-join, without needing to read its probes.
+- id: q7
+  question: >-
+    You are asked to prove a device was hardened against the evil twin that previously snared it. What
+    evidence constitutes a pass?
+  options:
+    - A packet capture showing the rogue AP's beacons were weaker than the legitimate AP's beacons.
+    - A speed test on the real AP confirming the device's throughput returned to its normal baseline.
+    - The same twin presented again; the hardened device does not auto-join, evidenced by the AP log.
+    - A screenshot of the device's settings menu showing that Wi-Fi is currently switched on.
+  correct: 2
+  explanation: >-
+    The measurement is behavioural: present the identical twin and show the hardened client declines to
+    auto-join (no AP-STA-CONNECTED), against the vulnerable-client baseline — demonstrating the fix works.
+- id: q8
+  question: >-
+    A client has MAC randomisation enabled. How should you describe its effect on evil-twin and
+    KARMA/MANA risk?
+  options:
+    - It encrypts the PNL so no rogue can ever learn which networks the client will join.
+    - It forces the client onto WPA3, which removes the evil-twin and KARMA/MANA surface entirely.
+    - It guarantees the client will reject any access point whose BSSID it has not seen before.
+    - It hinders per-device profiling of the PNL but does not by itself stop the client auto-joining a twin.
+  correct: 3
+  explanation: >-
+    Randomisation is a privacy/anti-profiling measure that frustrates KARMA/MANA targeting; whether the
+    client auto-joins a twin is governed by auto-join and saved-network policy, not by randomisation.

@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    In both PEAP and EAP-TTLS, what is the client authenticated with, and what authenticates the server
+    to the client?
+  options:
+    - The client presents a certificate; the server is authenticated by the AP↔RADIUS shared secret.
+    - The client presents a password inside the tunnel; the server is authenticated by its certificate.
+    - The client presents a password in the clear; the server is authenticated by the SSID it advertises.
+    - The client presents a certificate; the server is authenticated by a second client-held certificate.
+  correct: 1
+  explanation: >-
+    PEAP and EAP-TTLS both build a TLS tunnel authenticated by the server's certificate, then carry a
+    password-based inner exchange. The client has no certificate; its safety rests on validating the server's.
+- id: q2
+  question: >-
+    A PEAP client is deployed with no CA configured and no expected server name set, yet it connects to
+    the corporate Wi-Fi every day without errors. What is the security consequence?
+  options:
+    - None, because a successful daily connection proves the client is reaching the genuine RADIUS server.
+    - None, because PEAP's TLS tunnel protects the MSCHAPv2 exchange regardless of how the client is configured.
+    - The client is faster to associate, but the missing settings only affect certificate renewal, not security.
+    - It will tunnel its MSCHAPv2 credentials to any RADIUS server, so a rogue server can capture them.
+  correct: 3
+  explanation: >-
+    Connecting fine does not mean the client validated the server. With no trusted CA and no expected
+    name, it accepts any certificate and will send its credentials into a rogue server's tunnel.
+- id: q3
+  question: >-
+    Why is EAP-TLS considered stronger than PEAP-MSCHAPv2 even when both run inside a server-certificate
+    TLS tunnel?
+  options:
+    - EAP-TLS authenticates the client with a certificate and private key, so no reusable password is ever sent.
+    - EAP-TLS uses a longer TLS key, so its tunnel cannot be decrypted by a rogue server the way PEAP's can.
+    - EAP-TLS skips the RADIUS server and authenticates the client directly at the access point for speed.
+    - EAP-TLS encrypts the username as well as the password, whereas PEAP always sends the identity in clear.
+  correct: 0
+  explanation: >-
+    EAP-TLS replaces the password with a client certificate and private key that is never transmitted,
+    so there is nothing for a rogue server to phish or to crack offline — the risk PEAP's password carries.
+- id: q4
+  question: >-
+    "The client validates the server certificate" is sometimes misread as a single check. Which pair of
+    checks does it actually require to prevent a rogue RADIUS server?
+  options:
+    - That the certificate is unexpired, and that the TLS version negotiated is at least 1.2.
+    - That the certificate uses a 2048-bit key, and that it was issued within the last twelve months.
+    - That the certificate chains to a trusted CA, and that its name matches the expected server identity.
+    - That the certificate is self-signed by the AP, and that the SSID matches the one in the profile.
+  correct: 2
+  explanation: >-
+    Validation is two checks: the certificate must chain to a CA the client is configured to trust
+    (ideally the org's private CA), and its name must match the specific expected server identity.

@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    A tester stands up a rogue AP on a synthetic SSID, confirms it appears in a survey, and declares
+    the attack successful. Why is this claim premature?
+  options:
+    - Broadcasting a beacon is trivial and proves nothing until a client actually associates with the AP.
+    - A survey cannot see a rogue AP, so the tool output must be a false positive to be discarded.
+    - The AP must be cloned onto three channels at once before any association attempt can succeed.
+    - Success requires the rogue to first crack the real AP's passphrase before it can advertise it.
+  correct: 0
+  explanation: >-
+    Standing up the AP is the easy half; impact begins only when a specific client, given its own
+    saved-network and auto-join behaviour, associates. A survey entry is not an association.
+- id: q2
+  question: >-
+    What most accurately distinguishes an evil twin from an unmanaged "shadow" AP?
+  options:
+    - An evil twin uses WPA3 whereas a shadow AP is always an open network with no encryption.
+    - An evil twin deliberately impersonates a legitimate SSID to attract that network's clients.
+    - An evil twin runs only on 5 GHz, while a shadow AP is restricted to the 2.4 GHz band.
+    - An evil twin is sanctioned by the owner for testing, while a shadow AP is always malicious.
+  correct: 1
+  explanation: >-
+    An evil twin is defined by impersonating a legitimate SSID to draw its clients; a shadow AP is
+    merely an unauthorised AP that is not impersonating anything.
+- id: q3
+  question: >-
+    Your adapter captures and injects frames fine, but `hostapd` refuses to start an AP. What is the
+    most likely cause?
+  options:
+    - Monitor mode must be disabled on every interface in the system before any AP can be started.
+    - The passphrase is too short, so hostapd blocks AP mode until a longer one is configured.
+    - AP mode is a separate radio capability the adapter may lack even though it can monitor and inject.
+    - hostapd only runs on 6 GHz radios, so a 2.4/5 GHz adapter cannot act as an access point.
+  correct: 2
+  explanation: >-
+    Monitor, injection, and AP mode are distinct capabilities; an adapter can support one or two but
+    not AP mode. Use a hwsim radio or an AP-mode-capable adapter.
+- id: q4
+  question: >-
+    Why can you not simply "prevent" someone from broadcasting a rogue AP that clones your SSID?
+  options:
+    - Because regulators forbid any monitoring of the 2.4 GHz band, so detection tooling is illegal.
+    - Because cloning an SSID requires the owner's private key, which makes rogue beacons self-limiting.
+    - Because rogue APs only work against WPA3, and disabling WPA3 removes the threat entirely.
+    - Because SSIDs and beacons are unauthenticated, so any radio can advertise any name at will.
+  correct: 3
+  explanation: >-
+    Nothing in 802.11 authenticates which AP sent a beacon, so broadcasting cannot be blocked; the
+    defence is detection plus client policy and, where possible, network-identity validation.

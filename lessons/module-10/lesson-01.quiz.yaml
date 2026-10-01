@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    During an enterprise Wi-Fi authentication, which component actually decides whether the client is
+    admitted to the network?
+  options:
+    - The access point, which checks the submitted credential against its own local user database.
+    - The supplicant, which self-certifies once it has validated the access point's broadcast identity.
+    - The RADIUS authentication server, which runs the EAP method and returns an accept or reject verdict.
+    - The wireless controller, which compares the client's MAC address against an allowlist it maintains.
+  correct: 2
+  explanation: >-
+    The AP is the authenticator — a gatekeeper and relay that holds no user credentials. The back-end
+    RADIUS server runs the EAP method and makes the accept/reject decision, then delivers the keying material.
+- id: q2
+  question: >-
+    What is the role of the access point when a supplicant authenticates with an EAP method it was not
+    specifically configured for, such as EAP-TTLS?
+  options:
+    - It relays the opaque EAP messages between EAPOL on the air and RADIUS on the wire without interpreting them.
+    - It terminates the TLS tunnel itself and forwards only the decrypted inner credentials to RADIUS.
+    - It rejects the association, because an AP must be configured for each EAP method it will broker.
+    - It derives the pairwise master key locally from the method and skips the RADIUS exchange entirely.
+  correct: 0
+  explanation: >-
+    The authenticator shuttles opaque EAP blobs between EAPOL and RADIUS and never interprets the method.
+    That is why one AP can broker PEAP, EAP-TTLS, or EAP-TLS with no method-specific configuration.
+- id: q3
+  question: >-
+    A tester wants to recover a reusable offline-crackable secret from a captured enterprise Wi-Fi
+    authentication, the way a WPA2-PSK 4-way handshake yields one. Why does this approach fail?
+  options:
+    - The enterprise capture is fully encrypted at the radiotap layer, so no 802.11 frames can be dissected.
+    - PMF on enterprise networks encrypts every EAPOL frame, so the handshake never appears in a capture.
+    - RADIUS packets never traverse the air, so an air-side capture contains no authentication data whatsoever.
+    - Credentials travel inside a TLS tunnel and the PMK is derived from the EAP method, so it is effectively random.
+  correct: 3
+  explanation: >-
+    Enterprise credentials are exchanged inside a TLS tunnel, and the resulting PMK comes from the EAP
+    exchange rather than a passphrase, so there is no guessable secret to feed a wordlist.
+- id: q4
+  question: >-
+    In enterprise Wi-Fi, which trust relationship, if the client neglects it, directly enables a rogue
+    RADIUS server to harvest credentials?
+  options:
+    - The shared secret configured between the access point and the RADIUS server on the wired segment.
+    - The group temporal key the access point distributes to every associated client on the BSS.
+    - The supplicant's validation of the authentication server's certificate before sending any credential.
+    - The pairwise transient key installed by the 4-way handshake after EAP-Success is received.
+  correct: 2
+  explanation: >-
+    Modern EAP runs inside a TLS tunnel where the server presents a certificate. A client that does not
+    validate it will tunnel credentials to any server, including an attacker's rogue RADIUS.

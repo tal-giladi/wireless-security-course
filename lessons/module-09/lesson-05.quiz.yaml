@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    Why is "make clients refuse to join" the control that actually removes rogue-AP impact, rather than
+    "stop the rogue from broadcasting"?
+  options:
+    - Because broadcasting a rogue is impossible once a WIDS is deployed anywhere in the building.
+    - Because the vulnerability is client-side trust in a name, and broadcasting cannot be prevented.
+    - Because rogue APs only transmit on channels that clients are required by law to ignore.
+    - Because a rogue AP self-disables as soon as the real AP raises its transmit power above it.
+  correct: 1
+  explanation: >-
+    SSIDs and beacons are unauthenticated, so anyone can broadcast a rogue; the impact arises only if a
+    client joins, so hardening the client is the control that matters.
+- id: q2
+  question: >-
+    A passive WIDS flags your corporate SSID appearing on a BSSID and channel that are not in your
+    baseline. What is the correct interpretation and its limit?
+  options:
+    - It is a likely rogue, but a clone matching the real BSSID and signal could still evade detection.
+    - It is conclusive proof of a rogue, so client policy is unnecessary once the WIDS is running.
+    - It is always a false positive caused by channel hopping and can be safely ignored.
+    - It proves the real AP was compromised, so the fix is to replace the legitimate access point.
+  correct: 0
+  explanation: >-
+    An unexpected BSSID/channel for a known SSID is a strong rogue signal, but detection sees only what
+    its sensors hear and a close clone can evade it — so it supports, not replaces, client policy.
+- id: q3
+  question: >-
+    Which single client control most directly defeats both the silent evil twin and the known-beacon
+    attack against an open SSID?
+  options:
+    - Lowering the client's transmit power so it cannot reach the rogue access point at all.
+    - Rotating the client's hostname daily so the rogue cannot build a per-device profile.
+    - Installing a second antenna so the client always prefers the legitimate AP's stronger signal.
+    - Disabling auto-join for open networks and pruning stale open entries from the PNL.
+  correct: 3
+  explanation: >-
+    Both attacks rely on a client auto-joining a remembered open SSID; removing auto-join and the stale
+    open PNL entries removes the condition they depend on.
+- id: q4
+  question: >-
+    Under the course's rubric, what counts as a passing result for the rogue-AP defence lab?
+  options:
+    - Only recovering a passphrase from the rogue AP within the allotted lab time counts as a pass.
+    - Successfully forcing a PMF-protected client off its real AP with a deauth before it reassociates.
+    - Demonstrating that a hardened client does not auto-join the twin that a vulnerable client joined.
+    - Proving the rogue AP can never be detected, so that detection tooling can be decommissioned.
+  correct: 2
+  explanation: >-
+    The rubric lets a learner pass by demonstrating the protection works: a hardened client declining to
+    auto-join the twin, evidenced against the vulnerable-client baseline, is a full pass.

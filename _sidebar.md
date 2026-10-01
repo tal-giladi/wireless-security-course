@@ -68,3 +68,19 @@
   - [37 · Online PIN brute force — mostly-mitigated legacy](lessons/module-08/lesson-03.md)
   - [38 · Prevalence and remediation — disabling and limiting WPS](lessons/module-08/lesson-04.md)
   - [Module 8 quiz](assessments/module-08-quiz.md)
+
+- Stage 5 — Rogue infrastructure & client-side
+- **Module 9 — Rogue AP, evil twin & client-side**
+  - [39 · Rogue-AP mechanics and lures](lessons/module-09/lesson-01.md)
+  - [40 · Evil twin — conditional on client behaviour](lessons/module-09/lesson-02.md)
+  - [41 · Captive portals — social engineering, not a crypto break](lessons/module-09/lesson-03.md)
+  - [42 · KARMA, MANA, and known-beacon attacks](lessons/module-09/lesson-04.md)
+  - [43 · Detecting and defending against rogue APs](lessons/module-09/lesson-05.md)
+  - [Module 9 quiz](assessments/module-09-quiz.md)
+
+- Stage 6 — Enterprise
+- **Module 10 — Enterprise I: architecture, EAP & building the lab**
+  - [44 · 802.1X — supplicant, authenticator, and RADIUS](lessons/module-10/lesson-01.md)
+  - [45 · EAP methods — PEAP, EAP-TTLS, and EAP-TLS](lessons/module-10/lesson-02.md)
+  - [46 · Build the lab — CA, FreeRADIUS, supplicant, and a client profile](lessons/module-10/lesson-03.md)
+  - [Module 10 quiz](assessments/module-10-quiz.md)

@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    When you build the enterprise lab, why must you generate your own CA and server certificate rather
+    than keep the certificates FreeRADIUS ships with by default?
+  options:
+    - The shipped certificates use a weak key size that hostapd will refuse to load into the tunnel.
+    - The shipped certificates expire within hours, so the authentication would fail partway through testing.
+    - The shipped certificates only support EAP-TLS, so PEAP cannot be configured until they are replaced.
+    - They are generic snake-oil certs; the client must trust a CA you control so the trust you configure is real.
+  correct: 3
+  explanation: >-
+    The stock certificates exist only to prove the daemon starts. A meaningful lab needs a CA you
+    control so the client's configured trust points at your server and nobody else's.
+- id: q2
+  question: >-
+    In the hostapd authenticator config, which group of settings makes it a RADIUS relay rather than a
+    self-contained WPA2-PSK access point?
+  options:
+    - hw_mode, channel, and rsn_pairwise, which select the band and cipher the BSS advertises.
+    - ssid and interface, which name the network and bind it to the simulated radio wlan0.
+    - ieee8021x plus auth_server_addr, auth_server_port, and auth_server_shared_secret pointing at FreeRADIUS.
+    - wpa and driver, which enable RSN and bind hostapd to the nl80211 kernel interface.
+  correct: 2
+  explanation: >-
+    ieee8021x=1 with the auth_server_* settings (and the shared secret) is what turns hostapd into an
+    802.1X authenticator that relays EAP to the RADIUS server instead of checking a local PSK.
+- id: q3
+  question: >-
+    Your FreeRADIUS debug window shows an Access-Reject with "unknown client" as soon as hostapd tries
+    to authenticate a user. Where is the fault most likely to be?
+  options:
+    - The test user's Cleartext-Password entry in the users file does not match the client's password.
+    - The AP's clients.conf entry (ipaddr/secret) does not match hostapd's auth_server settings.
+    - The wpa_supplicant profile is missing its ca_cert line, so the server rejects the certificate.
+    - The server certificate lacks the Server Authentication EKU, so the TLS tunnel never completes.
+  correct: 1
+  explanation: >-
+    "Unknown client" is a RADIUS-layer rejection of the AP itself, before any user check: the AP's IP
+    and shared secret in clients.conf must match hostapd's auth_server_addr and auth_server_shared_secret.
+- id: q4
+  question: >-
+    You want to confirm the enterprise authentication truly succeeded end to end. Which single piece of
+    evidence most directly shows the RADIUS server accepted the user?
+  options:
+    - The "Login OK ... sending Access-Accept" line for the test user in the FreeRADIUS debug log.
+    - The hostapd log line showing the BSS came up and started beaconing on channel 1.
+    - The presence of four EAPOL-Key frames, which prove the PEAP tunnel negotiated a cipher.
+    - The iw dev wlan1 link output showing the interface exists and is in managed mode.
+  correct: 0
+  explanation: >-
+    The RADIUS server is the component that decides, so its "Login OK / Access-Accept" for the user is
+    the direct proof. The handshake and link state follow from the accept but do not show the decision itself.

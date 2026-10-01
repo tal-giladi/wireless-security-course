@@ -21,12 +21,24 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **AP mode (adapter capability)** — an adapter's ability to act as an access point under `hostapd`;
   distinct from monitor and injection — a chip may support one or two of the three but not all.
 - **AP (access point)** — the device that originates a BSS and bridges wireless clients to a network.
+- **AP-STA-CONNECTED** — the `hostapd` log line recording that a client has associated with the AP; the
+  key evidence separating "the rogue AP is on air" from "a client actually joined it."
 - **Association** — the final step by which a client joins a BSS after authentication.
+- **Authentication server** — the back-end RADIUS server (e.g. FreeRADIUS) that runs the EAP method and
+  decides accept/reject; in 802.1X it, not the AP, authenticates the user.
+- **Authenticator** — the 802.1X role played by the AP: it relays EAP between EAPOL (air) and RADIUS
+  (wire), interprets no EAP method, and admits the client only on the server's Access-Accept.
+- **Auto-join** — a per-network client setting that associates with a remembered SSID automatically when
+  seen; the condition most evil-twin and known-beacon attacks depend on. Disabling it is a key defence.
 - **Beacon** — a management frame an AP broadcasts periodically advertising its SSID and capabilities.
 - **Bounded cracking case** — a teaching setup where the supplied wordlist contains the lab passphrase, so
   the crack has a known, achievable, terminating result (success = recovered key + correct method).
 - **BSS / BSSID / ESS** — a Basic Service Set is one AP's cell; the BSSID is usually the AP's MAC; an
   Extended Service Set is multiple APs sharing one SSID.
+- **CA (certificate authority)** — the entity whose signature anchors trust in a certificate; in an
+  enterprise lab you run a private CA, sign the RADIUS server cert with it, and trust only that CA.
+- **Captive portal** — a mechanism that intercepts a newly-associated client's first web requests and
+  redirects to a sign-in page; abused by a rogue AP to harvest a secret — social engineering, not a crypto break.
 - **CCMP / AES** — the modern 802.11 cipher (AES in CCMP mode) for WPA2/WPA3 confidentiality and
   integrity, replacing deprecated TKIP/RC4; GCMP is its counterpart for the newest modes.
 - **Channel** — a named centre frequency within a band that a radio tunes to; a receiver hears only the
@@ -60,10 +72,16 @@ reference. Terms are added here by the main session as modules land (agents prop
   Realtek RTL8812AU) per kernel; fragile across upgrades, so pin a known-good kernel when a lab needs it.
 - **DLT (link-layer header type)** — the datalink type recorded for a capture: `IEEE802_11_RADIO` is
   radiotap-plus-802.11 (channel/signal present), while plain `IEEE802_11` has frames but no radio header.
+- **`domain_suffix_match` / `altsubject_match`** — `wpa_supplicant` settings that pin the expected server
+  name, so a valid certificate for some *other* name is rejected — the second half of "validate the server."
 - **Dragonblood** — a class of side-channel and downgrade vulnerabilities in early SAE/WPA3
   implementations (2019), with vendor mitigations; not a break of SAE's design. See `references/`.
 - **EAP** — Extensible Authentication Protocol; the method negotiated inside 802.1X (PEAP, EAP-TTLS,
   EAP-TLS, …). Determines where trust lives and what a client must validate.
+- **EAP-TLS** — mutual certificate authentication (RFC 5216): server and client both present
+  certificates and no password is sent — the strong enterprise endpoint, at the cost of client-cert lifecycle.
+- **EAP-TTLS** — a server-certificate TLS tunnel whose inner method can be legacy (PAP/CHAP/MSCHAPv2);
+  inner PAP exposes the cleartext password inside the tunnel, so client validation of the server is the safeguard.
 - **EAPOL** — EAP over LAN; carries the 4-way handshake messages (and 802.1X EAP) over 802.11.
 - **EAPOL message pair (complete vs partial handshake)** — a captured handshake is crackable only with a
   consistent message pair (M1+M2 or M2/M3, matching nonces); a partial one has no testable MIC.
@@ -81,6 +99,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   test frames); a capability separate from monitor mode — an adapter may capture yet be unable to inject.
 - **Free-space path loss** — the weakening of a signal with distance (≈ 6 dB per doubling) and with
   frequency; an open-space upper bound, since obstacles add further loss indoors.
+- **FreeRADIUS** — the common open-source RADIUS server used as the 802.1X authentication server here;
+  its EAP module holds the server certificate and selects the default EAP method.
 - **Handshake (4-way)** — the WPA2/WPA3-PSK exchange that derives the PTK from the PMK and proves both
   sides know the key, without sending it.
 - **Hardware revision trap (TL-WN722N)** — the canonical example: v1 = AR9271 (monitor/injection) but
@@ -95,6 +115,8 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Hidden SSID** — a network whose beacons omit the SSID name (the length may still leak); obscurity,
   not security — resolved passively from an associating client or actively with a directed probe.
 - **hostapd** — user-space daemon that turns an interface into an AP; configures WPA2/WPA3/OWE/enterprise.
+- **hostapd-mana** — SensePost's fork of `hostapd` adding KARMA/MANA probe-response and per-device PNL
+  logic; behaves as `hostapd` until its MANA options are enabled (option names are build-dependent).
 - **Hunting-and-pecking** — SAE's original password-to-group mapping, which iterates until it finds a
   valid curve point; its password-dependent timing was the basis of the Dragonblood side-channels.
 - **`ieee80211w` / `sae_pwe`** — hostapd settings: `ieee80211w=2` sets PMF required; `sae_pwe` selects the
@@ -103,12 +125,16 @@ reference. Terms are added here by the main session as modules land (agents prop
   domain that governs legal channels and TX power.
 - **Join state machine** — the 802.11 progression a client follows: unauthenticated/unassociated →
   authenticated/unassociated → authenticated/associated; deauth/disassoc move it back.
+- **KARMA attack** — a rogue-AP technique where the AP answers a client's *directed* probe for any named
+  SSID with "that's me"; largely broken by modern clients that passive-scan and probe less by name.
 - **KCK (Key Confirmation Key)** — the first 128 bits of the PTK, used to compute the MIC on EAPOL
   messages 2 and 3; a correct MIC proves the sender holds the right PMK, which is the offline-crack oracle.
 - **Keyspace** — the total set of candidate passphrases a cracking attempt covers; with a device's
   hashrate it gives the time to exhaust a brute force, bounding residual risk for a strong passphrase.
 - **Kismet** — a passive wireless detector that builds a long-running database of every AP and client it
   hears (including per-client probed-SSID history) via a web UI, transmitting nothing.
+- **Known-beacon attack** — a rogue-AP technique that beacons a dictionary of likely SSIDs and waits for
+  a client whose PNL holds a matching (often open, auto-join) name to associate; brute-forces the SSID namespace.
 - **KRACK** — Key Reinstallation Attack (2017) against the 4-way handshake; patched in supplicants.
 - **Kr00k** — a 2020 vulnerability causing some chips to transmit buffered frames encrypted with an
   all-zero key after disassociation. See `references/`.
@@ -117,10 +143,14 @@ reference. Terms are added here by the main session as modules land (agents prop
   adapter + AP + client). R and V never grant physical-capture/injection credit.
 - **Link budget** — the running sum in dB/dBm of transmit power plus antenna gains minus path and other
   losses, giving the signal level at the receiver; compared against receiver sensitivity.
+- **Lure AP** — a rogue AP advertising an attractive *generic* SSID (e.g. a common open name) to tempt
+  auto-join, as opposed to an evil twin that clones one specific target SSID.
 - **mac80211_hwsim** — a Linux kernel module that creates simulated 802.11 radios, enabling protocol
   and configuration labs with no hardware. Does **not** reproduce real RF, drivers, or injection.
 - **MAC randomisation** — clients using a randomised, non-permanent MAC when scanning (and often per
   network once associated) to resist tracking; not standardised across OSes and not a complete fix.
+- **MANA attack** — SensePost's successor to KARMA: the rogue builds a per-device view of each client's
+  PNL and answers broadcast probes with directed responses for the learned names; degrades as clients randomise.
 - **Management / control / data frames** — the three 802.11 frame types: management (beacons, probes,
   auth, assoc, deauth), control (ACK, RTS/CTS), and data (payload, incl. EAPOL).
 - **MFPC / MFPR** — the RSN Capabilities bits for PMF: Management Frame Protection **Capable** and
@@ -151,6 +181,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   a single link-layer type for the whole file; read everywhere but carries no per-packet annotations.
 - **pcapng** — the next-generation capture format (Wireshark's default): typed blocks holding multiple
   interfaces and per-packet comments; converting pcapng → pcap is lossy.
+- **PEAP (Protected EAP)** — an EAP method that builds a server-certificate TLS tunnel and runs
+  EAP-MSCHAPv2 inside it; safe only if the client validates the server cert, else the MSCHAPv2 exchange is phishable.
 - **Pixie Dust** — an offline WPS attack that recovers the PIN from a single exchange when the AP's
   registrar nonces (E-S1/E-S2) are weak or zero; chipset/firmware dependent, not universal.
 - **pixiewps** — the tool that performs the Pixie Dust computation, driven by `reaver -K` or `bully`.
@@ -193,8 +225,14 @@ reference. Terms are added here by the main session as modules land (agents prop
   dBm); it is receiver metadata, not an announced transmit power.
 - **SAE (Dragonfly)** — Simultaneous Authentication of Equals; WPA3-Personal's password-authenticated
   key exchange. Yields **no offline-crackable hash** from a passive capture.
+- **Server Authentication EKU** — the Extended Key Usage (OID 1.3.6.1.5.5.7.3.1) a RADIUS server
+  certificate must carry; many supplicants (Windows, Android) reject a server cert that lacks it.
+- **Server certificate** — the certificate the RADIUS server presents inside the EAP TLS tunnel; the
+  supplicant validates it (trusted CA + expected name) before sending any credential.
 - **SHA-256 checksum** — a 64-hex fingerprint of a file's exact bytes; comparing a computed hash to a
   recorded one proves byte-for-byte integrity, but nothing about where the file came from (see provenance).
+- **Shadow (unmanaged) AP** — an access point connected without the owner's authorisation (e.g. a staff
+  travel router), outside policy but not impersonating a specific SSID; a rogue-detection target.
 - **SSID** — the human-readable network name advertised by an AP.
 - **Strong-password (no-crack) case** — a teaching setup where the passphrase is in no supplied list and
   high-entropy, so recovery is not expected; the correct outcome is to conclude infeasibility and
@@ -218,9 +256,13 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **wash** — the reaver-suite scanner that lists nearby APs and their WPS state (present, version,
   locked); passive, used to inventory WPS exposure.
 - **WEP** — the original, broken 802.11 encryption. Legacy note only, no lab (OSWP-prep gap disclosed).
+- **wifiphisher** — a tool that automates the captive-portal rogue-AP workflow with page templates; used
+  technique-first with a generic, non-branded template and synthetic credentials on an owned, consented lab only.
 - **WiGLE (Wireless Geographic Logging Engine)** — a public database aggregating GPS-tagged network
   metadata into a searchable map; it stores metadata and estimated locations, not traffic or credentials,
   and a listing is information, not authorisation to test.
+- **Wireless IDS (WIDS)** — a passive monitoring capability (standalone like Kismet, or built into a
+  managed WLAN) that inventories BSSIDs/SSIDs and alerts on anomalies; detection support, not a guarantee.
 - **WPS** — Wi-Fi Protected Setup; PIN/push-button onboarding with a long history of flaws (Pixie Dust,
   online PIN brute). Elective module; recommend disabling.
 - **WPS lockout (AP Setup Locked)** — a state entered after failed PIN attempts that refuses further WPS

@@ -1,0 +1,105 @@
+- id: q1
+  question: >-
+    A support engineer insists the access point is the component that "checks the password and lets
+    people on" for the corporate 802.1X Wi-Fi. Correcting them, what is the AP's actual job?
+  options:
+    - It validates the user's certificate locally and only forwards the result to RADIUS for logging.
+    - It terminates the EAP tunnel, reads the inner credential, and compares it to a cached copy.
+    - It relays EAP between EAPOL and RADIUS and admits the client only when the server says accept.
+    - It stores a copy of every user's password so it can authenticate clients if RADIUS is offline.
+  correct: 2
+  explanation: >-
+    The AP is the authenticator: a gatekeeper and relay that interprets no EAP method and holds no user
+    credentials. The RADIUS server runs the method and decides; the AP acts on that verdict.
+- id: q2
+  question: >-
+    You capture the air-side of an enterprise login and want to find a reusable secret to crack offline,
+    as you would from a WPA2-PSK handshake. What should you conclude?
+  options:
+    - No such secret exists, because credentials ride inside a TLS tunnel and the PMK is effectively random.
+    - The EAPOL-Key frames carry the PMK in clear, so it can be extracted and reused directly.
+    - The identity response contains the password hash, which a wordlist can recover like a PSK.
+    - The RADIUS shared secret appears in the capture and can be brute-forced to decrypt the session.
+  correct: 0
+  explanation: >-
+    Enterprise credentials are protected by the EAP TLS tunnel and the resulting PMK is derived from the
+    method, not a passphrase, so there is no WPA2-style offline-crackable secret on the air.
+- id: q3
+  question: >-
+    Two enterprise networks both run PEAP-MSCHAPv2. Network A's managed clients trust only the company's
+    private CA and pin the server name; network B's clients were set up with no CA and no server name.
+    What distinguishes them from an attacker's view?
+  options:
+    - Neither is exposed, because PEAP's TLS tunnel protects MSCHAPv2 regardless of client settings.
+    - Both are equally exposed, because PEAP-MSCHAPv2 is inherently broken no matter how clients are set up.
+    - Network A is exposed because pinning a single CA disables the fallback that normally rejects rogues.
+    - Network B's clients will tunnel credentials to a rogue RADIUS server; network A's will refuse it.
+  correct: 3
+  explanation: >-
+    The protocol is identical; the difference is client validation. A's clients check CA and server name
+    and reject a rogue server; B's check nothing and will send MSCHAPv2 into an attacker's tunnel.
+- id: q4
+  question: >-
+    An architect wants to remove the risk of credential phishing from a rogue RADIUS server entirely,
+    not just configure clients to validate the server. Which EAP method achieves that, and why?
+  options:
+    - EAP-TTLS with inner PAP, because sending the password as plain PAP lets the server detect tampering.
+    - EAP-TLS, because the client authenticates with a certificate and private key, so no password is ever sent.
+    - PEAP with a longer TLS key, because a 4096-bit tunnel cannot be terminated by any rogue server.
+    - EAP-MD5, because it hashes the password before transmission so a rogue server only sees the digest.
+  correct: 1
+  explanation: >-
+    EAP-TLS replaces the password with a client certificate and a private key that is never transmitted,
+    so there is nothing for a rogue server to phish or to crack — unlike the tunnelled-password methods.
+- id: q5
+  question: >-
+    While building the lab, FreeRADIUS refuses to start and reports a certificate error before any client
+    connects. Which step did you most likely skip or misconfigure?
+  options:
+    - You did not generate the CA and server certificate (run make in certs/) or the eap module paths are wrong.
+    - You forgot to add the test user's Cleartext-Password line to the users file.
+    - You set domain_suffix_match on the client to a name the server certificate does not contain.
+    - You omitted the AP's entry from clients.conf, so RADIUS has no shared secret to load.
+  correct: 0
+  explanation: >-
+    A certificate error at startup is about the server's own certificate and key paths in the EAP module,
+    which fail if you never generated them. The user, client entry, and client-side name checks act later.
+- id: q6
+  question: >-
+    In the lab, the AP and RADIUS server are both configured with a shared secret. What does that secret
+    establish, and what does it NOT establish?
+  options:
+    - It encrypts user passwords end to end; it does not affect whether the AP trusts the RADIUS verdict.
+    - It authenticates the client to the server; it does not authenticate the server to the client.
+    - It replaces the need for a server certificate; it does not cover the 4-way handshake keys.
+    - It lets the server trust Access-Requests from that AP; it does not authenticate the user or the server to the client.
+  correct: 3
+  explanation: >-
+    The AP↔RADIUS shared secret establishes trust between those two on the wire. It says nothing about
+    the user's identity or about the server certificate the client must still validate.
+- id: q7
+  question: >-
+    A deployment uses EAP-TTLS with inner PAP so RADIUS can check passwords against an LDAP backend that
+    needs the cleartext password. A reviewer calls this "passwords in the clear." How should you frame it?
+  options:
+    - The reviewer is right and the fix is to switch the inner method to MD5 so nothing is ever cleartext.
+    - The cleartext PAP password is exposed only inside the TLS tunnel, so the client validating the server is the safeguard.
+    - The reviewer is right and TTLS must be abandoned, since PAP always exposes the password over the air.
+    - The cleartext is harmless because LDAP re-hashes it, so no client-side validation is required at all.
+  correct: 1
+  explanation: >-
+    Inner PAP is cleartext only within the server-authenticated TLS tunnel. That is acceptable precisely
+    when the client validates the server certificate; without that check, the password goes to a rogue server.
+- id: q8
+  question: >-
+    You finish the build and want to prove, to a reviewer, that the enterprise authentication worked end
+    to end. Which combination of evidence is the most complete and correct?
+  options:
+    - The hostapd beacon log plus a screenshot of the SSID appearing in a scan on the client.
+    - The client's saved profile file plus the fact that no error dialog appeared during connection.
+    - The RADIUS "Login OK / Access-Accept" line, the client's EAP-SUCCESS and CONNECTED events, and the link state.
+    - The CA certificate file plus the server certificate's expiry date shown by an openssl command.
+  correct: 2
+  explanation: >-
+    End-to-end proof spans all three vantage points: the server's accept decision, the client reaching
+    EAP-SUCCESS/CONNECTED, and the confirmed link. The other options show only fragments or just setup.

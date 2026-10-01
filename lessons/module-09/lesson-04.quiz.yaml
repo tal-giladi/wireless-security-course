@@ -1,0 +1,49 @@
+- id: q1
+  question: >-
+    What is the essential difference between the classic KARMA attack and the known-beacon attack?
+  options:
+    - KARMA answers a client's directed probes for named SSIDs; known-beacon broadcasts guessed names and waits.
+    - KARMA works only on WPA3 networks, whereas known-beacon works only on open legacy networks.
+    - KARMA requires the passphrase in advance, while known-beacon recovers it from the client's beacon.
+    - KARMA is a defensive detection method, while known-beacon is the corresponding offensive technique.
+  correct: 0
+  explanation: >-
+    KARMA responds "yes, that's me" to directed probes naming specific SSIDs; the known-beacon attack
+    instead beacons a dictionary of likely names and waits for a client with a matching PNL entry to join.
+- id: q2
+  question: >-
+    Why has the original KARMA attack become unreliable against current smartphones?
+  options:
+    - Because smartphones now encrypt their PNL with the GTK, which KARMA cannot read over the air.
+    - Because modern clients passive-scan and probe less by name, so KARMA has few directed probes to answer.
+    - Because KARMA was patched out of the 802.11 standard and is now rejected by all compliant radios.
+    - Because smartphones refuse any 2.4 GHz association, and KARMA cannot operate on 5 or 6 GHz bands.
+  correct: 1
+  explanation: >-
+    Reduced directed probing and a preference for passive scanning were deployed specifically to break
+    KARMA; with little or no named probing to answer, the classic technique largely fails.
+- id: q3
+  question: >-
+    MANA was developed as a response to KARMA's decline. What does MANA add?
+  options:
+    - It cracks the WPA2 handshake offline so no client interaction is needed at all.
+    - It disables a target's MAC randomisation remotely before the probe exchange begins.
+    - It forces PMF-protected clients off their real AP so they must reassociate to the rogue.
+    - It builds a per-device view of each client's PNL and answers broadcast probes with learned names.
+  correct: 3
+  explanation: >-
+    MANA infers each device's preferred networks from whatever probing it does and responds to broadcast
+    probes with directed responses for those learned names, coping with devices that probe less than before.
+- id: q4
+  question: >-
+    A current-OS phone broadcast-probes only, shows a randomised MAC, and ignores every KARMA/MANA
+    response you send. What is the correct conclusion for the report?
+  options:
+    - The phone must be jailbroken, since a compliant device would always answer a MANA response.
+    - The attack failed due to a tooling bug, so the device should be recorded as untested, not resistant.
+    - The device demonstrates modern-client resistance; record it as not drawn, naming its OS version.
+    - The phone is already compromised, which is why it refuses to associate with any new access point.
+  correct: 2
+  explanation: >-
+    Reduced probing plus MAC randomisation is exactly the modern resistance these techniques face; the
+    honest, evidence-based finding is that the device was not drawn, recorded with its OS version.

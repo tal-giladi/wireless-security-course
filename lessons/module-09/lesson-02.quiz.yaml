@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    Why is "this network is vulnerable to evil-twin attacks" an unsound way to write an evil-twin
+    finding?
+  options:
+    - Because evil twins only ever affect 5 GHz networks, so the band must always be specified first.
+    - Because the vulnerability lives in client behaviour, so a finding must name the client condition.
+    - Because evil twins are impossible against any network that has a passphrase of any length set.
+    - Because the phrase implies encryption was broken, which only a captive portal could accomplish.
+  correct: 1
+  explanation: >-
+    An evil twin succeeds only against a client that chooses to join; the finding must name which
+    client, in which configuration and OS version, associated — it is not a property of the air.
+- id: q2
+  question: >-
+    A controlled client has a WPA2-PSK network saved, and your twin advertises the same SSID but you do
+    not know the passphrase. What happens when the client tries your twin?
+  options:
+    - The 4-way handshake fails because the twin cannot prove the PSK, so no full association occurs.
+    - The client joins silently because WPA2-PSK authenticates only the SSID string, not any key.
+    - The twin automatically recovers the PSK from the client's first probe and completes the join.
+    - PMF forces the client onto the twin regardless of the key, completing association without it.
+  correct: 0
+  explanation: >-
+    WPA2-PSK requires the AP to know the key to complete the handshake; a keyless twin fails the key
+    exchange, which is why PSK twins are usually paired with a portal asking the user for the passphrase.
+- id: q3
+  question: >-
+    Which client condition makes the classic silent evil-twin join most likely to succeed?
+  options:
+    - A current-OS device that scans passively and prompts the user before joining new networks.
+    - A WPA3-SAE client whose saved profile requires mutual authentication with the access point.
+    - An older device with an open network saved and auto-join enabled for that open SSID.
+    - A device with MAC randomisation on and all stale open-network entries already removed.
+  correct: 2
+  explanation: >-
+    An open saved network has no secret to verify, so any same-SSID AP is acceptable; with auto-join on,
+    the client associates without user action — the highest-risk condition.
+- id: q4
+  question: >-
+    How should MAC randomisation be characterised in the context of evil-twin defence?
+  options:
+    - As a complete anti-join control that by itself prevents a client from associating with any twin.
+    - As irrelevant to wireless security, since it only changes a cosmetic label in router logs.
+    - As a setting that forces every client onto WPA3, removing the evil-twin surface entirely.
+    - As a privacy and anti-profiling measure that hinders PNL leakage but does not stop a join.
+  correct: 3
+  explanation: >-
+    Randomisation reduces how easily an attacker profiles a client's PNL; it does not decide whether the
+    client auto-joins a twin, which is governed by auto-join and saved-network policy.

@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    A captive portal on a rogue AP ends with you holding the victim's WPA2 passphrase. Why is it wrong
+    to report this as "cracked the WPA2 key"?
+  options:
+    - Because the passphrase was obtained by deceiving a user into typing it, not by any cryptanalysis.
+    - Because WPA2 has no passphrase, so the captured value must have been the GTK instead.
+    - Because the portal recovers only the first half of the PIN, which is not the full WPA2 key.
+    - Because cracking requires hashcat, and a portal uses aircrack-ng, so the wording is just imprecise.
+  correct: 0
+  explanation: >-
+    The secret arrived because a person submitted it to a forged page — social engineering. No handshake
+    was cracked and no cipher defeated, so "cracked the key" misstates the mechanism.
+- id: q2
+  question: >-
+    Why is "increase the passphrase to 20 characters" a poor remediation for a captive-portal credential
+    capture?
+  options:
+    - Because a 20-character passphrase overflows the portal's input field and crashes the rogue AP.
+    - Because WPA3 forbids passphrases longer than 16 characters, so the advice cannot be applied.
+    - Because a longer passphrase is just as easily typed into a fake page; length does not address deception.
+    - Because the portal only captures short passphrases, so lengthening it already fully mitigates the attack.
+  correct: 2
+  explanation: >-
+    The attack is social engineering; passphrase length only matters against offline cracking. A user
+    will type any length into a convincing fake page, so length is not the control here.
+- id: q3
+  question: >-
+    On a WPA2-PSK network, why does a captive-portal attack typically ask the user for the passphrase
+    rather than capturing it silently?
+  options:
+    - Because the portal must display the passphrase back to the user to complete the DHCP lease.
+    - Because WPA2-PSK transmits the passphrase in cleartext, which the portal simply reformats on screen.
+    - Because PMF requires the user to re-type the key whenever a management frame is protected.
+    - Because a keyless twin cannot complete the handshake, so the portal asks for the key it lacks.
+  correct: 3
+  explanation: >-
+    A silent twin without the PSK fails the 4-way handshake, so the attacker uses the portal to trick the
+    user into supplying the very passphrase the twin cannot otherwise obtain.
+- id: q4
+  question: >-
+    Which defence most directly counters a captive-portal passphrase-harvesting attack?
+  options:
+    - Rotating the WPA2 passphrase weekly so any harvested value expires before it can be reused.
+    - User awareness plus network-identity validation so a person is not the trust anchor for the network.
+    - Enabling OWE on the guest network so the encrypted link blocks the fake portal from loading.
+    - Raising AP transmit power so the real network always outcompetes the rogue AP's signal.
+  correct: 1
+  explanation: >-
+    Because the attack deceives a person, the controls are human and policy: awareness that no legitimate
+    network demands your password via a pop-up, and validated network identity so the user need not judge.
