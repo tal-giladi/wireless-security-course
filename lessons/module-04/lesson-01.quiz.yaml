@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    You run a discovery pass and afterwards inspect your own capture. It contains beacons and other
+    stations' probe requests, but no probe request bearing your capture station's MAC. How do you
+    classify the pass, and why?
+  options:
+    - Passive, because your radio only received frames and transmitted none of its own during the pass.
+    - Active, because receiving other stations' probe requests is itself a form of transmitting on the channel.
+    - Active, because any capture that contains probe requests at all was necessarily produced by probing.
+    - Passive, because beacons are only ever emitted in response to a probe your adapter must have sent.
+  correct: 0
+  explanation: >-
+    The absence of any probe request from your own station is the signature of a passive pass: you
+    received beacons and others' traffic while transmitting nothing. Active passes show your own probes.
+- id: q2
+  question: >-
+    A colleague argues that passive discovery is fully safe and lawful everywhere because the adapter
+    never transmits. Which objection is correct?
+  options:
+    - It is wrong because passive monitor mode still emits low-power acknowledgements that a defender can log.
+    - Not transmitting avoids interference, but recording networks you do not own can still be unlawful interception.
+    - It is wrong because beacons cannot be received at all without the adapter first transmitting a probe.
+    - Passive capture is only lawful if you raise transmit power enough to reach every network in range.
+  correct: 1
+  explanation: >-
+    Passive means no transmission, which removes the interference and detectability risk, but it says
+    nothing about what you may record; capturing others' traffic can be unlawful interception.
+- id: q3
+  question: >-
+    A passive pass on your lab channel never shows one of your own APs, which you know is powered on and
+    beaconing. Active probing is the natural next step, but what should you check and do first?
+  options:
+    - Switch to wildcard probing across every channel at once so no network in range can be missed.
+    - Raise transmit power to maximum, since the AP is clearly too faint for a passive listener to hear.
+    - Confirm the AP's band and channel, then if still needed send a single directed probe for that owned SSID.
+    - Record the whole shared channel for an hour so the AP is captured whenever it next transmits a frame.
+  correct: 2
+  explanation: >-
+    A missing AP is usually a band/channel mismatch, not a reason to escalate. Confirm the channel
+    first; only if a real gap remains send one directed probe for your own SSID, keeping transmission minimal.
+- id: q4
+  question: >-
+    On an owned AP you configured a hidden SSID: its beacons omit the network name. Which discovery
+    behaviour reflects how the hidden name is actually confirmed?
+  options:
+    - The beacon's RSN element spells out the hidden SSID, so a purely passive pass always reveals the name.
+    - Hidden SSIDs are undiscoverable by design, so no passive or active technique can ever recover the name.
+    - Raising receiver sensitivity decrypts the beacon's name field, which is merely transmitted at low power.
+    - A directed probe for the learned name draws a response, confirming the hidden SSID on that BSSID.
+  correct: 3
+  explanation: >-
+    A hidden beacon omits the SSID, so you confirm the name with a directed probe (after learning it,
+    e.g. from an associating client). The name is omitted, not encrypted, and not carried in the RSN element.

@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    In the recorded-data cracking pipeline, what is the job of hcxpcapngtool, and where does it sit
+    between the capture and hashcat?
+  options:
+    - It captures the handshake off the air, so it replaces an adapter in monitor mode on the R path.
+    - It converts a capture containing a handshake or PMKID into the hc22000 hashline hashcat consumes.
+    - It cracks the hc22000 file directly, so hashcat is only needed when hcxpcapngtool fails to recover.
+    - It opens the capture in a GUI for frame-by-frame dissection instead of tshark's command line.
+  correct: 1
+  explanation: >-
+    hcxpcapngtool (from hcxtools) converts a pcapng handshake/PMKID into hc22000; hashcat -m 22000 then
+    cracks that file. Capturing is a physical-path tool, and dissection is Wireshark/tshark.
+- id: q2
+  question: >-
+    You download a module zip and the SHA-256 you compute for a capture does not match the value in
+    CAPTURES.md, which is marked verified. What is the most likely cause and the right next step?
+  options:
+    - hashcat changed its mode numbering, so recompute the hash with -m 22000 set explicitly first.
+    - The capture is fine but Wireshark re-saved it, so ignore the mismatch and start cracking anyway.
+    - The download is truncated or corrupted; re-extract the zip and recompute before analysing it.
+    - The checksum in CAPTURES.md was hand-written, so overwrite it with your computed value and proceed.
+  correct: 2
+  explanation: >-
+    A single changed byte changes the whole hash, and a truncated or corrupted download is the usual
+    cause. Re-extract and recompute; never analyse a file whose integrity you could not confirm.
+- id: q3
+  question: >-
+    A capture's row in CAPTURES.md shows status PENDING with a dash for the checksum. What does this tell
+    you, and how should you record your result?
+  options:
+    - The checksum failed verification once, so the file is known bad and must be deleted on sight.
+    - The file is from a real network, so provenance is fine and you may ship it without a checksum.
+    - PENDING means low entropy, so the passphrase will crack quickly with the bounded wordlist.
+    - The capture set has not been generated yet; verify what you can and mark this file unverified.
+  correct: 3
+  explanation: >-
+    Captures are produced by gen-captures.sh and a row is PENDING until a real run records its checksum.
+    You cannot verify it yet, so note it as unverified rather than pretending the check passed.
+- id: q4
+  question: >-
+    Why does the course require both a SHA-256 and a provenance note for every shipped capture, rather
+    than treating the checksum alone as sufficient?
+  options:
+    - The checksum proves the bytes are identical, but only provenance shows it was captured legitimately.
+    - Provenance is only needed for physical captures, so recorded-path files need the checksum alone.
+    - The two are redundant, so recording either one satisfies the evidence requirement equally well.
+    - A checksum proves the capture will crack, while provenance merely names the wordlist that was used.
+  correct: 0
+  explanation: >-
+    A SHA-256 proves integrity — the file is byte-for-byte the verified one. Provenance proves it was
+    made legitimately (owned gear, synthetic creds, licence). Evidence needs both, not either alone.

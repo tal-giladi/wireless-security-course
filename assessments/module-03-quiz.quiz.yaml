@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    A learner plans to spend the whole course on the physical path and asks which adapter to buy before
+    starting Module 4. What is the most accurate guidance about sequencing and cost?
+  options:
+    - Learn on recorded and virtual first; the core course needs no purchase, so buy only when real RF is required.
+    - Buy the most expensive dual-band adapter now, because every module from Module 4 onward needs live capture.
+    - Buy any adapter whose box mentions monitor mode now, since the exact chipset makes no practical difference.
+    - Skip hardware entirely forever, because the physical path is never credited differently from the virtual one.
+  correct: 0
+  explanation: >-
+    Analysis runs on supplied captures (R) and protocol/config on mac80211_hwsim (V), both free. The
+    physical path is an optional upgrade for exercises that genuinely need real RF, and P is credited separately.
+- id: q2
+  question: >-
+    You receive a capture with no checksum and no note of where it came from, and are asked to crack it.
+    What two things must you establish first, and why both?
+  options:
+    - Only the checksum, because once the bytes are confirmed the capture is automatically safe to analyse.
+    - Integrity via SHA-256 and provenance via the capture's origin, since a checksum proves neither legality nor source.
+    - Only the wordlist, because a bounded list guarantees the crack terminates regardless of the capture's origin.
+    - Only the file extension, because a .hc22000 file is always legitimate while a .pcapng may not be.
+  correct: 1
+  explanation: >-
+    A SHA-256 proves the bytes are the verified file; provenance proves it was captured legitimately on
+    owned gear with synthetic creds. Both are required before you analyse or report a capture.
+- id: q3
+  question: >-
+    On mac80211_hwsim you bring up an AP and watch a client complete the 4-way handshake. A colleague says
+    this proves your rig can capture handshakes off the air. How do you correct them?
+  options:
+    - They are right, because a completed handshake on any radio is identical to an off-air capture.
+    - They are right only if you first set the regulatory domain, which makes the simulated radios transmit.
+    - The handshake is a genuine protocol flow, but hwsim has no real RF or drivers, so it proves no off-air capture.
+    - The handshake is simulated and fake, so the lab proves nothing about the protocol either.
+  correct: 2
+  explanation: >-
+    The protocol exchange is real code through the kernel, so it proves you understand the flow. But hwsim
+    models no real RF, drivers, range, or injection, so it cannot prove off-air capture — that needs path P.
+- id: q4
+  question: >-
+    An adapter captures neighbouring frames in monitor mode, but your deauth exercise sends nothing.
+    Which capability is missing and how do you confirm it independently?
+  options:
+    - AP mode is missing; confirm it by setting the regulatory domain and re-scanning for the target.
+    - Monitor mode is missing; confirm it by opening the capture in Wireshark to check for frames.
+    - The driver is missing; confirm it by reinstalling the VirtualBox Extension Pack on the host.
+    - Frame injection is missing; confirm it with aireplay-ng -9, which reports whether injection works.
+  correct: 3
+  explanation: >-
+    Monitor is reception; sending crafted frames is injection, a separate capability. aireplay-ng -9 (the
+    injection test) confirms it per unit, independent of whether monitor mode already works.
+- id: q5
+  question: >-
+    A learner buys a stick labelled TL-WN722N on a tutorial's recommendation and it will not do monitor
+    mode. What most likely happened, and what rule would have prevented it?
+  options:
+    - They got a v2/v3 RTL8188EUS rather than a v1 AR9271; the chipset-first, verify-the-revision rule prevents it.
+    - They forgot to install hcxtools, which is what enables monitor mode on every TL-WN722N revision.
+    - The adapter needs a 6 GHz regulatory domain; setting iw reg to a 6 GHz country would have fixed it.
+    - The tutorial was for VMware and the stick only does monitor mode under Hyper-V passthrough.
+  correct: 0
+  explanation: >-
+    The v1 is AR9271 (monitor-capable); v2/v3 are RTL8188EUS with the same box name. Buying by chipset and
+    confirming the exact hardware revision before paying is what avoids the trap.
+- id: q6
+  question: >-
+    On Windows 11, your VirtualBox Linux VM boots but the USB adapter never appears in lsusb. Which cause
+    should you check first?
+  options:
+    - The regulatory domain is unset, so the adapter is present but hidden until iw reg set is run.
+    - The Extension Pack is missing or version-mismatched, so USB 2.0/3.0 passthrough is unavailable.
+    - The adapter is in monitor mode on the host, which prevents the guest from ever enumerating it.
+    - hashcat is holding the device from a prior crack, so lsusb cannot list it until hashcat exits.
+  correct: 1
+  explanation: >-
+    VirtualBox's base package is USB 1.1 only; USB 2.0/3.0 passthrough needs the matching Extension Pack.
+    Without it, the adapter is never handed to the guest, so lsusb shows nothing.
+- id: q7
+  question: >-
+    Your USB adapter resets every time you switch it to monitor mode inside the VM, though it otherwise
+    works. What is the likely cause and the fix to try first?
+  options:
+    - The capture file is corrupt, so re-download the module zip before switching to monitor mode again.
+    - The passphrase is too strong for the driver, so shorten it before enabling monitor mode.
+    - A USB controller-version mismatch or power issue; match the USB 2.0/3.0 controller and try a powered port.
+    - The virtual path is interfering, so unload mac80211_hwsim before the physical adapter will stay up.
+  correct: 2
+  explanation: >-
+    A reset on mode change is a classic passthrough USB-link symptom — controller mismatch or insufficient
+    power. Match the controller to the adapter and use a powered port before deeper troubleshooting.
+- id: q8
+  question: >-
+    Passthrough keeps failing and the exercise is about observing the discovery and association flow, not
+    real RF. What is the pragmatic next step, and why is it legitimate here?
+  options:
+    - Keep fighting passthrough, because observing association is impossible without a real adapter attached.
+    - Enable Hyper-V in parallel, because two hypervisors together stabilise USB Wi-Fi passthrough.
+    - Buy a second adapter, since association can only be reproduced between two physical radios.
+    - Switch to the virtual path; hwsim reproduces the flow with no passthrough, and the goal is protocol, not RF.
+  correct: 3
+  explanation: >-
+    The exercise needs the protocol, which mac80211_hwsim reproduces inside the VM with no passthrough or
+    adapter. Reserve the passthrough effort for exercises whose whole point is real monitor or injection.

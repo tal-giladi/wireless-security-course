@@ -12,8 +12,14 @@ reference. Terms are added here by the main session as modules land (agents prop
   Addr1 is the receiver and Addr2 the transmitter of the hop, the rest depending on ToDS/FromDS.
 - **AID (Association ID)** — the identifier an AP assigns a client in the association response once it
   is a member of the BSS.
+- **aireplay-ng -9 (injection test)** — the aircrack-ng command (`-9`/`--test`) that confirms whether
+  frame injection works on a monitor-mode interface; prints "Injection is working!" on success.
+- **airodump-ng** — the aircrack-ng suite's live survey/capture tool: a refreshing table of APs (BSSID,
+  PWR, CH, ENC/CIPHER/AUTH, ESSID) and clients, able to lock a channel/BSSID to write a capture.
 - **AKM (Authentication and Key Management)** — the RSN suite selector that names the security mode
   (PSK, SAE, 802.1X, OWE); it, not the cipher, tells you whether a network is WPA2, WPA3-SAE, or OWE.
+- **AP mode (adapter capability)** — an adapter's ability to act as an access point under `hostapd`;
+  distinct from monitor and injection — a chip may support one or two of the three but not all.
 - **AP (access point)** — the device that originates a BSS and bridges wireless clients to a network.
 - **Association** — the final step by which a client joins a BSS after authentication.
 - **Beacon** — a management frame an AP broadcasts periodically advertising its SSID and capabilities.
@@ -23,8 +29,14 @@ reference. Terms are added here by the main session as modules land (agents prop
   integrity, replacing deprecated TKIP/RC4; GCMP is its counterpart for the newest modes.
 - **Channel** — a named centre frequency within a band that a radio tunes to; a receiver hears only the
   channel (and width) it is set to.
+- **Channel hopping** — a scanner cycling its radio across channels to survey everything in range; good
+  for an initial survey but poor for capturing one target, since the radio dwells on each only briefly.
+- **Channel lock** — parking the radio on one channel (e.g. `airodump-ng --channel`) so it is present
+  for a target's frames; the mode used to capture, as opposed to survey.
 - **Channel width** — the spectrum a signal occupies (20/40/80/160 MHz); wider carries more but spreads
   power and overlaps more neighbours, and a capture must match it.
+- **Chipset-first buying rule** — choose a Wi-Fi adapter by its chipset (known-good Linux support), not
+  its model/marketing name, then verify the exact model + hardware revision before buying.
 - **dB (decibel)** — a logarithmic *ratio* of two powers; gains/losses add instead of multiplying.
   +3 dB ≈ double power, +10 dB = ten times. Distinct from dBm (which is absolute).
 - **dBi** — antenna gain relative to an ideal isotropic radiator; describes how an antenna focuses
@@ -34,6 +46,10 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **DFS (Dynamic Frequency Selection)** — a regulatory requirement on radar-shared 5 GHz channels: an AP
   must listen and vacate on radar. A regulatory behaviour, not a security feature.
 - **dBm** — decibels relative to one milliwatt; the unit for RF signal power. +3 dBm ≈ double power.
+- **Directed vs broadcast (wildcard) probe request** — a probe naming a specific SSID versus one naming
+  none; directed probes can expose a client's saved-network names, which modern clients increasingly avoid.
+- **DKMS (out-of-tree driver)** — Dynamic Kernel Module Support rebuilds an out-of-tree driver (e.g.
+  Realtek RTL8812AU) per kernel; fragile across upgrades, so pin a known-good kernel when a lab needs it.
 - **Dragonblood** — a class of side-channel and downgrade vulnerabilities in early SAE/WPA3
   implementations (2019), with vendor mitigations; not a break of SAE's design. See `references/`.
 - **EAP** — Extensible Authentication Protocol; the method negotiated inside 802.1X (PEAP, EAP-TTLS,
@@ -47,21 +63,38 @@ reference. Terms are added here by the main session as modules land (agents prop
   fragmentation. See `references/`.
 - **Frame Control** — the first 2-byte field of the MAC header, carrying Type/Subtype and flags
   including ToDS, FromDS, and Protected Frame.
+- **Frame injection** — an adapter's ability to transmit crafted 802.11 frames (e.g. deauth, aireplay-ng
+  test frames); a capability separate from monitor mode — an adapter may capture yet be unable to inject.
 - **Free-space path loss** — the weakening of a signal with distance (≈ 6 dB per doubling) and with
   frequency; an open-space upper bound, since obstacles add further loss indoors.
 - **Handshake (4-way)** — the WPA2/WPA3-PSK exchange that derives the PTK from the PMK and proves both
   sides know the key, without sending it.
+- **Hardware revision trap (TL-WN722N)** — the canonical example: v1 = AR9271 (monitor/injection) but
+  v2/v3 = RTL8188EUS (different chip, commonly not monitor-capable). Same box name, tiny version marking.
 - **hc22000 / `-m 22000`** — hashcat's modern mode and file format for WPA-PBKDF2 PMKID+EAPOL cracking.
+- **hcxpcapngtool** — the hcxtools utility that converts a capture (`.pcapng`) containing a handshake or
+  PMKID into the `hc22000` hashline hashcat consumes; distinct from `hcxdumptool` (a capture tool).
+- **Hidden SSID** — a network whose beacons omit the SSID name (the length may still leak); obscurity,
+  not security — resolved passively from an associating client or actively with a directed probe.
 - **hostapd** — user-space daemon that turns an interface into an AP; configures WPA2/WPA3/OWE/enterprise.
+- **iw reg** — the Linux command to read (`iw reg get`) or set (`iw reg set <COUNTRY>`) the regulatory
+  domain that governs legal channels and TX power.
 - **Join state machine** — the 802.11 progression a client follows: unauthenticated/unassociated →
   authenticated/unassociated → authenticated/associated; deauth/disassoc move it back.
+- **Kismet** — a passive wireless detector that builds a long-running database of every AP and client it
+  hears (including per-client probed-SSID history) via a web UI, transmitting nothing.
 - **KRACK** — Key Reinstallation Attack (2017) against the 4-way handshake; patched in supplicants.
 - **Kr00k** — a 2020 vulnerability causing some chips to transmit buffered frames encrypted with an
   all-zero key after disassociation. See `references/`.
+- **Lab paths (R / V / P)** — the three separately-credited ways to do a lab: **R** recorded-data
+  (supplied captures, no hardware), **V** virtual (`mac80211_hwsim`, no hardware), **P** physical (owned
+  adapter + AP + client). R and V never grant physical-capture/injection credit.
 - **Link budget** — the running sum in dB/dBm of transmit power plus antenna gains minus path and other
   losses, giving the signal level at the receiver; compared against receiver sensitivity.
 - **mac80211_hwsim** — a Linux kernel module that creates simulated 802.11 radios, enabling protocol
   and configuration labs with no hardware. Does **not** reproduce real RF, drivers, or injection.
+- **MAC randomisation** — clients using a randomised, non-permanent MAC when scanning (and often per
+  network once associated) to resist tracking; not standardised across OSes and not a complete fix.
 - **Management / control / data frames** — the three 802.11 frame types: management (beacons, probes,
   auth, assoc, deauth), control (ACK, RTS/CTS), and data (payload, incl. EAPOL).
 - **MFPC / MFPR** — the RSN Capabilities bits for PMF: Management Frame Protection **Capable** and
@@ -92,6 +125,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   central to KARMA/MANA and evil-twin viability.
 - **Probe request / probe response** — the active-scanning management frames: a client's request (which
   can expose its PNL) and an AP's reply advertising its parameters.
+- **Provenance (of a capture)** — the record of how and by whom a capture was generated (owned equipment,
+  synthetic credentials) plus its redistribution licence; required alongside a checksum before shipping.
 - **PSK** — pre-shared key; the passphrase-derived secret in WPA2/WPA3-Personal.
 - **Radiotap** — a header prepended to captured 802.11 frames carrying RF metadata (channel, signal,
   rates); present in monitor-mode captures.
@@ -109,6 +144,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   dBm); it is receiver metadata, not an announced transmit power.
 - **SAE (Dragonfly)** — Simultaneous Authentication of Equals; WPA3-Personal's password-authenticated
   key exchange. Yields **no offline-crackable hash** from a passive capture.
+- **SHA-256 checksum** — a 64-hex fingerprint of a file's exact bytes; comparing a computed hash to a
+  recorded one proves byte-for-byte integrity, but nothing about where the file came from (see provenance).
 - **SSID** — the human-readable network name advertised by an AP.
 - **Supplicant** — the client-side 802.1X/EAP entity (e.g. `wpa_supplicant`).
 - **TKIP** — a transitional WPA cipher built on RC4; deprecated. Legacy note only, no lab.
@@ -116,6 +153,15 @@ reference. Terms are added here by the main session as modules land (agents prop
   means and the frame's direction (uplink, downlink, or AP-to-AP bridging).
 - **Transition mode** — a BSS advertising both WPA3-SAE and WPA2-PSK for compatibility; the real
   downgrade surface for WPA3-Personal.
+- **Triangulation (AP location estimation)** — inferring an AP's likely position from many observations
+  of its BSSID at different GPS points, weighted by signal; one observation only bounds where it was heard.
+- **USB passthrough** — detaching a USB device from the host so a guest VM can claim it; on VirtualBox it
+  needs the Extension Pack, and Hyper-V has no general raw USB passthrough for a Wi-Fi adapter.
+- **Wardriving** — surveying wireless networks while moving, logging each AP/client's broadcast metadata
+  (BSSID, SSID, channel, security) tagged with a GPS position; passive observation, not interception.
 - **WEP** — the original, broken 802.11 encryption. Legacy note only, no lab (OSWP-prep gap disclosed).
+- **WiGLE (Wireless Geographic Logging Engine)** — a public database aggregating GPS-tagged network
+  metadata into a searchable map; it stores metadata and estimated locations, not traffic or credentials,
+  and a listing is information, not authorisation to test.
 - **WPS** — Wi-Fi Protected Setup; PIN/push-button onboarding with a long history of flaws (Pixie Dust,
   online PIN brute). Elective module; recommend disabling.

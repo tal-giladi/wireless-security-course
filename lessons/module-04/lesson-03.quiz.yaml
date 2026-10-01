@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    In a capture, a client with a stable MAC sends directed probe requests naming three specific SSIDs.
+    What have you actually learned, and why is it a privacy concern?
+  options:
+    - Its Preferred Network List for those names — a fingerprint of networks the device has joined before.
+    - Its current encryption keys, since directed probes carry the PMK needed to join each named network.
+    - Nothing attributable, because directed probe requests never contain any human-readable SSID at all.
+    - Only the AP's configuration, since probe requests are emitted by access points rather than by clients.
+  correct: 0
+  explanation: >-
+    Directed probes name saved networks, exposing part of the client's PNL — a history fingerprint.
+    They are unencrypted client-sent management frames and carry no keys.
+- id: q2
+  question: >-
+    A colleague claims that because a phone uses a randomised MAC when scanning, it is now impossible to
+    track or re-identify it from its probe requests. Why is that overstated?
+  options:
+    - Randomisation is a myth; no shipping operating system has ever actually randomised a probe MAC address.
+    - Randomisation is not standardised and randomised probes still carry static fields and timing/signal cues usable to cluster a device.
+    - It is correct, because once the MAC is random the frame body is encrypted and nothing remains to analyse.
+    - It is overstated only because randomisation raises transmit power, which paradoxically makes tracking easier.
+  correct: 1
+  explanation: >-
+    MAC randomisation varies by OS/version and is not a complete fix: static fields in the frame plus
+    timing and signal characteristics can still re-identify or cluster a device despite a random MAC.
+- id: q3
+  question: >-
+    You capture probe requests from a modern phone in a lab and see almost no directed SSIDs — mostly
+    broadcast probes with changing MACs. How should you record this result?
+  options:
+    - As a capture failure, since a correctly working monitor interface always recovers a full directed PNL.
+    - As proof the phone has no saved networks, because a device with saved networks must always probe them by name.
+    - As a valid result — many current clients broadcast-probe and randomise, so little directed PNL is exposed here.
+    - As evidence the phone is already associated, since only associated clients ever suppress directed probes.
+  correct: 2
+  explanation: >-
+    Seeing mostly broadcast probes and randomised MACs is the expected modern behaviour, not a fault.
+    It is a legitimate finding that this client exposes little directed PNL.
+- id: q4
+  question: >-
+    From a lab capture you must judge whether an evil twin for the SSID `LAB-CAFE` would capture a given
+    client. Which statement is in the correct conditional form the course requires?
+  options:
+    - Any client that has ever heard the name `LAB-CAFE` will connect to an evil twin broadcasting it, without exception.
+    - Advertising `LAB-CAFE` guarantees capture, because evil-twin success depends only on the attacker's configuration.
+    - No client can ever be captured by an evil twin, since every modern device validates networks before joining them.
+    - A client that remembers `LAB-CAFE` and auto-joins without validation is exposed; one that validates first resists it.
+  correct: 3
+  explanation: >-
+    Evil-twin viability is conditional on client behaviour: remembering the SSID and auto-joining
+    without validation makes a client exposed, while a validating client resists the same advertised SSID.

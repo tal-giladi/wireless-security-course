@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    An adapter enters monitor mode and captures neighbouring frames cleanly, but a deauth lab fails
+    because no frames go out. Which capability is missing, and how is it confirmed?
+  options:
+    - AP mode is missing; confirm it by starting hostapd and checking that a client can associate.
+    - Regulatory domain is missing; confirm it by running iw reg get and setting a country code.
+    - Monitor mode is missing; confirm it by re-running the capture on a busier channel instead.
+    - Frame injection is missing; confirm it with aireplay-ng -9, which reports whether injection works.
+  correct: 3
+  explanation: >-
+    Monitor is reception; sending crafted frames is injection, a separate capability. aireplay-ng -9
+    (the injection test) is how you confirm it. An adapter can capture yet be unable to inject.
+- id: q2
+  question: >-
+    Following the chipset-first rule, a learner wants dual-band capture and injection with mainline
+    driver support and no DKMS fragility. Which choice best fits, and why?
+  options:
+    - MT7612U on the mt76 driver, because it is dual-band with mainline support and no out-of-tree DKMS.
+    - RTL8812AU, because its out-of-tree DKMS driver is the most stable option across kernel upgrades.
+    - AR9271, because it is the only chipset that supports 5 GHz capture alongside 2.4 GHz injection.
+    - Any adapter whose box says monitor mode, because the printed chipset name guarantees the silicon.
+  correct: 0
+  explanation: >-
+    MT7612U is dual-band with the mainline mt76 driver, avoiding DKMS. RTL8812AU is capable but DKMS is
+    fragile across kernels, AR9271 is 2.4-only, and a box label does not guarantee the actual silicon.
+- id: q3
+  question: >-
+    A learner buys an adapter whose box reads TL-WN722N and finds it will not enter monitor mode. What is
+    the most likely explanation?
+  options:
+    - The regulatory domain is unset, so monitor mode is blocked until iw reg set is run for the country.
+    - It is a v2/v3 with the Realtek RTL8188EUS chip, not the v1's AR9271, despite the identical box name.
+    - hashcat reserved the interface during an earlier crack, so monitor mode is locked until it exits.
+    - The adapter is in AP mode by default, which is mutually exclusive with ever entering monitor mode.
+  correct: 1
+  explanation: >-
+    The v1 is AR9271 (monitor-capable out of the box); v2/v3 are RTL8188EUS with the same box name and
+    commonly need an out-of-tree driver. Only the small version marking distinguishes them.
+- id: q4
+  question: >-
+    You confirmed monitor mode on your adapter but have not yet run an injection test. How should the
+    lab-matrix row record injection, and why does this matter for your evidence?
+  options:
+    - Record injection as supported, since any adapter that does monitor mode can also inject frames.
+    - Record injection as unsupported, because monitor and injection are mutually exclusive capabilities.
+    - Record injection as VERIFY, because it is a separate capability you have not yet tested on this unit.
+    - Record injection as supported on the vendor's word, since the chipset reputation settles the question.
+  correct: 2
+  explanation: >-
+    Injection is distinct from monitor and must be tested per unit and kernel. Until aireplay-ng -9
+    confirms it, it stays VERIFY, so your evidence never over-claims an untested capability.

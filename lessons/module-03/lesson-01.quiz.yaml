@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    You want to practise interpreting a 4-way handshake and running the cracking workflow, but you own
+    no wireless hardware. Which path fits, and what will it legitimately prove?
+  options:
+    - The recorded-data path, proving you can interpret a handshake and run the cracking workflow.
+    - The physical path, proving you captured the handshake off the air with a real adapter.
+    - The virtual path, proving your driver supports monitor mode and frame injection on hardware.
+    - No path works without first buying an adapter, because cracking always needs a live capture.
+  correct: 0
+  explanation: >-
+    Supplied captures are the recorded-data (R) path; it proves interpretation and the cracking
+    workflow. It does not prove live capture or injection, which only the physical path earns.
+- id: q2
+  question: >-
+    A learner lists path P (physical) for every exercise in their plan, including purely analytical
+    ones. What is the main problem with this, and how should they decide instead?
+  options:
+    - P is the only path the rubric credits at all, so listing it everywhere is actually correct.
+    - It needlessly gates learning on hardware; pick the lowest path that meets each exercise's goal.
+    - P captures transmit less than R, so defaulting to P is the most containment-friendly choice.
+    - Analytical exercises require P because reading a capture counts as live off-air interception.
+  correct: 1
+  explanation: >-
+    Most exercises depend only on the protocol or reasoning, which R or V meet with no hardware.
+    Reserve P for exercises whose whole point is real RF — live capture, injection, range.
+- id: q3
+  question: >-
+    Why does the course credit the virtual path separately from the physical path rather than treating
+    them as equivalent once a client associates?
+  options:
+    - Because the virtual path transmits at higher power and so covers a strictly larger blast radius.
+    - Because the physical path cannot reproduce association, which only simulated radios can show.
+    - Because the virtual path reproduces protocol flows but not real RF, drivers, range, or injection.
+    - Because virtual labs are graded on recall while physical labs are graded on written reports.
+  correct: 2
+  explanation: >-
+    mac80211_hwsim reproduces protocol flows and configuration end to end, but not real RF, drivers,
+    range, interference, or hardware monitor/injection quirks — so V cannot be credited as P.
+- id: q4
+  question: >-
+    A learner on a tight budget asks whether they must buy a Wi-Fi adapter now to make progress. What
+    is the accurate answer for this course?
+  options:
+    - Yes, because the core modules each require live capture that only a physical adapter provides.
+    - Yes, because the virtual path needs a specialised injection-capable adapter to load its radios.
+    - Only a 6 GHz adapter will do, since every handshake exercise depends on 6 GHz monitor support.
+    - No; the core course is completable on recorded and virtual paths, so hardware is optional later.
+  correct: 3
+  explanation: >-
+    Analysis runs on supplied captures (R) and protocol/config runs on mac80211_hwsim (V), both with
+    zero purchases. The physical path is an optional upgrade for exercises that need real RF.

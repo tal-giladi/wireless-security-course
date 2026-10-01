@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    You need a target list for an engagement and want the lowest possible footprint. A beacon-only pass
+    will take longer but a probing sweep is faster. Which do you choose first, and why?
+  options:
+    - The passive beacon-only pass, because it transmits nothing and so cannot be detected or disturb other networks.
+    - The probing sweep, because transmitting probes is undetectable whereas passive listening is logged by every AP.
+    - The probing sweep, because only active frames can ever reveal an AP's channel and advertised security.
+    - Either equally, because footprint is identical once the adapter is in monitor mode regardless of method.
+  correct: 0
+  explanation: >-
+    Passive discovery transmits nothing, so it cannot be detected by its reception and does not disturb
+    others — the lowest footprint. You escalate to probing only when listening leaves a real gap.
+- id: q2
+  question: >-
+    A survey lists your target on channel 44 with an associated client. You start a capture to file with
+    the same plain command and collect nothing usable from the target after twenty minutes. What happened?
+  options:
+    - The associated client's randomised MAC prevented airodump-ng from ever recording frames to or from it.
+    - The capture kept channel-hopping, so the radio was on channel 44 only briefly; you must lock the channel.
+    - Channel 44 is a 2.4 GHz channel the adapter cannot tune, so no capture of that network is possible.
+    - The target enabled PMF, which encrypts all its frames and makes any file capture of it come up empty.
+  correct: 1
+  explanation: >-
+    Plain airodump-ng hops; it surveyed channel 44 but spends little time there. Locking with
+    `--channel 44 --bssid <target>` keeps the radio on the target so its frames are captured.
+- id: q3
+  question: >-
+    An airodump-ng row shows ENC `WPA2`, CIPHER `CCMP`, AUTH `SAE`. How should you record this network's
+    security, and what follows for later attack planning?
+  options:
+    - WPA2-Personal with a PSK, so plan a standard 4-way-handshake capture and offline dictionary crack.
+    - WPA2-Enterprise, so plan credential capture against the EAP method rather than any kind of PSK attack.
+    - WPA3-Personal using SAE, so expect no offline-crackable hash from a passive capture of this network.
+    - Enhanced Open (OWE), so expect encryption with no authentication and no handshake to capture at all.
+  correct: 2
+  explanation: >-
+    An `SAE` AKM marks WPA3-Personal (often shown alongside WPA2 in transition mode). SAE yields no
+    offline-crackable hash from passive capture, which changes the plan versus a PSK network.
+- id: q4
+  question: >-
+    You want a thorough, long-running passive record of every client in a lab and the SSIDs each has
+    probed for, transmitting nothing. Which approach fits, and what is its honest limit?
+  options:
+    - A directed-probe sweep with airodump-ng, whose only limit is that it needs the target's channel locked.
+    - aireplay-ng deauthentication, whose limit is that it must be repeated until every client reassociates.
+    - Raising adapter PWR and reading the stations column, whose limit is that PWR is unavailable on 5 GHz.
+    - Kismet's passive device view, whose limit is that client MAC randomisation reduces what can be attributed.
+  correct: 3
+  explanation: >-
+    Kismet passively accumulates per-client history and probed SSIDs without transmitting. Its honest
+    limit is modern randomisation and broadcast probing, which reduce how much you can attribute to one device.
+- id: q5
+  question: >-
+    A capture from a modern phone shows mostly broadcast probe requests with a MAC that changes between
+    scans, and almost no named SSIDs. What is the correct interpretation?
+  options:
+    - Expected modern behaviour — broadcast probing plus MAC randomisation — so this client exposes little directed PNL.
+    - A broken capture, since a working monitor interface always recovers a full list of the client's saved networks.
+    - Proof the device is an access point, because only APs emit broadcast frames with changing MAC addresses.
+    - Evidence of an ongoing attack, since legitimate clients never randomise their MAC during normal scanning.
+  correct: 0
+  explanation: >-
+    Current clients commonly broadcast-probe and randomise their MAC, so seeing little directed PNL is
+    normal and a valid finding — not a capture fault and not an attack.
+- id: q6
+  question: >-
+    In a report you must state whether an evil twin for `LAB-HQ` would capture a particular client seen
+    in your capture. Which wording is in the conditional form this course requires?
+  options:
+    - Every device that has saved `LAB-HQ` will join the evil twin automatically, so capture is guaranteed.
+    - A client that remembers `LAB-HQ` and auto-joins without validating it is exposed; one that validates first resists.
+    - No client is ever exposed, because all modern devices validate every network before associating to it.
+    - Advertising `LAB-HQ` is sufficient for capture, since success depends only on the attacker's own configuration.
+  correct: 1
+  explanation: >-
+    Evil-twin viability is conditional on the client: remembering the SSID and auto-joining without
+    validation makes it exposed, while a validating client resists the same advertised name.
+- id: q7
+  question: >-
+    You find a neighbour's network listed on WiGLE with its location and encryption type. A teammate
+    says the public listing means you may connect to confirm it. How do you respond?
+  options:
+    - Agree, because any network whose details appear on a public map has implicitly consented to testing.
+    - Agree, but only if you first lower transmit power so the confirmation connection stays within the law.
+    - Disagree — a listing is information, not authorisation; you may test only your own gear or with written consent.
+    - Disagree only because the WiGLE entry might be stale; if you re-verify it live, connecting is then fine.
+  correct: 2
+  explanation: >-
+    A public map tells you a network exists and roughly where — nothing more. Authorisation comes from
+    ownership or written permission; a listing never grants a right to connect, probe, or capture.
+- id: q8
+  question: >-
+    Planning a mapping exercise, you expect to log metadata but also want to resolve one hidden SSID you
+    spotted, which needs a directed probe. Under the course rules, how do you proceed?
+  options:
+    - Probe any hidden SSID encountered, since resolving names is a passive part of ordinary wardriving.
+    - Probe it if it appears on WiGLE, because a listed network has accepted active interaction by being public.
+    - Capture full payloads from it instead, since reading content avoids the need to transmit any probe.
+    - Send the directed probe only if that SSID is on an AP you own, at minimum power; never probe others' networks.
+  correct: 3
+  explanation: >-
+    A directed probe transmits, so it falls under the owned-equipment rule: acceptable only against
+    your own AP at minimum transmission. There is no mapping exception for probing networks you do not own.

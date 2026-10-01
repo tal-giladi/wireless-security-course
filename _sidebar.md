@@ -23,3 +23,18 @@
   - [10 · The secure wireless baseline](lessons/module-02/lesson-03.md)
   - [11 · Legacy and deprecated — WEP, TKIP, and RC4](lessons/module-02/lesson-04.md)
   - [Module 2 quiz](assessments/module-02-quiz.md)
+- **Module 3 — Building your lab (three paths)**
+  - [12 · Choosing your path — recorded, virtual, or physical](lessons/module-03/lesson-01.md)
+  - [13 · Recorded-data setup — tools, supplied captures, and checksums](lessons/module-03/lesson-02.md)
+  - [14 · Virtual labs with mac80211_hwsim — simulated radios, hostapd, and wpa_supplicant](lessons/module-03/lesson-03.md)
+  - [15 · The physical rig — adapter, driver, monitor, injection, and AP mode](lessons/module-03/lesson-04.md)
+  - [16 · Windows-hosted VMs and USB passthrough](lessons/module-03/lesson-05.md)
+  - [Module 3 quiz](assessments/module-03-quiz.md)
+
+- Stage 2 — Recon & analysis
+- **Module 4 — Wireless reconnaissance**
+  - [17 · Passive versus active discovery](lessons/module-04/lesson-01.md)
+  - [18 · airodump-ng and Kismet — the AP and client view](lessons/module-04/lesson-02.md)
+  - [19 · Clients, probe requests, and the PNL](lessons/module-04/lesson-03.md)
+  - [20 · Wardriving, WiGLE, and recon ethics](lessons/module-04/lesson-04.md)
+  - [Module 4 quiz](assessments/module-04-quiz.md)

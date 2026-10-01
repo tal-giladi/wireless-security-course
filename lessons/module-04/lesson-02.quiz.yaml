@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    In an airodump-ng survey a row reads ENC `WPA2`, CIPHER `CCMP`, AUTH `MGT`. Which network type is
+    this, and what does it mean for how you would attack it later?
+  options:
+    - WPA2-Enterprise (802.1X), so later work targets the EAP exchange and RADIUS, not a PSK handshake.
+    - WPA2-Personal with a pre-shared key, so the target is a standard 4-way-handshake capture and crack.
+    - WPA3-Personal using SAE, so there is no offline-crackable hash to capture from this network at all.
+    - Enhanced Open (OWE), so traffic is encrypted but the network authenticates no client or password.
+  correct: 0
+  explanation: >-
+    AUTH `MGT` marks 802.1X key management — WPA2-Enterprise — so the later approach is credential
+    capture against the EAP method, not a PSK handshake. `PSK` would be Personal; `SAE` WPA3; `OWE` is OWE.
+- id: q2
+  question: >-
+    You survey with plain `airodump-ng wlan0mon`, confirm your target on channel 36 with a client
+    associated, then capture to a file for fifteen minutes and get no usable frames from it. What
+    behaviour explains this, and what is the fix?
+  options:
+    - The adapter silently dropped to 2.4 GHz, so re-run the capture and it will succeed without any flags.
+    - The radio was channel-hopping, so lock it with `--channel 36 --bssid <target>` to stay on the target.
+    - The target uses PMF, so management frames are encrypted and no capture of that AP is ever possible.
+    - The client's MAC was randomised, so airodump-ng could not match its frames to the AP during capture.
+  correct: 1
+  explanation: >-
+    Plain airodump-ng hops across channels and is on channel 36 only part of the time. Locking the
+    channel and filtering the BSSID keeps the radio present for the target's frames.
+- id: q3
+  question: >-
+    A survey row shows a strong AP with a blank ESSID displayed as `<length: 6>`. What does this tell
+    you, and what is the most reliable passive way to learn the name?
+  options:
+    - The name is encrypted in the beacon, so only recovering the PMK would let you display the six-character SSID.
+    - The AP is misconfigured and has no name at all, so there is nothing to recover and the row can be ignored.
+    - The SSID is hidden (omitted, length still leaks); wait for a client to associate and read the name it carries.
+    - The length tag shown is the cipher-suite length, unrelated to the SSID, so the network name is already shown.
+  correct: 2
+  explanation: >-
+    A hidden SSID omits the name from beacons but leaks its length. It is obscurity, not encryption;
+    an associating client's frames carry the real name, which you can read passively.
+- id: q4
+  question: >-
+    Your team wants a thorough, long-running passive picture of every AP and client in a lab, including
+    each client's probed-for SSIDs over time, while transmitting nothing. Which tool and view fits best?
+  options:
+    - airodump-ng's PWR column, because signal strength over time is the only reliable record of a client's history.
+    - A directed-probe sweep in airodump-ng, because actively probing each client is what reveals its network list.
+    - aireplay-ng injection, because forcing reassociations is the standard way to enumerate client devices passively.
+    - Kismet's device view, which passively accumulates per-client history and the SSIDs each client has probed.
+  correct: 3
+  explanation: >-
+    Kismet is a passive sensor that builds long-running per-device history, including each client's
+    probed SSIDs (its PNL), without transmitting — exactly the thorough passive picture described.

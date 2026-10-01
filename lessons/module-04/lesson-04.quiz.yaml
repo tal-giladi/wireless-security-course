@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A wardrive log shows the same BSSID recorded from five different GPS positions with varying signal
+    strength. Why are multiple observations needed rather than one?
+  options:
+    - A single observation only says the BSSID was audible from near that point; many allow estimating the AP's location.
+    - A single observation is discarded by law, so at least five are required before any mapping is permitted at all.
+    - A single observation already pinpoints the AP exactly, and the extra four are redundant duplicates to ignore.
+    - A single observation records the AP's own GPS chip, so more are needed only when the AP has no GPS fitted.
+  correct: 0
+  explanation: >-
+    GPS logs where the scanner was, not where the AP is. One reading only bounds audibility; several
+    readings with signal strength let a tool triangulate an estimate of the AP's position.
+- id: q2
+  question: >-
+    Someone argues that because their neighbourhood wardrive never transmitted, saving the full packet
+    payloads of every network they heard is automatically lawful. What is the flaw?
+  options:
+    - There is no flaw, since any data received without transmitting is lawful to keep and publish anywhere.
+    - Capturing payload content is interception, which passive reception does not make lawful; metadata-only is the defensible choice.
+    - The flaw is only that payloads are large; trimming the files to save disk space resolves the legal question entirely.
+    - The flaw is that wardriving requires transmitting probes, so a truly passive wardrive is technically impossible.
+  correct: 1
+  explanation: >-
+    Not transmitting avoids interference, but recording the content of others' traffic is interception
+    and can be unlawful regardless. Wardriving and WiGLE deal in metadata, not payloads, for this reason.
+- id: q3
+  question: >-
+    You look up a network on WiGLE and find its name, location, and encryption type. What does this
+    entitle you to do with that network?
+  options:
+    - Connect to it to verify the listing, since data published on a public map is implicitly authorised for testing.
+    - Probe and deauth it briefly, because WiGLE listings count as the owner publishing consent to be assessed.
+    - Nothing — it tells you the network exists and roughly where; a public listing is not authorisation to test it.
+    - Capture its traffic passively, because a WiGLE entry downgrades the network to open-observation status.
+  correct: 2
+  explanation: >-
+    A map listing is information, not permission. Authorisation to test comes from owning the equipment
+    or written consent; finding a network on WiGLE grants no right to connect, probe, or capture it.
+- id: q4
+  question: >-
+    During a mapping exercise you want to confirm a hidden SSID you noticed, which would require sending
+    a directed probe. Under this course's rules, when is that acceptable?
+  options:
+    - Any time during a wardrive, because resolving hidden SSIDs is considered part of passive mapping.
+    - Whenever the network appears on WiGLE, since a listed network has implicitly accepted active probing.
+    - Only against strangers' networks, since probing your own APs teaches nothing new about hidden SSIDs.
+    - Only against an SSID on an AP you own, at minimum transmission; transmitting at others' networks is never in scope.
+  correct: 3
+  explanation: >-
+    A directed probe transmits, so it falls under the owned-equipment rule. It is acceptable only
+    against your own AP at minimum power; there is no mapping exception for probing networks you do not own.

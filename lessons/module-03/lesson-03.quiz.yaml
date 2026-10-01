@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Why can a client associating to a hostapd AP on mac80211_hwsim legitimately prove you understand the
+    802.11 join, even though no radio transmits?
+  options:
+    - Because hwsim raises transmit power above a real adapter, making the exchange easier to observe.
+    - Because the simulated monitor interface injects frames the way a real Realtek adapter would.
+    - Because the protocol stack above the radio is the same code a real adapter uses, so the flow is genuine.
+    - Because association is the one step that is identical to recorded-data analysis of a supplied file.
+  correct: 2
+  explanation: >-
+    hwsim simulates the radio, but hostapd, wpa_supplicant, and the mac80211 stack run the real 802.11
+    exchange through the kernel. The beacon, auth, association, and handshake are genuine protocol flow.
+- id: q2
+  question: >-
+    A learner wants to measure how interference and distance affect their handshake capture. Why is the
+    virtual path the wrong tool, and what should they use?
+  options:
+    - The virtual path is correct, since hwsim models path loss once two radios are more than a metre apart.
+    - They should add more hwsim radios, because interference grows with the number of simulated clients.
+    - They should lower hostapd's channel to 1, because only channel 1 carries interference in simulation.
+    - hwsim has no real RF, range, or interference, so measuring those needs the physical path on real gear.
+  correct: 3
+  explanation: >-
+    Simulated radios pass frames through the kernel with no modulation, distance, or interference. Range
+    and interference are real-RF properties, so measuring them requires the physical path.
+- id: q3
+  question: >-
+    You start hostapd on wlan0 and it exits immediately with a driver-mode error, while wlan0 shows in
+    iw dev. What is the most likely cause and the first fix to try?
+  options:
+    - Another process already holds the interface; reset the lab or run airmon-ng check kill, then retry.
+    - The SSID LAB-JOIN is reserved by hwsim, so rename the network before hostapd will start on it.
+    - hashcat is still converting the capture, so hostapd must wait until the hc22000 file is written.
+    - The passphrase is too strong for hostapd, so shorten it below eight characters to let the AP start.
+  correct: 0
+  explanation: >-
+    A driver-mode failure when the interface exists usually means another service is holding it. Clear it
+    with reset-lab.sh or airmon-ng check kill. SSID, hashcat, and passphrase length are unrelated.
+- id: q4
+  question: >-
+    Under the course's crediting rules, what does completing the virtual join lab earn, and what does it
+    explicitly not earn?
+  options:
+    - It earns recall credit only, because virtual labs are graded as quizzes rather than as practice.
+    - It earns virtual-path credit for the protocol and config, but not physical-capture or injection credit.
+    - It earns full physical credit, since associating a client is the same as capturing off the air.
+    - It earns nothing, because simulated radios cannot carry authentication or association frames at all.
+  correct: 1
+  explanation: >-
+    The lab proves you can configure an AP and client and reproduce the join — virtual-path credit. R and
+    V are never credited as physical RF, which only a real adapter capturing off the air would earn.

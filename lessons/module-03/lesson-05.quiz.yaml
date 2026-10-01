@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    On a Windows 11 host, VirtualBox boots the Linux VM but iw dev shows no wireless interface and the
+    adapter never appears in lsusb. What is the most likely cause?
+  options:
+    - The Extension Pack is missing or mismatched, so USB 2.0/3.0 passthrough is unavailable to the guest.
+    - The regulatory domain is unset in Linux, so the interface exists but is hidden until iw reg set runs.
+    - The adapter is a v2/v3 Realtek chip, so lsusb deliberately suppresses it on all Windows-hosted VMs.
+    - hostapd is already running on the interface inside the guest, so lsusb cannot enumerate the device.
+  correct: 0
+  explanation: >-
+    VirtualBox's base package is USB 1.1 only; USB 2.0/3.0 passthrough needs the matching Extension Pack.
+    Without it the adapter is never handed to the guest, so it is absent from lsusb.
+- id: q2
+  question: >-
+    A learner wants to use Hyper-V to pass a USB Wi-Fi adapter into a Linux guest for monitor-mode work.
+    What should you tell them?
+  options:
+    - Hyper-V passes USB Wi-Fi adapters natively, so just add a USB filter as you would in VirtualBox.
+    - Hyper-V has no general raw USB passthrough for a Wi-Fi adapter; use VirtualBox/VMware or the virtual path.
+    - Hyper-V works only if the adapter is AR9271, so swap to that chipset and passthrough will succeed.
+    - Hyper-V requires the VirtualBox Extension Pack installed alongside it to enable USB redirection.
+  correct: 1
+  explanation: >-
+    Hyper-V offers no general raw USB device passthrough for an arbitrary device like a Wi-Fi adapter.
+    For the physical path use VirtualBox or VMware; otherwise use mac80211_hwsim, which needs no passthrough.
+- id: q3
+  question: >-
+    The adapter reaches the Linux VM and does monitor mode, but it resets and drops every time the learner
+    switches it to monitor mode. Which fix targets the likely cause?
+  options:
+    - Reinstall the Extension Pack, because a reset on mode change always means a corrupt passthrough add-on.
+    - Set iw reg to a different country, because the reset is the regulatory domain rejecting the channel.
+    - Try the other USB controller version or a powered port, since this is a USB link/power passthrough symptom.
+    - Switch the adapter to AP mode first, because monitor mode is only stable once hostapd has claimed it.
+  correct: 2
+  explanation: >-
+    A reset on mode change is a classic USB-link symptom: a controller-version mismatch or insufficient
+    power. Match the USB 2.0/3.0 controller to the adapter and try a powered port before anything else.
+- id: q4
+  question: >-
+    Passthrough keeps fighting a learner whose current exercise is about observing the association and
+    handshake flow, not real RF. What is the pragmatic recommendation?
+  options:
+    - Keep troubleshooting passthrough indefinitely, since no exercise can be done without real hardware.
+    - Buy a second adapter, because association flow can only be observed with two physical radios present.
+    - Enable Hyper-V as well, because running two hypervisors at once stabilises USB passthrough.
+    - Switch to the virtual path; mac80211_hwsim reproduces that flow with no passthrough or adapter at all.
+  correct: 3
+  explanation: >-
+    The exercise needs the protocol, not real RF, so the virtual path fits: hwsim creates its radios
+    inside the VM with no passthrough, Extension Pack, or adapter. Reserve the passthrough fight for real-RF work.
