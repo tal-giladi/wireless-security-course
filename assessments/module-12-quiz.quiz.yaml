@@ -1,0 +1,103 @@
+- id: q1
+  question: >-
+    A WPA3 guest network uses PMF required. Management asks what a passive attacker across the street can
+    still learn. What is the accurate answer?
+  options:
+    - The SSID, device MACs, and association timing, because PMF does not encrypt beacons or addressing.
+    - Nothing, because PMF encrypts all management and data frames so the air is fully opaque.
+    - The passphrase, because PMF carries it inside the integrity-protected association frames.
+    - Only the IGTK, because BIP deliberately broadcasts the group integrity key in each beacon.
+  correct: 0
+  explanation: >-
+    PMF adds integrity to a subset of management frames; beacons/probes and addressing stay cleartext, so
+    SSID, MACs, and timing remain readable metadata.
+- id: q2
+  question: >-
+    A learner asks why the WPA3 labs in this course are never designed around first knocking a client off
+    with a deauthentication. What is the reason?
+  options:
+    - Because deauthentication frames can only be sent by a physical adapter, which the labs exclude.
+    - Because WPA3 mandates PMF, so a forged deauth is rejected and cannot be relied on to land.
+    - Because deauthentication is only effective against Enterprise networks, not Personal ones.
+    - Because the virtual radios used in the labs are incapable of representing any disconnection event.
+  correct: 1
+  explanation: >-
+    WPA3 requires PMF, which protects deauth/disassoc; a forged deauth is ignored, so no WPA3 lab can
+    depend on one succeeding.
+- id: q3
+  question: >-
+    A client believes KRACK means an attacker in a nearby building can passively recover their WPA2
+    passphrase. What correction is accurate?
+  options:
+    - Correct as stated; KRACK is a passive, long-range offline crack of the WPA2 passphrase.
+    - KRACK only affects access points, so a client's passphrase is never involved in the attack.
+    - KRACK is an active local man-in-the-middle key reinstallation; it never recovers the passphrase.
+    - KRACK requires WPS to be enabled, so disabling WPS fully removes the described exposure.
+  correct: 2
+  explanation: >-
+    KRACK forces a key reinstallation (nonce reset) and needs an active MITM within range during a
+    handshake; it is not passive, not long-range, and does not recover the passphrase.
+- id: q4
+  question: >-
+    How should a current assessment report characterise KRACK, FragAttacks, and Kr00k collectively?
+  options:
+    - As unrelated myths, since none of the three was ever demonstrated against a real device.
+    - As permanent breaks of WPA2 and WPA3 that patching and configuration cannot remediate.
+    - As reasons to rotate the Wi-Fi passphrase, which closes all three across every device at once.
+    - As patched classes to verify per device by build and (for Kr00k) chipset, not live universal breaks.
+  correct: 3
+  explanation: >-
+    All three were coordinated disclosures with shipped fixes; the professional output is a per-device
+    patch/chipset verdict, not a protocol-wide break claim or a passphrase rotation.
+- id: q5
+  question: >-
+    You are assessing an owned IP camera for Kr00k. The quickest way to decide whether it is even in scope
+    for that bug is to determine which fact first?
+  options:
+    - Whether its Wi-Fi chip belongs to the affected Broadcom/Cypress families Kr00k was scoped to.
+    - Whether the camera has ever been issued a forged deauthentication frame in the past.
+    - Whether the network it joins uses CCMP rather than GCMP for its data frames.
+    - Whether the camera supports WPA3-SAE in addition to WPA2-Personal.
+  correct: 0
+  explanation: >-
+    Kr00k (CVE-2019-15126) was scoped to specific Broadcom/Cypress chips; if the device is not on an
+    affected chip family, the bug is not applicable regardless of firmware.
+- id: q6
+  question: >-
+    A stakeholder argues that moving everything to WPA3 makes FragAttacks irrelevant. Why is that
+    reasoning flawed?
+  options:
+    - Because FragAttacks only ever affected WPA3 and left WPA2 networks completely untouched.
+    - Because the FragAttacks design flaws target frame aggregation and fragmentation, which WPA3 also uses.
+    - Because WPA3 disables fragmentation, so any fragment proves the network has already been compromised.
+    - Because FragAttacks recovers the SAE password, making WPA3 strictly worse than WPA2 against it.
+  correct: 1
+  explanation: >-
+    The FragAttacks design flaws are about how frames are aggregated and reassembled, independent of the
+    cipher, so they reach WPA3 as well — the fix is patching, not switching protocol.
+- id: q7
+  question: >-
+    A scanner flags a wireless CVE describing a client-supplicant flaw. The device in question is deployed
+    only as an access point. What belongs in the verdict?
+  options:
+    - Mark it affected, because a flagged CVE always applies regardless of the device's role.
+    - Defer the verdict until the supplicant exploit has been run successfully against the AP.
+    - Record it as not applicable due to the role mismatch, and note that as the supporting evidence.
+    - Reconfigure the AP into client mode so the flagged supplicant flaw can be reproduced.
+  correct: 2
+  explanation: >-
+    A client-only flaw does not apply to a device acting solely as an AP; the unmet role precondition
+    makes it not applicable, which is a defensible, evidence-backed finding.
+- id: q8
+  question: >-
+    Three owned APs run abandoned firmware whose build string cannot be read, and no update exists. How is
+    the KRACK/CVE verdict for them best recorded?
+  options:
+    - Not affected, since an unreadable build means a scanner cannot confirm the flaw is present.
+    - Affected with certainty, because any device missing a readable version is running the exploit code.
+    - Pending forever, as no verdict may be written until the exact firmware build is obtained.
+    - Not determinable; treat as potentially affected and recommend updating or isolating the devices.
+  correct: 3
+  explanation: >-
+    An unreadable, abandoned build is honestly "not determinable"; the safe handling is to treat it as
+    potentially affected and drive a decision to update or segment it.

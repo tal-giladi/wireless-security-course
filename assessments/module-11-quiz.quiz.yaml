@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    Your rogue RADIUS server captured an MSCHAPv2 exchange from one lab client but nothing from another,
+    though both used PEAP. What single factor explains the difference, and how should the finding read?
+  options:
+    - The leaking client did not validate the server certificate, so it tunnelled its credentials to any server that answered.
+    - PEAP is cryptographically broken, so capturing from any client is expected and the method should be disabled.
+    - The rogue server obtained the lab CA private key, which let it forge a certificate the client trusted.
+    - MSCHAPv2 transmits the password in cleartext, so whichever client sent first was simply captured first.
+  correct: 0
+  explanation: >-
+    Same method, same server — only configuration differed. Capture succeeds only because a client skips
+    phase-1 server validation; the finding is a client-validation gap, not a protocol flaw.
+- id: q2
+  question: >-
+    A tester has a logged MSCHAPv2 exchange and nothing was forwarded to any real server. A draft report
+    says "we relayed into the network." What is the accurate classification?
+  options:
+    - It is a relay finding, because any captured exchange proves live access was also obtained.
+    - It is a capture finding; with no forwarding and no live session, relay cannot be claimed from this evidence.
+    - It is neither, because a logged exchange with no crack result is not reportable as any finding.
+    - It is a relay finding only if the password later cracks, since cracking is what completes a relay.
+  correct: 1
+  explanation: >-
+    Capture logs an exchange for offline cracking; relay forwards it live to gain access without the
+    password. With nothing forwarded and no live session, only credential capture can be reported.
+- id: q3
+  question: >-
+    After deploying the hardened profile, you run the same rogue server against a managed client and it
+    refuses. For the module's defensive outcome, how should this be treated?
+  options:
+    - As an inconclusive result, since no credential was recovered and no attack actually completed.
+    - As a failure to reproduce the attack that should be retried until a credential is captured.
+    - As a full pass — demonstrating that the client refuses the rogue server and logs why is the intended outcome.
+    - As evidence only of a network outage, since a refusal is indistinguishable from a dropped connection.
+  correct: 2
+  explanation: >-
+    The course credits proving a protection works. A rogue server capturing nothing while the client logs
+    a named certificate-validation reason is exactly the demonstration that passes this module.
+- id: q4
+  question: >-
+    Why is a captured MSCHAPv2 challenge/response offline-crackable no matter how the RADIUS server is
+    configured, and what then decides whether it falls?
+  options:
+    - The server embeds its signing key in the response, so the password can be read directly from the capture.
+    - The challenge repeats every session, so a precomputed table of responses always matches the password.
+    - The tunnel is encrypted only once, so any server terminating it recovers the cleartext password immediately.
+    - The response is three DES encryptions under the NT hash with a tiny padded third key, so recovery then hinges on password entropy.
+  correct: 3
+  explanation: >-
+    MSCHAPv2 splits the NT hash into three DES keys, the padded third being trivially small, so the hash
+    is cheap to recover; whether the password falls then depends on its entropy, not the server config.
+- id: q5
+  question: >-
+    You captured an exchange from an authorised non-validating client, but your agreed wordlist runs to
+    `Exhausted`. The client asks if their Wi-Fi is therefore safe. What is the most defensible answer?
+  options:
+    - The credentials were still exposed because the client does not validate the server; recovery merely depends on entropy.
+    - Yes, the network is proven secure, because an `Exhausted` crack shows the password cannot be recovered by anyone.
+    - No, the network is proven broken, because capturing any exchange guarantees the password will eventually fall.
+    - The result is meaningless because an `Exhausted` crack only ever indicates a corrupt or partial capture.
+  correct: 0
+  explanation: >-
+    Exposure and recovery are separate findings. The client leaked the exchange (a standing finding);
+    `Exhausted` shows only that this list failed, so safety depends on the password's entropy.
+- id: q6
+  question: >-
+    An admin "fixes" the capture risk by pointing `ca_cert` at the system public trust store and telling
+    users they may tick "validate server certificate." Why is this insufficient?
+  options:
+    - It is sufficient, because trusting the public store rejects every self-signed rogue certificate automatically.
+    - A rogue cert can chain to some public CA and the check is user-optional, so the client can still be led to leak.
+    - It over-hardens the client, so legitimate servers are now rejected and users cannot connect at all.
+    - It only affects EAP-TLS clients, so PEAP clients are unchanged and remain fully protected regardless.
+  correct: 1
+  explanation: >-
+    Trusting the broad public store lets a rogue present a publicly-chained cert, and a user-toggleable
+    check is not enforced. The fix is pinning the org's private CA and expected name in a managed profile.
+- id: q7
+  question: >-
+    An organisation wants to remove the credential-phishing risk entirely rather than configure around it.
+    Which change achieves that, and at what cost?
+  options:
+    - Rotate passwords weekly and raise the RADIUS session timeout, which stops captured exchanges from being reused.
+    - Enable PMF and suppress the PMKID on the enterprise SSID, which prevents the inner exchange from being logged.
+    - Migrate to EAP-TLS, which sends no reusable password, at the cost of per-client certificate lifecycle management.
+    - Switch the inner method to CHAP, which cannot be cracked, at no additional operational cost to the organisation.
+  correct: 2
+  explanation: >-
+    EAP-TLS authenticates with a client certificate and private key that are never transmitted, so there
+    is no password to phish or crack; the cost is enrolment, renewal, and revocation for every client.
+- id: q8
+  question: >-
+    You must hand a blue team a retest proving clients reject a rogue RADIUS server. Which pass condition
+    distinguishes a genuine rejection from an unrelated "failed to connect"?
+  options:
+    - The client takes longer than usual to connect and the user reports cancelling a login prompt.
+    - The rogue access point sends a deauthentication frame and the client reassociates on another band.
+    - The client connects to the real server successfully and a screenshot of the profile settings is attached.
+    - A named certificate-validation error in the client log plus an empty rogue capture and a server-cert-then-client-alert trace.
+  correct: 3
+  explanation: >-
+    A genuine rejection names the certificate/CA/name failure and shows the server Certificate followed by
+    a client TLS alert with no inner method; an unrelated failure produces none of these specific signals.

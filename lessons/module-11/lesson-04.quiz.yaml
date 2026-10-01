@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    Why is pinning `ca_cert` to the organisation's own private CA materially safer than pointing it at the
+    system public trust store?
+  options:
+    - The private CA uses a longer key, so certificates it issues are harder for an attacker to forge.
+    - Only certificates from that one CA are trusted, so a rogue server cannot present a public-CA-chained cert and be accepted.
+    - The public trust store cannot be read by `wpa_supplicant`, so pinning it disables validation entirely.
+    - The private CA automatically enforces the expected server name, making `domain_suffix_match` unnecessary.
+  correct: 1
+  explanation: >-
+    Trusting the broad public store lets a rogue server present any certificate chaining to any public CA.
+    Pinning the org's own CA means only its certificates are accepted; the name pin is still needed too.
+- id: q2
+  question: >-
+    A client has the correct `ca_cert` set but no `domain_suffix_match`. How can a rogue server still
+    succeed?
+  options:
+    - It cannot; a correct `ca_cert` alone is sufficient to reject every rogue server in all cases.
+    - By presenting any certificate at all, since without a name check the client ignores the CA as well.
+    - By presenting a certificate that chains to the trusted CA but carries a different, unexpected server name.
+    - By downgrading the client to WPA2-PSK, which bypasses certificate checking altogether.
+  correct: 2
+  explanation: >-
+    Without an expected-name check, a valid certificate for some other name that still chains to the
+    trusted CA is accepted. Both the CA pin and the identity pin must be enforced together.
+- id: q3
+  question: >-
+    Why is delivering the validation settings through a managed, non-editable profile part of the control,
+    not an optional extra?
+  options:
+    - Managed profiles encrypt the password at rest, which is what actually defeats the rogue server.
+    - Managed profiles rotate the CA automatically, so expiry and revocation no longer need planning.
+    - Managed profiles switch the client to EAP-TLS, removing the password without any further configuration.
+    - A setting users can disable or click through is not enforced, so the client can still be led to leak credentials.
+  correct: 3
+  explanation: >-
+    Correct settings a user can turn off, delete, or override at a prompt provide no guarantee. Enforcing
+    them via MDM/Group Policy is what makes validation a dependable control.
+- id: q4
+  question: >-
+    What is the strongest reason to migrate from validating PEAP to EAP-TLS, and what does it cost?
+  options:
+    - EAP-TLS sends no reusable password, so there is nothing to phish or crack; it costs per-client certificate lifecycle management.
+    - EAP-TLS removes the need to validate the server certificate, so client profiles become simpler and cost nothing to run.
+    - EAP-TLS encrypts the MSCHAPv2 exchange twice, so captured credentials become uncrackable at no operational cost.
+    - EAP-TLS lets the access point verify credentials itself, so the RADIUS server and its CA can be retired.
+  correct: 0
+  explanation: >-
+    EAP-TLS authenticates with a client certificate and private key that are never transmitted, so no
+    password can be phished or cracked; the cost is enrolment, renewal, and revocation for every client.

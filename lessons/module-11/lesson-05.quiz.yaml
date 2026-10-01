@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    When the hardened client meets the rogue RADIUS server, at what point does it refuse, and what is the
+    consequence for the attacker?
+  options:
+    - In phase 1 during certificate validation, so no inner MSCHAPv2 exchange is ever sent to the attacker.
+    - After sending MSCHAPv2, once it notices the session key does not match the real server's key.
+    - Only after a full connection, when the DHCP lease comes from an unexpected gateway address.
+    - During the 4-way handshake, when the rogue access point cannot produce a valid group key.
+  correct: 0
+  explanation: >-
+    Server validation is a phase-1 check made before any credential is sent. The client aborts the TLS
+    handshake, so the rogue server captures no inner exchange at all.
+- id: q2
+  question: >-
+    Which combination of evidence best demonstrates that the hardened client genuinely rejected the rogue
+    server (rather than failing to connect for an unrelated reason)?
+  options:
+    - A successful connection to the real server plus a screenshot of the managed profile settings.
+    - A named certificate-validation error in the client log plus an empty rogue-server capture and a client TLS alert in the trace.
+    - A longer-than-usual connection time plus a note that the user cancelled the login prompt.
+    - A deauthentication frame from the rogue access point plus the client reassociating to another band.
+  correct: 1
+  explanation: >-
+    The proof is a specific negative (no captured credential) and a specific positive (a named cert-error
+    reason and the server-Certificate-then-client-Alert sequence) — together they show it was validation.
+- id: q3
+  question: >-
+    The client log shows `CTRL-EVENT-EAP-TLS-CERT-ERROR reason='unknown CA'` and no `EAP-SUCCESS`. What
+    does this tell you about why the client refused?
+  options:
+    - The user mistyped the password, so the inner MSCHAPv2 exchange failed after being sent.
+    - The access point used the wrong RADIUS shared secret, so the server rejected the authenticator.
+    - The rogue server's certificate did not chain to the pinned CA, so the client aborted before sending credentials.
+    - The client's own certificate had expired, so EAP-TLS could not present it to the server.
+  correct: 2
+  explanation: >-
+    `unknown CA` means the presented certificate was not issued by the CA the client pins, so the chain
+    could not be built and the handshake was aborted in phase 1 — no credential left the client.
+- id: q4
+  question: >-
+    Why is demonstrating the hardened client's rejection accepted as a full pass for the module's
+    defensive outcome, even though no attack succeeded?
+  options:
+    - Because a failed attack always counts as a pass regardless of what the client configuration was.
+    - Because the rejection proves nothing by itself and must still be paired with a successful crack elsewhere.
+    - Because the pass requires recovering a credential, and the rejection is only a partial, provisional result.
+    - Because proving a protection works — the client refuses and logs why — is an explicit valid outcome in this course.
+  correct: 3
+  explanation: >-
+    The course credits demonstrating that a defence works as a full outcome. The rogue server capturing
+    nothing while the client logs the reason it refused is exactly that demonstration.

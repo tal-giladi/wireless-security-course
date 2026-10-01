@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Why is a captured MSCHAPv2 challenge/response offline-crackable regardless of how the RADIUS server
+    is configured?
+  options:
+    - Because the response is three DES encryptions of a challenge under the NT hash, and the padded third key is trivially small.
+    - Because MSCHAPv2 sends the password in cleartext once the outer TLS tunnel has been established.
+    - Because the server includes its signing key in the response, allowing the NT hash to be read directly.
+    - Because the challenge is reused across sessions, so a rainbow table of responses always matches.
+  correct: 0
+  explanation: >-
+    MSCHAPv2 splits the 16-byte NT hash into three 7-byte DES keys; the zero-padded third key has at most
+    2^16 values, so recovery reduces to breaking DES — a property of the method, not the server config.
+- id: q2
+  question: >-
+    You run `hashcat -m 5500` against the strong-password capture with the agreed wordlist and it reports
+    `Exhausted`. What is the correct conclusion and next action?
+  options:
+    - The capture is corrupt, so you should re-run the 11.1 capture before attempting to crack again.
+    - The password was not in that wordlist; estimate the brute-force effort and recommend the control as the finding.
+    - MSCHAPv2 resisted cracking this time, so you should report the method itself as the effective defence.
+    - The client must have used EAP-TLS, so there was never a password present in the exchange to recover.
+  correct: 1
+  explanation: >-
+    `Exhausted` means the password was not in that list — not that it is strong. The reportable outcome is
+    an effort estimate plus the control recommendation; failing to crack a strong password is a valid pass.
+- id: q3
+  question: >-
+    A report states: "We cracked the captured exchange, so the only problem is a weak password; the
+    client configuration is fine." What is wrong with this reasoning?
+  options:
+    - Nothing is wrong, because a successful crack proves the password is the sole vulnerability present.
+    - The crack proves the server was misconfigured, not the client, so the remediation is on the RADIUS side.
+    - The exposure is a separate standing finding — the client leaked the exchange because it did not validate the server.
+    - Cracking the exchange means EAP-TLS was in use, so no password-based control applies to this client.
+  correct: 2
+  explanation: >-
+    Two findings exist: the client leaked the exchange (it does not validate the server) and the password
+    was weak. Even a strong password would still have been exposed, so the client configuration is not fine.
+- id: q4
+  question: >-
+    Which combination of fixes actually removes the credential-capture risk, rather than merely making the
+    captured exchange harder to crack?
+  options:
+    - Rotate the password weekly and increase MSCHAPv2's iteration count on the RADIUS server.
+    - Switch the inner method from MSCHAPv2 to CHAP and shorten the RADIUS session timeout.
+    - Enable PMF on the access point and suppress the PMKID on the enterprise SSID.
+    - Enforce server-certificate validation on the client and migrate toward EAP-TLS so no password is sent.
+  correct: 3
+  explanation: >-
+    The exchange is capturable only because the client does not validate the server; enforcing validation
+    (and EAP-TLS, which sends no password) stops the leak. The other options only affect crack difficulty.

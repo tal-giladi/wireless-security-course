@@ -84,3 +84,18 @@
   - [45 · EAP methods — PEAP, EAP-TTLS, and EAP-TLS](lessons/module-10/lesson-02.md)
   - [46 · Build the lab — CA, FreeRADIUS, supplicant, and a client profile](lessons/module-10/lesson-03.md)
   - [Module 10 quiz](assessments/module-10-quiz.md)
+- **Module 11 — Enterprise II: attack, harden & retest**
+  - [47 · Assessing insecure config — credential capture](lessons/module-11/lesson-01.md)
+  - [48 · Cracking captured MSCHAPv2](lessons/module-11/lesson-02.md)
+  - [49 · Relay versus capture](lessons/module-11/lesson-03.md)
+  - [50 · Hardening — trusted CA, server identity, and EAP-TLS](lessons/module-11/lesson-04.md)
+  - [51 · A correctly-configured client rejects the rogue server](lessons/module-11/lesson-05.md)
+  - [Module 11 quiz](assessments/module-11-quiz.md)
+
+- Stage 7 — Protections & residual attacks
+- **Module 12 — Modern protections & famous attacks as context**
+  - [52 · PMF and 802.11w — what it protects and its limits](lessons/module-12/lesson-01.md)
+  - [53 · KRACK — key reinstallation and what to verify now](lessons/module-12/lesson-02.md)
+  - [54 · FragAttacks and Kr00k — fragment and clear-key classes](lessons/module-12/lesson-03.md)
+  - [55 · Reading a wireless CVE and turning it into a check](lessons/module-12/lesson-04.md)
+  - [Module 12 quiz](assessments/module-12-quiz.md)

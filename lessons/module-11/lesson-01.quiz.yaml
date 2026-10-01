@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Running a rogue RADIUS server against your lab, the insecure client leaks an MSCHAPv2 exchange but
+    the validating client sends nothing. What is the most accurate root-cause statement for a report?
+  options:
+    - The client does not validate the server certificate, so it tunnels its credentials to any server that answers.
+    - PEAP with MSCHAPv2 is cryptographically broken and always exposes credentials to a nearby attacker.
+    - The rogue server possesses the lab CA's private key, which let it forge a trusted server certificate.
+    - MSCHAPv2 transmits the password in cleartext inside the tunnel, so any server terminating it reads it.
+  correct: 0
+  explanation: >-
+    Both clients used the same PEAP server and method; only the configuration differed. The leak is the
+    client skipping phase-1 server validation, not a protocol flaw or a stolen CA key.
+- id: q2
+  question: >-
+    A client configured with the correct `ca_cert` and `domain_suffix_match` meets your rogue RADIUS
+    server. What happens, and in which phase?
+  options:
+    - It completes the tunnel, sends MSCHAPv2, then discards the result after noticing the name mismatch.
+    - It aborts in phase 1 with a TLS/certificate alert and never sends the inner MSCHAPv2 exchange.
+    - It sends a client certificate instead of a password, which the rogue server cannot reuse.
+    - It downgrades to EAP-GTC and sends the password as cleartext, which the rogue server logs.
+  correct: 1
+  explanation: >-
+    Server validation is a phase-1 decision made before any credential is sent. A validating client rejects
+    the untrusted certificate during the TLS handshake and never runs the inner method.
+- id: q3
+  question: >-
+    Your rogue server logs a captured line for `labuser@lab.local` with a challenge and a response in
+    `NETNTLM` format. What have you actually obtained at this point?
+  options:
+    - A valid session key that lets you connect to the real enterprise network immediately.
+    - The user's cleartext password, which you can now reuse against other services directly.
+    - A password-derived MSCHAPv2 challenge/response that still must be cracked offline to recover a password.
+    - The lab CA certificate, from which you can issue your own trusted server certificates.
+  correct: 2
+  explanation: >-
+    The capture is a challenge/response derived from the password, not the password or a key. Whether it
+    yields a usable credential depends on cracking it offline, bounded by the password's strength.
+- id: q4
+  question: >-
+    You point the same rogue RADIUS server at a client configured for EAP-TLS. Why does the credential
+    capture yield nothing reusable?
+  options:
+    - EAP-TLS encrypts the MSCHAPv2 exchange a second time, so the rogue server cannot read the inner value.
+    - EAP-TLS refuses to associate with any access point whose BSSID is not already in its profile.
+    - EAP-TLS verifies the RADIUS shared secret before the tunnel, which the rogue server cannot supply.
+    - EAP-TLS authenticates the client with a certificate and private key, so no reusable password is ever sent.
+  correct: 3
+  explanation: >-
+    In EAP-TLS the client proves possession of a private key it never transmits and sends no password, so a
+    rogue server that terminates the tunnel captures nothing it can reuse or crack.

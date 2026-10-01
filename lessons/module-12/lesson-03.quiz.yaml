@@ -1,0 +1,49 @@
+- id: q1
+  question: >-
+    Why do the FragAttacks design flaws affect WPA3 networks and not just older WPA2 ones?
+  options:
+    - Because they exploit frame aggregation and fragmentation handling, not the encryption cipher.
+    - Because WPA3 removed fragmentation entirely, so any fragment is treated as a design violation.
+    - Because they recover the SAE password element and replay it against the WPA3 handshake.
+    - Because WPA3 downgrades to WPA2 whenever a fragmented frame arrives on the air.
+  correct: 0
+  explanation: >-
+    FragAttacks are about how frames are parsed, aggregated, and reassembled — independent of the
+    cipher — so the design flaws reach every modern protocol, WPA3 included.
+- id: q2
+  question: >-
+    What does the Kr00k vulnerability actually cause an affected device to do?
+  options:
+    - Leak the WPA2 passphrase in cleartext inside the first beacon after association.
+    - Transmit frames still buffered after disassociation encrypted with an all-zero key.
+    - Reinstall the pairwise key on replay, resetting the nonce like a key-reinstallation attack.
+    - Accept plaintext aggregated frames and forward them as if they were authenticated.
+  correct: 1
+  explanation: >-
+    On disassociation the affected chip zeroes the PTK during cleanup but still sends buffered frames,
+    encrypting them under that all-zero key, which an attacker can trivially decrypt.
+- id: q3
+  question: >-
+    A device uses a Wi-Fi chip from a vendor that is not Broadcom or Cypress. How does this affect its
+    Kr00k assessment?
+  options:
+    - It is at higher risk, because only non-Broadcom chips ever buffered frames on disassociation.
+    - It must still be patched for Kr00k, since the bug lived in the 802.11 standard itself.
+    - It is not applicable to this bug, which was scoped to the affected Broadcom/Cypress chip families.
+    - It is exposed only if PMF is enabled, because PMF is what triggers the all-zero key path.
+  correct: 2
+  explanation: >-
+    Kr00k (CVE-2019-15126) was an implementation bug in specific Broadcom/Cypress chips; a device on an
+    unaffected chip family was never vulnerable to it.
+- id: q4
+  question: >-
+    How should both FragAttacks and Kr00k be presented in a current wireless assessment report?
+  options:
+    - As permanent breaks of WPA2 and WPA3 that no firmware or OS update can remediate.
+    - As purely theoretical research that never affected any real shipping consumer device.
+    - As reasons to rotate the Wi-Fi passphrase, which closes both classes on every device at once.
+    - As patched classes to verify per device by build and (for Kr00k) chipset, not live universal breaks.
+  correct: 3
+  explanation: >-
+    Both were coordinated disclosures with shipped patches (2020 and 2021); the professional output is a
+    per-device check on firmware/OS build and, for Kr00k, the chipset — not a blanket break claim.

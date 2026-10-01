@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    An advisory describes a flaw in a device's role as a client supplicant. The target you are assessing
+    is used only as an access point. What is the correct conclusion?
+  options:
+    - The role mismatch likely makes the CVE not applicable to this AP-only device; record that as the finding.
+    - The device is affected anyway, because every wireless CVE applies to both client and AP roles.
+    - The verdict is not determinable until the attack is run against the AP to see what happens.
+    - The AP must be downgraded to client mode so the flaw can be reproduced and confirmed.
+  correct: 0
+  explanation: >-
+    A client-only flaw does not apply to a device acting solely as an AP; an unmet precondition makes the
+    CVE not applicable, which is itself a defensible finding.
+- id: q2
+  question: >-
+    When converting an advisory into a check, what is the single most defensible and common check type?
+  options:
+    - Running the public exploit against the production network to observe whether it succeeds.
+    - Comparing the device's version, build, or chipset against the advisory's fixed-version statement.
+    - Asking the vendor's sales team whether any customer has ever reported the issue.
+    - Measuring the AP's transmit power to infer whether its firmware is old enough to be vulnerable.
+  correct: 1
+  explanation: >-
+    A version/identity comparison against the advisory's fixed build (or affected chipset) yields
+    recordable evidence without exploitation, and is the most defensible per-device check.
+- id: q3
+  question: >-
+    Why is a behaviour check (for example reading RSN Capabilities for PMF-required) useful alongside a
+    version check?
+  options:
+    - Because observing the behaviour re-runs the attack safely and proves exploitability directly.
+    - Because behaviour always overrides version, so a version check can then be skipped entirely.
+    - Because it can confirm a precondition is unmet (hardened config) without exploiting the flaw.
+    - Because capability bits reveal the firmware build number that the version check could not read.
+  correct: 2
+  explanation: >-
+    A behaviour check confirms whether a gating condition (e.g. PMF-required) holds, showing a precondition
+    is unmet — it corroborates the verdict without re-exploiting anything.
+- id: q4
+  question: >-
+    A firmware build on three of a client's APs cannot be read at all, and the devices are abandoned by
+    the vendor. How should the per-device verdict be recorded?
+  options:
+    - Affected, because any device whose version is unknown is by definition running vulnerable code.
+    - Not affected, since a scanner that cannot read the build cannot confirm the flaw is present.
+    - Deferred indefinitely, because no verdict can be issued without the exact firmware build string.
+    - Not determinable; treat as potentially affected and recommend updating or isolating the devices.
+  correct: 3
+  explanation: >-
+    An unreadable, abandoned build is honestly "not determinable"; the safe handling is to treat it as
+    potentially affected and drive a decision to update or isolate.

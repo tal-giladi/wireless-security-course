@@ -1,0 +1,49 @@
+- id: q1
+  question: >-
+    How is KRACK best described to a client who asks whether it reveals their Wi-Fi passphrase?
+  options:
+    - It forces a key reinstallation that resets the nonce; it does not recover the passphrase or PMK.
+    - It performs an offline dictionary attack on the captured handshake to recover the passphrase.
+    - It reads the passphrase from the group-key handshake once the client reinstalls the PTK.
+    - It brute-forces the PMK by replaying message 3 until the replay counter overflows to zero.
+  correct: 0
+  explanation: >-
+    KRACK is a protocol-state attack on key installation (nonce/replay-counter reset), not an offline
+    crack; it never recovers the passphrase or PMK.
+- id: q2
+  question: >-
+    Which condition does an attacker need to carry out the original KRACK attack?
+  options:
+    - A wordlist containing the target passphrase and a GPU to run `hashcat` offline.
+    - A WPS-enabled AP so the PIN can be brute-forced before the handshake completes.
+    - An active man-in-the-middle position within radio range during a live handshake.
+    - A purely passive capture taken from well outside the network's radio range.
+  correct: 2
+  explanation: >-
+    KRACK is an active, local attack: the attacker must sit between client and AP to block and replay
+    message 3 during a handshake — it is not a passive or remote attack.
+- id: q3
+  question: >-
+    A thermostat's Wi-Fi firmware is dated 2016 with no available update. How should a report treat its
+    KRACK exposure?
+  options:
+    - As fully patched, since KRACK only ever affected access points and never client firmware.
+    - As irrelevant, because rotating the Wi-Fi passphrase removes any key-reinstallation exposure.
+    - As unknowable, because KRACK exposure cannot be inferred from firmware dates at all.
+    - As potentially exposed, since it predates the 2017 fix; segment it and rely on end-to-end protection.
+  correct: 3
+  explanation: >-
+    An unpatched pre-fix supplicant may still reinstall the key; the honest verdict is potential exposure
+    with compensating controls (segmentation, end-to-end encryption), not a passphrase change.
+- id: q4
+  question: >-
+    What is the correct way to characterise KRACK for a laptop whose OS was fully updated last month?
+  options:
+    - A permanent flaw in WPA2 that no operating-system update can ever remediate on any client.
+    - A patched 2017 key-reinstallation class this build is not exposed to; cite the build and fix date.
+    - An active threat requiring the Wi-Fi passphrase to be rotated weekly to stay ahead of the attack.
+    - A vulnerability that only switching the network from CCMP to TKIP would fully remediate.
+  correct: 1
+  explanation: >-
+    Mainstream stacks were patched within weeks of the 2017 disclosure to refuse reinstalling an
+    installed key; an updated build is not exposed, evidenced by the build/version and fix date.

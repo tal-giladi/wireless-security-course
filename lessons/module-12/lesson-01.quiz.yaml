@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    A WPA3 network is configured with PMF required. A passive listener in the car park logs traffic for
+    an hour. Which fact can they still read straight from the capture?
+  options:
+    - The SSID, device MACs, and association timing, because PMF does not encrypt beacons or addressing.
+    - Nothing at all, because PMF encrypts every management and data frame end to end.
+    - The WPA3 passphrase, because PMF transmits it inside the protected association frames.
+    - Only the group integrity key, because BIP publishes the IGTK in each protected beacon.
+  correct: 0
+  explanation: >-
+    PMF adds integrity to a subset of management frames; it does not encrypt beacons/probes or hide
+    addressing, so SSID, MACs, and timing remain cleartext metadata.
+- id: q2
+  question: >-
+    An assessor forges a deauthentication frame against a client on a PMF-required BSS and the client
+    stays connected. What is the correct interpretation?
+  options:
+    - The adapter failed to inject, so the test is inconclusive and must be repeated at higher power.
+    - PMF protects deauth/disassoc frames, so the forged unprotected frame is rejected as designed.
+    - The client cached an old session key, which will time out and disconnect it within seconds.
+    - The AP silently switched to WPA2, which is the only mode that can ignore a deauth frame.
+  correct: 1
+  explanation: >-
+    On a PMF-required network deauth/disassoc are integrity-protected; a forged, unprotected copy does
+    not verify and is dropped, so the client is not disconnected.
+- id: q3
+  question: >-
+    Why does this course design its WPA3 labs so that no step depends on a successful deauthentication?
+  options:
+    - Because deauth frames are illegal to transmit in every jurisdiction without a licence.
+    - Because virtual radios in `mac80211_hwsim` are physically unable to emit any management frame.
+    - Because WPA3 mandates PMF, so a forged deauth is rejected and cannot be relied on to land.
+    - Because deauth only works on 5 GHz channels, which the WPA3 labs deliberately never use.
+  correct: 2
+  explanation: >-
+    WPA3 requires PMF, which protects deauth/disassoc; a forged deauth is ignored, so no lab can assume
+    one will succeed.
+- id: q4
+  question: >-
+    An AP advertises PMF as capable but not required. A client that cannot do PMF associates to it. What
+    is the security consequence?
+  options:
+    - The client is upgraded to PMF automatically, so forged deauth against it is still rejected.
+    - The whole BSS loses PMF for every client, including those that did negotiate protection.
+    - No consequence, since capable and required are equivalent once at least one client uses PMF.
+    - That client's management frames are unprotected, so the forged-deauth path is reopened for it.
+  correct: 3
+  explanation: >-
+    Capable-but-not-required lets a non-PMF client associate; its deauth/disassoc frames are unprotected,
+    so a forged deauth can still disconnect that specific client.

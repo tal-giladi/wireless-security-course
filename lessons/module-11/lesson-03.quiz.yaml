@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    What is the essential difference between credential capture and live relay once a careless client has
+    tunnelled to a rogue RADIUS server?
+  options:
+    - Capture works only on PEAP while relay works only on EAP-TTLS, so the method in use decides which occurs.
+    - Capture logs the inner exchange for offline cracking; relay forwards it to the real server to gain live access without the password.
+    - Capture requires a reachable live server whereas relay can be performed entirely offline from a saved file.
+    - Capture needs the client to validate the server, while relay needs the client to skip validation.
+  correct: 1
+  explanation: >-
+    Both start from a client tunnelling to the rogue server. Capture takes away a crackable exchange;
+    relay forwards responses to the legitimate server in real time, potentially gaining access with no password.
+- id: q2
+  question: >-
+    Which additional precondition does a live relay require that offline capture does not?
+  options:
+    - A wordlist containing the user's password, since relay must crack the exchange before forwarding it.
+    - A client that validates the server certificate, since only validated tunnels can be forwarded upstream.
+    - A reachable, live legitimate RADIUS server and a forwardable exchange within the protocol's timing.
+    - Physical monitor-mode hardware, since relay cannot be performed on simulated radios at all.
+  correct: 2
+  explanation: >-
+    Relay forwards the inner exchange to the genuine server as it happens, so that server must be reachable
+    and the exchange relayable in time. Capture needs neither — it is offline and after the fact.
+- id: q3
+  question: >-
+    A tester has a logged MSCHAPv2 exchange but forwarded nothing to any real server. A teammate writes
+    "we relayed in and have access." What is the correct assessment?
+  options:
+    - The claim is correct, because any logged exchange implies a live session was also obtained.
+    - The claim is correct only if the password was strong, since weak passwords are reported as capture.
+    - The claim is wrong because relay is impossible against PEAP, so capture is the only valid finding.
+    - The claim is wrong; with no forwarding and no live session, only credential capture can be reported.
+  correct: 3
+  explanation: >-
+    Evidence decides the finding. A logged exchange with nothing forwarded and no live session is capture,
+    not relay; a reachable real server is a potential relay path, not a demonstrated one.
+- id: q4
+  question: >-
+    Why does a strong password that defeats offline cracking not, by itself, defeat a live relay?
+  options:
+    - Because relay gains access by forwarding the authentication live, so it never needs to know the password.
+    - Because a strong password lengthens the relay timeout, which actually makes the relay easier to complete.
+    - Because relay recovers the NT hash directly from DES, bypassing the password's entropy entirely.
+    - Because strong passwords disable cryptobinding, which is the only control that would stop a relay.
+  correct: 0
+  explanation: >-
+    Relay rides the user's live authentication to gain access without recovering the password, so password
+    entropy is irrelevant to it. Validating the server (and tunnel binding / EAP-TLS) is what stops relay.
