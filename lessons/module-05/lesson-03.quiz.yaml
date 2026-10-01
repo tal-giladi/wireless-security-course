@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    In a WPA2 capture you see the frames "Authentication, Success" followed by an association response.
+    A learner says this proves the client's passphrase was accepted. What is wrong with that?
+  options:
+    - Nothing is wrong; 802.11 authentication is the step where the AP verifies the WPA2 passphrase.
+    - The 802.11 authentication is open-system and checks no credential; the passphrase is proven later.
+    - The association response, not the authentication, is where the AP accepts or rejects the passphrase.
+    - The beacon already proved the passphrase, so the authentication frames are only an acknowledgement.
+  correct: 1
+  explanation: >-
+    Open-system authentication is a two-frame formality that always succeeds and verifies nothing. The
+    passphrase is proven in the 4-way handshake, carried in EAPOL data frames after association.
+- id: q2
+  question: >-
+    You guess a passphrase and want to test it offline against a captured handshake. Which values must the
+    capture contain for that test to be possible at all?
+  options:
+    - The GTK from Message 3 and the acknowledgement MIC from Message 4 of the handshake.
+    - Only the beacon's RSN information element, since it already encodes the network's key.
+    - Both nonces and a MIC to check against, i.e. a consistent Message 1 and Message 2 pair.
+    - The decrypted first data frame that follows the handshake, which reveals the session key.
+  correct: 2
+  explanation: >-
+    A cracker derives a candidate PTK from the ANonce (M1), the SNonce (M2), and the two MACs, then
+    checks it against the MIC in M2. Without that consistent M1+M2 pair there is nothing to test.
+- id: q3
+  question: >-
+    A capture filtered on `eapol` shows only Message 1 of 4, repeated several times. What will
+    `hcxpcapngtool` do with it, and why?
+  options:
+    - Write a TYPE 02 EAPOL hashline, because repeated Message 1 frames give it enough nonces to crack.
+    - Write a TYPE 01 PMKID hashline, because every Message 1 always carries a usable RSN PMKID.
+    - Write a partial hashline that hashcat completes at runtime by requesting the missing Message 2.
+    - Write no hashline, because a lone Message 1 has an ANonce but no MIC to check a passphrase against.
+  correct: 3
+  explanation: >-
+    Message 1 alone carries an ANonce but no MIC and no SNonce, so there is no crackable pair.
+    hcxpcapngtool emits no line, correctly reporting that the capture holds nothing to crack.
+- id: q4
+  question: >-
+    Which single value appearing in Message 1 of the handshake can, on some APs, be cracked on its own
+    without needing the rest of the 4-way exchange?
+  options:
+    - The RSN PMKID, which hcxpcapngtool extracts as a TYPE 01 line when the AP includes it.
+    - The GTK, which is the group key the AP distributes to every associated client in the cell.
+    - The SNonce, which the client contributes and which uniquely identifies the session keys.
+    - The sequence number, which lets a cracker replay the handshake until the key is recovered.
+  correct: 0
+  explanation: >-
+    When the AP includes an RSN PMKID in M1, it can be extracted as a TYPE 01 hashline and attacked
+    without a full handshake. The GTK and SNonce are not independently crackable material.

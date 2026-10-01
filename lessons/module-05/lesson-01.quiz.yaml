@@ -1,0 +1,53 @@
+- id: q1
+  question: >-
+    You open a monitor-mode capture and read a field showing the frame arrived at -57 dBm on channel 6.
+    Which layer of the capture holds that value, and what does it describe?
+  options:
+    - The radiotap pseudo-header your adapter added; it describes how your receiver heard the frame.
+    - The 802.11 MAC header that was transmitted; it describes the sender's configured transmit power.
+    - The pcapng Enhanced Packet Block body; it describes the channel the AP advertised in its beacon.
+    - The FCS trailer at the end of the frame; it describes the error rate measured across the capture.
+  correct: 0
+  explanation: >-
+    Channel and signal are radiotap fields, a pseudo-header the adapter prepends to record how it
+    received the frame. They are not transmitted over the air and are not part of the 802.11 frame.
+- id: q2
+  question: >-
+    A tool refuses your capture, so a colleague suggests converting the pcapng to classic pcap to load
+    it. What is the real cost of that conversion for your later analysis?
+  options:
+    - Nothing is lost, because pcap and pcapng store exactly the same frames and the same metadata.
+    - You lose the radiotap headers, so signal and channel vanish from every frame in the file.
+    - You lose per-packet comments and multi-interface structure that classic pcap cannot represent.
+    - You lose the 802.11 payloads, because classic pcap keeps only management and control frames.
+  correct: 2
+  explanation: >-
+    pcapng carries per-packet comments and multiple interfaces; classic pcap stores only packets,
+    timestamps, and lengths, so those annotations are discarded on conversion. The frames themselves
+    (and their radiotap headers) survive.
+- id: q3
+  question: >-
+    Someone hands you a .hc22000 file and asks you to dissect its management frames in Wireshark. Why
+    can you not do that, and what is the file actually for?
+  options:
+    - Wireshark lacks the 802.11 dissector, so you must first convert the hc22000 back to pcapng.
+    - The file is encrypted under the PMK, so it opens only after you recover the passphrase first.
+    - The management frames are present but hidden, so you enable them with a wlan display filter.
+    - It is a text hashline for hashcat -m 22000, not a capture; it has no frames to dissect at all.
+  correct: 3
+  explanation: >-
+    hc22000 is a derivative text format holding only the fields mode 22000 needs (type, MIC/PMKID,
+    MACs, ESSID, nonces). It contains no packets, so there is nothing for Wireshark to dissect.
+- id: q4
+  question: >-
+    You run `hcxpcapngtool -o out.hc22000 capture.pcapng` on a supplied capture and it writes no output
+    line at all. Before blaming the tool, what is the most likely explanation?
+  options:
+    - The wordlist is missing, so the tool had nothing to test the handshake against and stayed silent.
+    - The capture held no complete handshake or usable PMKID, so there was no crackable material to extract.
+    - The pcapng was radiotap-plus-802.11, a format hcxpcapngtool cannot parse without a pcap first.
+    - The passphrase was too strong, so the tool suppressed the hashline to avoid a hopeless crack.
+  correct: 1
+  explanation: >-
+    hcxpcapngtool only emits a line when it finds crackable material (a PMKID or a complete EAPOL
+    message pair). No line means the capture lacked it, which is itself a finding, not a tool fault.

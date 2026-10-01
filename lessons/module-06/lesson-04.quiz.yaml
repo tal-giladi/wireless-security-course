@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Your hashcat run against a strong-passphrase capture finishes with status `Exhausted` and no
+    recovery. For a professional report, what is the correct way to treat this result?
+  options:
+    - It is a valid outcome — conclude it will not crack in scope, estimate the effort, and recommend the control.
+    - It is a failed engagement, so you must keep running larger wordlists until some passphrase is recovered.
+    - It proves the capture is corrupt, so you discard the hc22000 and return to recapture the handshake.
+    - It proves the network is unbreakable, so you certify the Wi-Fi as secure against all future attackers.
+  correct: 0
+  explanation: >-
+    Not cracking a strong passphrase is the correct outcome. You report infeasibility with an effort
+    estimate and recommend the control; you neither grind forever nor overclaim total security.
+- id: q2
+  question: >-
+    Why can a single hashcat mode 22000 command crack both a captured 4-way handshake and a captured
+    PMKID from the same network?
+  options:
+    - Because mode 22000 ignores the capture type and simply reads the plaintext passphrase from the file.
+    - Because both reduce to the same offline check — guess a passphrase, derive the PMK, then compare.
+    - Because the PMKID is always embedded inside the handshake, so cracking one automatically cracks the other.
+    - Because hashcat converts the PMKID into a full handshake internally before it can begin cracking at all.
+  correct: 1
+  explanation: >-
+    Both an EAPOL MIC and a PMKID are keyed values derived from the PMK over known inputs. Mode 22000
+    runs the same guess-derive-PMK-and-compare check for either type.
+- id: q3
+  question: >-
+    WPA2 cracking throughput is measured in modest hashes per second rather than billions, even on a
+    good GPU. What causes this, and why does it matter for the defender?
+  options:
+    - Monitor-mode capture throttles the GPU, so faster capture hardware is the way to speed up cracking.
+    - The hc22000 format is deliberately bloated, so trimming the file is what most increases the hashrate.
+    - PBKDF2's 4096 iterations make each guess costly, so a high-entropy passphrase becomes infeasible to brute force.
+    - Hashcat rate-limits WPA by policy, so the defender should rely on that limit rather than passphrase strength.
+  correct: 2
+  explanation: >-
+    PBKDF2 runs 4096 iterations per guess, making WPA cracking slow per candidate. That cost multiplied
+    across a large keyspace is exactly what a high-entropy passphrase turns into infeasibility.
+- id: q4
+  question: >-
+    Your bounded-case crack with `bounded.txt` returns `Exhausted` instead of recovering
+    `Lab-WiFi-Passw0rd!`. The capture validated fine in the previous lesson. What is the likely mistake?
+  options:
+    - The passphrase is actually strong, so no wordlist including the bounded one could ever recover it.
+    - The handshake was partial after all, so you must recapture it before any wordlist can succeed here.
+    - WPA2 cannot be cracked from a converted hc22000 file, so you must crack the raw pcapng directly instead.
+    - You pointed hashcat at the wrong wordlist, because the bounded passphrase lives only in `bounded.txt`.
+  correct: 3
+  explanation: >-
+    The bounded passphrase is present only in `bounded.txt`. An `Exhausted` result on a validated capture
+    means the wrong list was used, not that the capture or the method is at fault.

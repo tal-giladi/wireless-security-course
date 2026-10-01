@@ -1,0 +1,105 @@
+- id: q1
+  question: >-
+    During an authorised test you capture a clean WPA2 handshake, convert it, and run your agreed
+    wordlist to `Exhausted` with no recovery. The client asks whether their Wi-Fi is secure. What is the
+    most defensible response?
+  options:
+    - The passphrase resisted this wordlist; whether it resists a determined attacker depends on its entropy, which you then assess.
+    - The network is proven secure, because an `Exhausted` result demonstrates the passphrase cannot be cracked by anyone.
+    - The network is proven broken, because capturing the handshake at all means the passphrase will inevitably fall.
+    - The result is inconclusive only because the capture must be corrupt, so you cannot comment on security yet.
+  correct: 0
+  explanation: >-
+    `Exhausted` proves only that the passphrase was not in that list. A defensible verdict needs the
+    passphrase's entropy; a long random passphrase is infeasible to brute force, which is what you recommend.
+- id: q2
+  question: >-
+    A colleague insists they "passively grabbed a PMKID from every AP in the building without touching
+    any of them." Which correction is accurate about how PMKID capture actually works?
+  options:
+    - PMKIDs are broadcast in beacons, so the claim is fine and the capture was genuinely passive throughout.
+    - Obtaining a PMKID requires associating with or probing each AP, and only APs that include one return it.
+    - A PMKID can only be read from a full 4-way handshake, so a second client must have been present each time.
+    - PMKID capture works only against WPA3, so the colleague must have been testing SAE networks by mistake.
+  correct: 1
+  explanation: >-
+    PMKID capture is active (you associate or probe) and detectable, and it is conditional: only APs that
+    include a PMKID in message 1 return one. It is clientless, not passive or universal.
+- id: q3
+  question: >-
+    You are capturing on your own WPA2 lab AP that has PMF required. Your targeted deauth of the
+    connected client has no effect. What should you conclude and do?
+  options:
+    - The deauth corrupted the handshake, so you should lower TX power and send a longer burst of frames.
+    - The client is on another channel, so you should abandon channel locking and start hopping channels instead.
+    - PMF is rejecting the forged deauth, so you stop deauthing and simply capture the next natural join.
+    - The AP has no clients, so you should spoof its BSSID and rebroadcast beacons to attract one to you.
+  correct: 2
+  explanation: >-
+    PMF cryptographically protects management frames, so a forged deauth is rejected and the client stays
+    put. Capturing still works by waiting for a natural join; a successful deauth is never required.
+- id: q4
+  question: >-
+    Why is a captured 4-way handshake enough to attempt offline passphrase recovery even after the
+    target AP is switched off?
+  options:
+    - Because the handshake contains the encrypted passphrase, which stays readable once the AP goes offline.
+    - Because the AP streams additional key material continuously, which your tool buffered before it powered down.
+    - Because hashcat relays each guess back to the AP, so it only needs the AP briefly at the start of cracking.
+    - Because the handshake carries the nonces, MACs, and a MIC, so the guess-and-check runs entirely offline.
+  correct: 3
+  explanation: >-
+    The handshake provides every PTK input except the PMK, plus a MIC to test against. Cracking recomputes
+    the PMK per guess and compares offline, needing no further contact with the network.
+- id: q5
+  question: >-
+    A client's policy mandates 8-character complex passphrases rotated every 90 days. Based on this
+    module, what is the single most effective change you would recommend first?
+  options:
+    - Replace the rule with a high-entropy passphrase requirement, since entropy is what makes captures uncrackable.
+    - Shorten the rotation to every 30 days, since more frequent changes outpace any attacker's cracking attempts.
+    - Add more required symbol types, since richer character classes are what actually defeat dictionary attacks.
+    - Keep the policy but disable logging, since quieter APs give attackers fewer signals to capture handshakes.
+  correct: 0
+  explanation: >-
+    Entropy is the one control that turns every captured handshake or PMKID into `Exhausted`. Short complex
+    strings are wordlist fodder and rotation does not beat an offline crack that finishes in minutes.
+- id: q6
+  question: >-
+    You run `hcxpcapngtool` on your capture and it emits no hashline at all, though your interface and
+    tools are working. What is the most likely cause and the right next step?
+  options:
+    - The passphrase is too strong, so the tool withholds the hashline; switch to a much larger wordlist.
+    - The capture is partial, lacking a complete EAPOL exchange with a usable MIC; recapture a full handshake.
+    - The AP uses a proprietary WPA2 variant hashcat cannot represent; report the network as uncrackable.
+    - PMF stripped the key frames from the capture; disable PMF on your own monitor interface and retry.
+  correct: 1
+  explanation: >-
+    No hashline almost always means a partial, inconsistent capture rather than strong crypto or a tool
+    fault. Passphrase strength is irrelevant to whether a hashline can be extracted; recapture cleanly.
+- id: q7
+  question: >-
+    A tester reports: "The AP offered no PMKID, so I captured a 4-way handshake instead and cracked the
+    weak passphrase." A reviewer checks the methodology. What is the correct assessment?
+  options:
+    - The methodology is wrong, because an AP that offers no PMKID cannot produce a crackable handshake either.
+    - The methodology is wrong, because once a PMKID is absent the only option left is to abandon the WPA2 test.
+    - The methodology is sound because PMKID availability is conditional, so the handshake fallback is correct.
+    - The methodology is sound only if the tester first forced the AP to enable PMKID with a crafted association.
+  correct: 2
+  explanation: >-
+    PMKID inclusion is a per-AP behaviour and is not guaranteed. Recognising its absence and falling back
+    to capturing a handshake is exactly the right call; both feed the same mode 22000 crack.
+- id: q8
+  question: >-
+    You harden your lab AP with a 24-character random passphrase, PMF required, and PMKID suppressed, then
+    re-run the module's attacks. Which outcome is the hardened pass you are trying to demonstrate?
+  options:
+    - Hashcat recovers the new passphrase more slowly, the deauth succeeds once, and a smaller PMKID is returned.
+    - The AP refuses to complete any handshake, hashcat throws a parse error, and the client cannot connect at all.
+    - The deauth still drops your client but the crack now takes longer, proving PMF slowed the attacker down.
+    - The crack goes `Exhausted`, the forged deauth is rejected under PMF, and no PMKID is returned by the AP.
+  correct: 3
+  explanation: >-
+    The hardened pass is concrete before/after evidence: an `Exhausted` crack, a rejected deauth, and an
+    absent PMKID. You can complete the module by demonstrating these controls work, without recovering a key.

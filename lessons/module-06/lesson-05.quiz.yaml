@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    For a WPA2-Personal network, which passphrase choice gives the most real protection against the
+    capture-and-crack attacks in this module, and why?
+  options:
+    - A long passphrase of several random words, because length delivers far more entropy than complexity rules.
+    - A short eight-character string with mixed symbols, because character-class variety defeats wordlists best.
+    - A memorable phrase from a well-known song, because familiarity makes it both strong and easy to recall.
+    - A dictionary word with a digit appended, because adding a number lifts it out of any attacker wordlist.
+  correct: 0
+  explanation: >-
+    Every attack reduces to guessing the passphrase, and human-chosen length yields far more entropy than
+    composition rules. Short complex strings and word-plus-digit patterns are exactly what wordlists target.
+- id: q2
+  question: >-
+    A learner enables PMF (802.11w required) on the lab AP and concludes the network is now safe from
+    this module's attacks. What is the accurate limitation of that conclusion?
+  options:
+    - PMF encrypts the passphrase in the handshake, so it fully prevents any offline cracking from a capture.
+    - PMF rejects forged deauths but does not stop a captured handshake or rescue a weak passphrase from cracking.
+    - PMF disables the 4-way handshake entirely, so there is simply no EAPOL material left for anyone to capture.
+    - PMF only matters on WPA3, so enabling it on a WPA2 network changes nothing about the attacks at all.
+  correct: 1
+  explanation: >-
+    PMF closes the deauth shortcut by rejecting forged management frames. A handshake can still be captured
+    from a natural join, and a weak passphrase is still crackable, so PMF is not a substitute for entropy.
+- id: q3
+  question: >-
+    You harden the lab AP and re-run the module's attacks. Which set of results together demonstrates the
+    hardening works, and counts as a pass even without recovering any key?
+  options:
+    - The deauth still drops the client, the PMKID is still returned, but the capture file is slightly smaller.
+    - The handshake can no longer be captured at all, so hashcat has nothing to read and reports a parse error.
+    - Hashcat recovers the passphrase faster than before, the deauth is rejected, and the PMKID is suppressed.
+    - The strong passphrase is `Exhausted`, the forged deauth is rejected under PMF, and no PMKID is returned.
+  correct: 3
+  explanation: >-
+    Showing the crack is `Exhausted`, the deauth rejected, and the PMKID absent is concrete before/after
+    evidence that the controls work. A learner may pass by demonstrating this, not only by cracking.
+- id: q4
+  question: >-
+    A client policy requires 8-character complex passphrases rotated every 90 days with PMF disabled for
+    compatibility. Which part of this policy is least effective against an offline WPA2 crack, and why?
+  options:
+    - The complexity requirement, because symbols and mixed case make a passphrase impossible to brute force.
+    - The 8-character minimum, because an attacker needs the full passphrase length before any guessing starts.
+    - The 90-day rotation, because an offline crack of a weak passphrase finishes long before the passphrase changes.
+    - Disabling PMF, because without PMF the AP refuses to emit any handshake for an attacker to capture at all.
+  correct: 2
+  explanation: >-
+    Rotation does nothing against an offline crack that completes in minutes to hours; the captured handshake
+    is already enough. The real control is passphrase entropy, with PMF closing the deauth shortcut.

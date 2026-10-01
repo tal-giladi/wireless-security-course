@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    You are capturing on your own WPA2 lab AP, which has PMF (802.11w) required. You send a targeted
+    deauth at the connected client and nothing happens. What is going on, and what should you do?
+  options:
+    - PMF is rejecting the forged deauth, so the client stays connected; wait for a natural join instead.
+    - The deauth corrupted the handshake in flight, so you must lower TX power and resend it repeatedly.
+    - The client ignored the deauth because it was on a different channel, so switch to channel hopping.
+    - PMF encrypts your capture, so the handshake is now unreadable; disable monitor mode and retry later.
+  correct: 0
+  explanation: >-
+    PMF cryptographically protects management frames, so a forged deauth is rejected and the client does
+    not drop. Capturing still works; you simply wait for a client to join naturally.
+- id: q2
+  question: >-
+    A tutorial tells you to always fire a burst of deauthentication frames before capturing. Why is this
+    advice both unnecessary and potentially harmful on a real engagement?
+  options:
+    - Deauth bursts encrypt the handshake, so they make an otherwise crackable capture impossible to use.
+    - Any client that joins during capture yields a handshake, and a deauth flood is an over-the-air DoS.
+    - Deauth frames only work against WPA3, so running them against WPA2 wastes time but is otherwise safe.
+    - Capturing requires the client to be offline first, so the flood is the only way to free the channel.
+  correct: 1
+  explanation: >-
+    Waiting for any natural join captures a full handshake with no transmission. A deauth flood is a
+    denial-of-service that disrupts every device in range and is never required to capture.
+- id: q3
+  question: >-
+    Before cracking, you run `hcxpcapngtool -o out.hc22000 cap.cap` on your capture and it writes no
+    hashline at all. What is the most likely explanation?
+  options:
+    - The passphrase is too strong, so the tool refuses to emit a hashline it knows cannot be cracked.
+    - The network uses a proprietary WPA2 variant whose handshake hashcat mode 22000 cannot represent.
+    - The capture is partial or inconsistent, lacking a complete EAPOL exchange with a usable MIC to extract.
+    - The AP had PMF enabled, which strips the EAPOL key frames out of any capture made near it.
+  correct: 2
+  explanation: >-
+    No hashline almost always means a partial capture: the EAPOL exchange is incomplete or inconsistent,
+    so there is nothing crackable to extract. Passphrase strength is irrelevant to whether a hashline exists.
+- id: q4
+  question: >-
+    Which capture approach is both safe and sufficient for obtaining a crackable WPA2 handshake on a
+    network you are authorised to test?
+  options:
+    - Flood the whole channel with deauths at maximum TX power to force every client to reconnect at once.
+    - Change your regulatory domain to raise power, then deauth any client until one handshake lands.
+    - Spoof the AP's BSSID and rebroadcast its beacons so nearby clients hand you their handshakes.
+    - Lock monitor mode to the AP's channel and BSSID and wait for a client you own to join or rejoin.
+  correct: 3
+  explanation: >-
+    Channel-locking and waiting for a natural join needs no transmission and reliably captures a full
+    handshake. Flooding, raising power unlawfully, and impersonating the AP are harmful or illegal.

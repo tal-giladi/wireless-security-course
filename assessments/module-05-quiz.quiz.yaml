@@ -1,0 +1,106 @@
+- id: q1
+  question: >-
+    A colleague emails you a file named capture.hc22000 and asks for the AP's channel and signal strength
+    and whether the handshake looks complete. What can you actually answer, and what must you request?
+  options:
+    - Channel and signal are not in a hashline, so request the original pcapng; the hc22000 gives MACs and ESSID.
+    - Open it in Wireshark and read the radiotap channel and signal, then count its four EAPOL messages.
+    - Nothing is answerable from any wireless file until you first recover the passphrase for that network.
+    - Convert the hc22000 back to pcapng with hcxpcapngtool, which restores the radiotap fields it dropped.
+  correct: 0
+  explanation: >-
+    An hc22000 is a cracking hashline, not a capture: no radiotap, so no channel or signal, and it holds
+    only MACs, ESSID, nonces, and a MIC/PMKID. Channel and completeness need the original pcapng.
+- id: q2
+  question: >-
+    You must give a capture to an older tool that reads only classic pcap, but your file is pcapng with
+    per-frame comments you added while analysing. What is the honest trade-off of converting it?
+  options:
+    - Converting strips the radiotap headers, so every frame loses its channel and signal fields.
+    - Converting discards your per-frame comments and multi-interface structure that pcap cannot store.
+    - Converting re-encrypts the payloads, so the older tool will need the session key to read them.
+    - Converting is lossless, so you can round-trip pcapng to pcap and back without losing anything.
+  correct: 1
+  explanation: >-
+    Classic pcap stores only packets, timestamps, and lengths. The frames and their radiotap headers
+    survive, but pcapng-only extras like per-packet comments and multiple interfaces are lost.
+- id: q3
+  question: >-
+    You filter a busy capture with `wlan.fc.type_subtype == 12 and wlan.addr == aa:bb:cc:dd:ee:ff` and get
+    frames; a teammate's `wlan.addr = 12` returned nothing and they concluded there were no deauths. What
+    went wrong for the teammate?
+  options:
+    - Their capture was truncated at save time, so the deauthentication frames never reached the file.
+    - The deauth frames were encrypted, so they stayed hidden until a session key was supplied to Wireshark.
+    - Their filter used a single `=` and treated 12 as an address, so it was invalid and matched nothing.
+    - Subtype 12 is reassociation, not deauth, so the correct frames were filtered out by the wrong number.
+  correct: 2
+  explanation: >-
+    `=` is invalid (the operator is `==`), so the filter bar was red and matched nothing — proving
+    nothing about contents. It also misused 12 (the deauth subtype) as an address value.
+- id: q4
+  question: >-
+    Two captures of the same AP both show EAPOL frames. One has only repeated Message 1; the other has a
+    consistent Message 1 and Message 2 with matching nonces. Which is crackable, and why?
+  options:
+    - The repeated-M1 capture, because each extra Message 1 adds another ANonce the cracker can test.
+    - Neither, because offline cracking always needs all four messages M1 through M4 to be present.
+    - Both equally, because any EAPOL frame at all is enough for hashcat to attempt the passphrase.
+    - The M1+M2 capture, because the MIC in M2 is the value a guessed passphrase's PTK is checked against.
+  correct: 3
+  explanation: >-
+    A cracker derives a candidate PTK from both nonces and the MACs, then checks it against the M2 MIC.
+    A lone Message 1 has an ANonce but no MIC to test, so it is not crackable.
+- id: q5
+  question: >-
+    A client asks for a purely passive WPA2 capture that reports exactly what their staff are sending.
+    After capturing a clean trace of protected data frames, what can you honestly deliver?
+  options:
+    - Traffic metadata, who associated with which AP, when, and how much, but not the encrypted payloads.
+    - The full application data, since passive capture of enough frames eventually reconstructs the payload.
+    - Nothing at all, because a WPA2 capture without the key contains no readable information whatsoever.
+    - Only the websites visited, which travel in the cleartext MAC header of each protected data frame.
+  correct: 0
+  explanation: >-
+    The MAC header and management frames are cleartext, so you get MACs, SSIDs, timing, and volume. The
+    payload is CCMP-encrypted, so contents (including sites visited) are out of reach without the key.
+- id: q6
+  question: >-
+    You open a supplied capture and, with no key loaded, you can read the SSID in the beacon and every
+    device MAC, but data-frame payloads are ciphertext. A learner says this must be an open network. Why
+    are they wrong?
+  options:
+    - Because open networks hide the SSID, whereas a secured network always broadcasts it in the beacon.
+    - Because the MAC header and SSID are always cleartext, so readable addressing does not mean no encryption.
+    - Because only WPA3 leaves the SSID readable, so the network must specifically be WPA3-SAE, not open.
+    - Because beacons are encrypted on open networks, so a readable SSID proves the capture used a key.
+  correct: 1
+  explanation: >-
+    The MAC header and management frames (including the beacon's SSID) are cleartext on every network.
+    Readable addressing is normal on WPA2/WPA3; the encrypted payloads here show it is not open.
+- id: q7
+  question: >-
+    You run `hcxpcapngtool -o out.hc22000 good.pcapng` on a verified good capture and it writes a line
+    beginning `WPA*02*...`. What does the `02` mean and what have you produced?
+  options:
+    - It means two handshakes were merged, and you have produced a combined hashline for both at once.
+    - It means WPA2 specifically, and you have produced a capture ready to reopen and dissect in Wireshark.
+    - It is an EAPOL message-pair line, and you have produced crackable handshake material for hashcat -m 22000.
+    - It is a PMKID line, and you have produced clientless material that needs no handshake to crack.
+  correct: 2
+  explanation: >-
+    In the 22000 format, TYPE 02 is an EAPOL (handshake) line and TYPE 01 is a PMKID. The output is a
+    crackable hashline for mode 22000, not a packet capture and not a recovered key.
+- id: q8
+  question: >-
+    A WPA3 network enables PMF (802.11w). A learner expects this to stop them reading SSIDs and MACs from
+    a passive capture. What should you tell them PMF actually does?
+  options:
+    - It encrypts the entire MAC header, so addresses and sequence numbers become unreadable without a key.
+    - It hides the SSID by encrypting beacons and probe responses, leaving only radiotap metadata readable.
+    - It blocks unassociated devices from capturing, so a passive monitor interface sees nothing on that BSS.
+    - It adds integrity to some management frames so they can't be forged; SSIDs and MACs stay cleartext.
+  correct: 3
+  explanation: >-
+    PMF protects the authenticity of a subset of management frames (like deauth) against forgery. It does
+    not encrypt beacons or addressing, so a passive listener still reads SSIDs and MACs.

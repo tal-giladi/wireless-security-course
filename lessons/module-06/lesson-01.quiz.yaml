@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    The same WPA2 passphrase is configured on two networks with different SSIDs. What is true of the
+    PMK that each network derives from it, and why?
+  options:
+    - The PMKs differ, because the SSID is the PBKDF2 salt, so it changes the derived master key.
+    - The PMKs are identical, because PBKDF2 depends only on the passphrase and ignores the network name.
+    - The PMKs differ, because each AP mixes its own random MAC address into the PBKDF2 computation.
+    - The PMKs are identical, because the 4096 iteration count is what fixes the output regardless of input.
+  correct: 0
+  explanation: >-
+    PBKDF2 uses the SSID as its salt, so the same passphrase on a different SSID yields a different PMK.
+    This is why precomputed tables are SSID-specific and generic rainbow tables do not work on WPA2.
+- id: q2
+  question: >-
+    In the 4-way handshake, which values does a passive capturer obtain, and which single value must an
+    offline cracker reconstruct to run the check?
+  options:
+    - It obtains the PMK directly from message 1, and must reconstruct the SNonce the client kept secret.
+    - It obtains both nonces and both MACs, and must reconstruct the PMK from a guessed passphrase and SSID.
+    - It obtains the installed PTK from message 3, and must reconstruct the GTK used for broadcast traffic.
+    - It obtains the cleartext passphrase from message 2, and must reconstruct only the 4096-iteration count.
+  correct: 1
+  explanation: >-
+    ANonce, SNonce, and both MACs travel in the clear in the handshake. The only missing PTK input is the
+    PMK, which the cracker recomputes per guess with PBKDF2 over the passphrase and SSID.
+- id: q3
+  question: >-
+    Why does a correct MIC on EAPOL message 2 prove the client knows the passphrase without the
+    passphrase or PMK ever being transmitted?
+  options:
+    - Because the MIC is the encrypted passphrase itself, so matching it decrypts the credential directly.
+    - Because the AP replies with the passphrase in message 3 only after the message 2 MIC validates.
+    - Because the MIC is keyed by the KCK from the PTK, which derives from the PMK, so a valid MIC implies the key.
+    - Because message 2 includes a plaintext hash of the passphrase that the AP compares against its own copy.
+  correct: 2
+  explanation: >-
+    The MIC is computed with the KCK, the first part of the PTK, which derives from the PMK and hence the
+    passphrase. A valid MIC therefore proves key knowledge while the key stays off the air.
+- id: q4
+  question: >-
+    A learner captures only EAPOL message 1 of a handshake and plans to crack the passphrase from it
+    offline. Why will that not work as a cracking input on its own?
+  options:
+    - Message 1 is encrypted with the GTK, so it cannot be read until the full handshake completes first.
+    - Message 1 contains the client SNonce but omits the ANonce needed to derive any candidate PTK.
+    - Message 1 is a control frame rather than a data frame, so tools cannot parse an EAPOL body from it.
+    - Message 1 carries the ANonce but no MIC, so there is no keyed value to test a guessed PTK against.
+  correct: 3
+  explanation: >-
+    Message 1 provides the ANonce but no MIC. Without a captured MIC (from message 2 or 3) there is
+    nothing for a candidate PTK to be checked against, so a lone message 1 is not a crackable input.

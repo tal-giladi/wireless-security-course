@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    You want every frame involving one lab client, no matter whether it is the sender or the receiver,
+    and whatever the frame type. Which display filter does that in one expression?
+  options:
+    - Use `wlan.sa == aa:bb:cc:dd:ee:ff`, since the source-address field appears in every 802.11 frame.
+    - Use `wlan.addr == aa:bb:cc:dd:ee:ff`, since wlan.addr matches that MAC in any address field.
+    - Use `ip.addr == aa:bb:cc:dd:ee:ff`, since the client's traffic is keyed on its network address.
+    - Use `wlan.bssid == aa:bb:cc:dd:ee:ff`, since the BSSID field identifies the client in the cell.
+  correct: 1
+  explanation: >-
+    wlan.addr matches the MAC in any of the frame's address slots, so it catches the station as sender
+    or receiver. wlan.sa/wlan.da/wlan.bssid each pin one specific slot and would miss the others.
+- id: q2
+  question: >-
+    A learner types a filter, the filter bar turns red, they press Enter anyway, and no frames appear.
+    They conclude the capture has none of those frames. What actually happened?
+  options:
+    - A red bar means an invalid filter that matches nothing, so the empty result proves nothing at all.
+    - A red bar means the capture was truncated, so the matching frames were dropped before it was saved.
+    - A red bar means the frames are encrypted, so Wireshark hid them until you supply the network key.
+    - A red bar means a capture filter rejected them at capture time, so they were never in the file.
+  correct: 0
+  explanation: >-
+    Red marks a syntactically invalid display filter; it matches nothing regardless of contents, so an
+    empty list says nothing about the capture. Fix the filter until the bar is green, then judge.
+- id: q3
+  question: >-
+    You need to confirm that a WPA2 4-way handshake completed in a supplied capture. Which approach reads
+    that fact most directly?
+  options:
+    - Filter `wlan.fc.protected == 1` and count the encrypted data frames that follow the association.
+    - Filter `wlan.fc.type_subtype == 8` and read the RSN information element carried in each beacon.
+    - Filter `eapol` and check the Info column shows Message 1 through Message 4 of 4 in order.
+    - Filter `wlan.ssid == "LAB-WiFi"` and confirm the network name appears in the association request.
+  correct: 2
+  explanation: >-
+    The EAPOL-Key frames carry the handshake, and Wireshark labels them Message 1-4 of 4. Seeing all
+    four in order is the direct evidence the exchange completed; the other filters answer other questions.
+- id: q4
+  question: >-
+    On a WPA2 network with an encrypted payload you still read a frame's addresses, subtype, and sequence
+    number in the dissection tree with no key loaded. Why is that possible?
+  options:
+    - Wireshark silently derived the session key from the beacon's RSN element and decrypted the header.
+    - The frame must be a management frame, since only those keep their header fields in the clear.
+    - The capture was taken before association, so no encryption was in effect for that frame yet.
+    - The 802.11 MAC header is never encrypted, so addressing and subtype are always readable without a key.
+  correct: 3
+  explanation: >-
+    Only the data payload is protected; the MAC header (addresses, type/subtype, sequence) is always in
+    the clear. That is why traffic analysis and filtering work on protected networks without any key.

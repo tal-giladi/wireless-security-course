@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    A tester claims they will "passively sniff the PMKID out of the air" from a target AP without being
+    noticed. Why is the "passive" part of this claim wrong?
+  options:
+    - Obtaining a PMKID requires associating with or probing the AP, so the tester transmits and is logged.
+    - PMKIDs only ever appear inside the encrypted 4-way handshake, which cannot be read without the key.
+    - The PMKID is broadcast in every beacon, so capturing it is passive but trivially easy to detect anyway.
+    - A PMKID can only be read after a second client fully associates, so the tester depends on other stations.
+  correct: 0
+  explanation: >-
+    PMKID capture needs an active association or probe to receive EAPOL message 1 from the AP. That
+    transmission is detectable, so the technique is clientless but not passive.
+- id: q2
+  question: >-
+    What does "clientless" actually mean in the context of the PMKID attack, and what does it not mean?
+  options:
+    - It means the AP has no clients at all, and only works on networks that are currently completely idle.
+    - It means no second client is needed because you query the AP directly; it does not mean passive or universal.
+    - It means the client software is bypassed, so the attack recovers the passphrase without any cracking step.
+    - It means the capture works on every AP by design, since the PMKID is mandatory in the WPA2 standard.
+  correct: 1
+  explanation: >-
+    Clientless means you obtain crackable material from the AP alone, without a second station. It does
+    not imply the attack is passive, silent, or available on every AP.
+- id: q3
+  question: >-
+    You run hcxdumptool against your own AP expecting a PMKID, but hcxpcapngtool extracts no type-01
+    hashline. Assuming the tool is working, what is the most likely and correct conclusion?
+  options:
+    - The AP's passphrase is too strong, so the firmware withholds the PMKID to prevent any cracking attempt.
+    - Your capture was passive, and passive captures can never contain a PMKID under any circumstances at all.
+    - This particular AP simply does not include a PMKID in message 1, so you fall back to handshake capture.
+    - The PMKID was captured but hashcat mode 22000 cannot represent it, so it is lost at conversion time.
+  correct: 2
+  explanation: >-
+    PMKID inclusion is a per-AP, per-firmware behaviour and is not universal. No PMKID offered is a valid
+    finding; you document it and fall back to capturing a 4-way handshake.
+- id: q4
+  question: >-
+    You successfully extract a valid PMKID hashline from a WPA2 AP that uses a 24-character random
+    passphrase. What does this tell you about recovering the passphrase?
+  options:
+    - The valid PMKID guarantees recovery, because a captured PMKID is itself the passphrase in hashed form.
+    - Recovery is now passive and instant, since the PMKID removes the need for any wordlist or guessing.
+    - The PMKID proves the network is misconfigured, so the passphrase can be read directly from message 1.
+    - The PMKID is only an offline oracle, so a high-entropy passphrase still makes recovery infeasible in scope.
+  correct: 3
+  explanation: >-
+    A PMKID lets you test guesses offline but reveals nothing directly. Against a high-entropy passphrase
+    the correct outcome is that it will not crack, and the control to recommend is passphrase strength.

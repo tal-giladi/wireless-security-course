@@ -38,3 +38,18 @@
   - [19 · Clients, probe requests, and the PNL](lessons/module-04/lesson-03.md)
   - [20 · Wardriving, WiGLE, and recon ethics](lessons/module-04/lesson-04.md)
   - [Module 4 quiz](assessments/module-04-quiz.md)
+- **Module 5 — Capturing & analysing 802.11**
+  - [21 · Radiotap and capture formats — pcap, pcapng, and hc22000](lessons/module-05/lesson-01.md)
+  - [22 · Wireshark for 802.11 — dissection and display filters](lessons/module-05/lesson-02.md)
+  - [23 · Following a join and spotting the handshake](lessons/module-05/lesson-03.md)
+  - [24 · Protected versus cleartext frames — what you can and cannot read](lessons/module-05/lesson-04.md)
+  - [Module 5 quiz](assessments/module-05-quiz.md)
+
+- Stage 3 — WPA2-Personal
+- **Module 6 — WPA2-Personal: capture, PMKID & cracking**
+  - [25 · The 4-way handshake in depth — PSK, PMK, and PTK](lessons/module-06/lesson-01.md)
+  - [26 · Capturing a handshake — deauth caveats, clean versus partial](lessons/module-06/lesson-02.md)
+  - [27 · PMKID clientless capture — when it is available](lessons/module-06/lesson-03.md)
+  - [28 · Offline cracking with hashcat — bounded and strong-password cases](lessons/module-06/lesson-04.md)
+  - [29 · Hardening WPA2-Personal and measuring the difference](lessons/module-06/lesson-05.md)
+  - [Module 6 quiz](assessments/module-06-quiz.md)

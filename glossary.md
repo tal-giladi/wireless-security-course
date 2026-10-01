@@ -23,6 +23,8 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **AP (access point)** — the device that originates a BSS and bridges wireless clients to a network.
 - **Association** — the final step by which a client joins a BSS after authentication.
 - **Beacon** — a management frame an AP broadcasts periodically advertising its SSID and capabilities.
+- **Bounded cracking case** — a teaching setup where the supplied wordlist contains the lab passphrase, so
+  the crack has a known, achievable, terminating result (success = recovered key + correct method).
 - **BSS / BSSID / ESS** — a Basic Service Set is one AP's cell; the BSSID is usually the AP's MAC; an
   Extended Service Set is multiple APs sharing one SSID.
 - **CCMP / AES** — the modern 802.11 cipher (AES in CCMP mode) for WPA2/WPA3 confidentiality and
@@ -48,15 +50,25 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **dBm** — decibels relative to one milliwatt; the unit for RF signal power. +3 dBm ≈ double power.
 - **Directed vs broadcast (wildcard) probe request** — a probe naming a specific SSID versus one naming
   none; directed probes can expose a client's saved-network names, which modern clients increasingly avoid.
+- **Display filter (Wireshark)** — an expression that hides non-matching frames from view (vs a capture
+  filter, which decides what is recorded); 802.11 staples `wlan.fc.type_subtype`, `wlan.addr`, `eapol`.
+- **Dissection tree** — Wireshark's expandable, layer-by-layer breakdown of a frame: Frame → Radiotap →
+  802.11 MAC header → body (e.g. an EAPOL subtree); the Info column summarises it.
 - **DKMS (out-of-tree driver)** — Dynamic Kernel Module Support rebuilds an out-of-tree driver (e.g.
   Realtek RTL8812AU) per kernel; fragile across upgrades, so pin a known-good kernel when a lab needs it.
+- **DLT (link-layer header type)** — the datalink type recorded for a capture: `IEEE802_11_RADIO` is
+  radiotap-plus-802.11 (channel/signal present), while plain `IEEE802_11` has frames but no radio header.
 - **Dragonblood** — a class of side-channel and downgrade vulnerabilities in early SAE/WPA3
   implementations (2019), with vendor mitigations; not a break of SAE's design. See `references/`.
 - **EAP** — Extensible Authentication Protocol; the method negotiated inside 802.1X (PEAP, EAP-TTLS,
   EAP-TLS, …). Determines where trust lives and what a client must validate.
 - **EAPOL** — EAP over LAN; carries the 4-way handshake messages (and 802.1X EAP) over 802.11.
+- **EAPOL message pair (complete vs partial handshake)** — a captured handshake is crackable only with a
+  consistent message pair (M1+M2 or M2/M3, matching nonces); a partial one has no testable MIC.
 - **Evil twin** — a rogue AP impersonating a legitimate SSID to attract clients. Success is conditional
   on the target client's behaviour and configuration.
+- **Exhausted (hashcat status)** — the end state of a run that tried every candidate without a match; it
+  proves the passphrase was not in that keyspace, not that the passphrase is strong against another list.
 - **FCS (Frame Check Sequence)** — the 4-byte CRC ending an 802.11 frame; a receiver uses it to discard
   corrupted frames.
 - **FragAttacks** — a 2021 class of design and implementation flaws in 802.11 frame aggregation and
@@ -72,6 +84,8 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Hardware revision trap (TL-WN722N)** — the canonical example: v1 = AR9271 (monitor/injection) but
   v2/v3 = RTL8188EUS (different chip, commonly not monitor-capable). Same box name, tiny version marking.
 - **hc22000 / `-m 22000`** — hashcat's modern mode and file format for WPA-PBKDF2 PMKID+EAPOL cracking.
+- **hcxdumptool** — the hcxtools capture utility that actively engages an AP to collect a PMKID or
+  handshake (not passive); distinct from `hcxpcapngtool`, and its flags change across major versions.
 - **hcxpcapngtool** — the hcxtools utility that converts a capture (`.pcapng`) containing a handshake or
   PMKID into the `hc22000` hashline hashcat consumes; distinct from `hcxdumptool` (a capture tool).
 - **Hidden SSID** — a network whose beacons omit the SSID name (the length may still leak); obscurity,
@@ -81,6 +95,10 @@ reference. Terms are added here by the main session as modules land (agents prop
   domain that governs legal channels and TX power.
 - **Join state machine** — the 802.11 progression a client follows: unauthenticated/unassociated →
   authenticated/unassociated → authenticated/associated; deauth/disassoc move it back.
+- **KCK (Key Confirmation Key)** — the first 128 bits of the PTK, used to compute the MIC on EAPOL
+  messages 2 and 3; a correct MIC proves the sender holds the right PMK, which is the offline-crack oracle.
+- **Keyspace** — the total set of candidate passphrases a cracking attempt covers; with a device's
+  hashrate it gives the time to exhaust a brute force, bounding residual risk for a strong passphrase.
 - **Kismet** — a passive wireless detector that builds a long-running database of every AP and client it
   hears (including per-client probed-SSID history) via a web UI, transmitting nothing.
 - **KRACK** — Key Reinstallation Attack (2017) against the 4-way handshake; patched in supplicants.
@@ -113,18 +131,30 @@ reference. Terms are added here by the main session as modules land (agents prop
   **without authenticating the network** — stops passive sniffing, not an active rogue/MITM.
 - **Passive vs active scanning** — discovery by listening for beacons (client transmits nothing) versus
   sending probe requests (faster, but the client transmits and may reveal preferred SSIDs).
+- **Passphrase entropy** — the number of equally-likely possibilities a guesser must cover; for
+  human-chosen WPA2 secrets, length raises it far more than character-class rules. The decisive control.
 - **PBKDF2** — the key-derivation function turning a WPA2-Personal passphrase + SSID (salt, 4096
   iterations) into the PMK; deterministic, so a guessed passphrase can be recomputed offline.
+- **pcap (classic)** — the original libpcap file format: a global header then one record per packet, with
+  a single link-layer type for the whole file; read everywhere but carries no per-packet annotations.
+- **pcapng** — the next-generation capture format (Wireshark's default): typed blocks holding multiple
+  interfaces and per-packet comments; converting pcapng → pcap is lossy.
 - **PMF / 802.11w** — Protected Management Frames; cryptographically protects deauth/disassoc and other
   management frames. Required in WPA3. Changes which attacks are possible.
 - **PMK / PTK / GTK** — Pairwise Master Key (derived from the PSK or 802.1X); Pairwise Transient Key
   (per-session, from the 4-way handshake); Group Temporal Key (for broadcast/multicast).
 - **PMKID** — an identifier some APs include in the first EAPOL message, derived from the PMK; when
   present it enables clientless capture. Not universal and **not fully passive**.
+- **PMKID derivation (PMK Name)** — the PMKID is `HMAC-SHA1-128(PMK, "PMK Name" || AA || SPA)` over the
+  two (known) MACs, so a captured PMKID is an offline oracle for the passphrase, like the handshake MIC.
+- **PMKID suppression** — disabling an AP's RSN-PMKID advertisement (where roaming does not need it) to
+  remove the clientless path; defence-in-depth only, firmware-dependent, no substitute for passphrase entropy.
 - **PNL (Preferred Network List)** — the list of SSIDs a client remembers and may probe/auto-join;
   central to KARMA/MANA and evil-twin viability.
 - **Probe request / probe response** — the active-scanning management frames: a client's request (which
   can expose its PNL) and an AP's reply advertising its parameters.
+- **Protected Frame flag (`wlan.fc.protected`)** — the Frame Control bit marking a frame whose payload is
+  encrypted (CCMP/GCMP); the MAC header stays cleartext, so addresses/subtype/sequence remain readable.
 - **Provenance (of a capture)** — the record of how and by whom a capture was generated (owned equipment,
   synthetic credentials) plus its redistribution licence; required alongside a checksum before shipping.
 - **PSK** — pre-shared key; the passphrase-derived secret in WPA2/WPA3-Personal.
@@ -147,14 +177,21 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **SHA-256 checksum** — a 64-hex fingerprint of a file's exact bytes; comparing a computed hash to a
   recorded one proves byte-for-byte integrity, but nothing about where the file came from (see provenance).
 - **SSID** — the human-readable network name advertised by an AP.
+- **Strong-password (no-crack) case** — a teaching setup where the passphrase is in no supplied list and
+  high-entropy, so recovery is not expected; the correct outcome is to conclude infeasibility and
+  recommend the control. Failing to crack is the right answer.
 - **Supplicant** — the client-side 802.1X/EAP entity (e.g. `wpa_supplicant`).
 - **TKIP** — a transitional WPA cipher built on RC4; deprecated. Legacy note only, no lab.
 - **ToDS / FromDS** — two Frame Control bits (DS = distribution system) that set what each address field
   means and the frame's direction (uplink, downlink, or AP-to-AP bridging).
+- **Traffic analysis (metadata)** — drawing conclusions from the cleartext parts of a capture (MACs,
+  SSIDs, timing, handshake/PMKID presence) without reading the encrypted payload — the key-less limit.
 - **Transition mode** — a BSS advertising both WPA3-SAE and WPA2-PSK for compatibility; the real
   downgrade surface for WPA3-Personal.
 - **Triangulation (AP location estimation)** — inferring an AP's likely position from many observations
   of its BSSID at different GPS points, weighted by signal; one observation only bounds where it was heard.
+- **tshark** — Wireshark's command-line counterpart; takes the same display filters
+  (e.g. `tshark -r file.pcapng -Y eapol`), used to script repeatable checks over a capture.
 - **USB passthrough** — detaching a USB device from the host so a guest VM can claim it; on VirtualBox it
   needs the Extension Pack, and Hyper-V has no general raw USB passthrough for a Wi-Fi adapter.
 - **Wardriving** — surveying wireless networks while moving, logging each AP/client's broadcast metadata

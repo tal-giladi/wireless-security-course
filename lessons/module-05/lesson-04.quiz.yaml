@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    On a WPA2 network you passively capture a data frame, read its source and destination MACs and its
+    sequence number, but see only ciphertext where the payload should be. Why is that split possible?
+  options:
+    - Wireshark decrypted the header using the RSN key advertised in the beacon but not the payload.
+    - CCMP encrypts the data payload while the MAC header stays cleartext so the network can route frames.
+    - The frame is actually a management frame, so only its payload happens to be left unencrypted.
+    - The capture caught the frame mid-association, before CCMP had been applied to the whole frame.
+  correct: 1
+  explanation: >-
+    CCMP protects the frame body; the MAC header (addresses, type/subtype, sequence) is always clear so
+    receivers can route, acknowledge, and order frames. That is why headers read but payloads do not.
+- id: q2
+  question: >-
+    A client asks you to passively capture their WPA2 office network and report exactly which websites
+    staff visit. What should you tell them about the limits of that plan?
+  options:
+    - It will work, because the destination URL travels in the cleartext MAC header of each data frame.
+    - It will work once you filter on wlan.fc.protected, which exposes the decrypted payload of each frame.
+    - Website contents are in the encrypted payload, so passive key-less capture cannot recover them.
+    - Websites are readable, but only from management frames, which the capture must be filtered to show.
+  correct: 2
+  explanation: >-
+    The application data, including which site, lives in the CCMP-encrypted payload. Passive capture
+    without the key yields metadata (MACs, timing, SSID), not payload contents.
+- id: q3
+  question: >-
+    Someone argues that capturing a WPA2 network is pointless because everything is encrypted. What is
+    the strongest correction?
+  options:
+    - They are right; without the passphrase a capture contains no usable information of any kind at all.
+    - They are right about data, but control frames carry the full payload in the clear as a fallback.
+    - Beacons are encrypted too, so the only readable thing is the capture's own radiotap metadata.
+    - Traffic metadata, who talks to whom, when, how much, on which SSID, is cleartext and often revealing.
+  correct: 3
+  explanation: >-
+    Only payloads are protected. Addresses, SSIDs, timing, volume, and the presence of a handshake are
+    all cleartext metadata, so traffic analysis is possible and frequently informative without any key.
+- id: q4
+  question: >-
+    A WPA3 network enables Protected Management Frames (PMF). What does that change for a passive listener
+    hoping to read the SSID and the device MACs?
+  options:
+    - Nothing for reading them; PMF adds authenticity to some management frames, not confidentiality of the air.
+    - It hides the SSID and MACs, because PMF encrypts beacons and probe responses end to end.
+    - It encrypts the MAC header of every frame, so addresses become unreadable without the session key.
+    - It blocks passive capture entirely, because PMF frames are rejected by any unassociated receiver.
+  correct: 0
+  explanation: >-
+    PMF adds integrity and replay protection to a subset of management frames so they cannot be forged.
+    It does not encrypt beacons or addressing, so SSIDs and MACs stay readable to a passive listener.
