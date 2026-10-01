@@ -25,8 +25,8 @@ Run `npm run check-course` until 0 problems before declaring done.
 
 ## Phase 1 — content (each = lessons .md + .quiz.yaml + labs + module quiz + log)
 - [x] M0 Onboarding & safe lab practice (core) — 3 lessons + quizzes + module quiz, 0 import problems
-- [ ] M1 RF & 802.11 fundamentals (core)
-- [ ] M2 Wi-Fi security protocols & the secure baseline (core)
+- [x] M1 RF & 802.11 fundamentals (core) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
+- [x] M2 Wi-Fi security protocols & the secure baseline (core) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [ ] M3 Building your lab — three paths (core)
 - [ ] M4 Wireless reconnaissance (core)
 - [ ] M5 Capturing & analysing 802.11 (core)

@@ -1,0 +1,65 @@
+- id: q1
+  question: >-
+    A client finds a network without transmitting anything itself, simply by listening on each channel.
+    Which discovery method is this, and what frame does it rely on?
+  options:
+    - Active scanning, relying on the probe responses that each AP sends back to a broadcast request.
+    - Open-system authentication, relying on the two authentication frames exchanged with the AP.
+    - Association, relying on the association response that carries the client's new Association ID.
+    - Passive scanning, relying on the beacon frames an AP broadcasts periodically on its channel.
+  correct: 3
+  explanation: >-
+    Passive scanning means the client only listens for the AP's periodic beacons, transmitting nothing.
+    Active scanning is the method that uses probe requests and responses.
+- id: q2
+  question: >-
+    A capture of a WPA2 join shows "Authentication, Success" before the association request. What does
+    that success actually prove about the client's passphrase?
+  options:
+    - It proves the AP verified the passphrase, since authentication is by definition a credential check.
+    - Nothing about the passphrase; modern 802.11 authentication is open-system and verifies no credential.
+    - It proves the 4-way handshake already completed, because authentication always follows the handshake.
+    - It proves the client is on the allowlist, because only allowlisted clients can authenticate at all.
+  correct: 1
+  explanation: >-
+    On WPA2/WPA3-Personal the 802.11 authentication step is open-system, a formality that always
+    succeeds and checks no credential. The passphrase is proven later, in the post-association handshake.
+- id: q3
+  question: >-
+    Where in a WPA2-Personal join does the real key agreement (the 4-way handshake) occur relative to
+    association?
+  options:
+    - After the association response, carried in EAPOL data frames once the client has joined the BSS.
+    - Before any scanning, so that the client only ever beacons for networks it already shares a key with.
+    - During open-system authentication, which is why that step reports success only with a valid key.
+    - Inside the beacon frame itself, so a passive listener can derive the session keys without joining.
+  correct: 0
+  explanation: >-
+    The handshake runs after association, in EAPOL data frames, to derive the session keys before
+    encrypted data flows. Discovery and open-system authentication precede it and involve no keys.
+- id: q4
+  question: >-
+    Why are deauthentication and disassociation frames the lever behind deauth attacks, in terms of the
+    join state machine?
+  options:
+    - They are encrypted control frames, so forging one proves the attacker already holds the session key.
+    - They carry the client's Association ID, so replaying one silently promotes an attacker onto the BSS.
+    - They move the client backward out of the associated state, forcing it to rejoin from an earlier step.
+    - They are beacon subtypes, so flooding them overwrites the AP's advertised SSID with the attacker's.
+  correct: 2
+  explanation: >-
+    A deauth returns the client toward the unauthenticated state and a disassociation drops it to merely
+    authenticated, forcing a rejoin. Unless management frames are protected (PMF), these are forgeable.
+- id: q5
+  question: >-
+    On the virtual (`mac80211_hwsim`) path you bring up an open BSS and watch a client associate. What
+    does this lab legitimately prove, and what does it not?
+  options:
+    - It proves real monitor mode and injection work, but not that your driver supports AP mode on hardware.
+    - It proves your physical adapter's range and interference handling, but not the protocol sequence itself.
+    - It proves nothing, because simulated radios cannot carry authentication or association frames at all.
+    - It proves you can reproduce the auth/association flow, but not real RF, drivers, range, or injection.
+  correct: 3
+  explanation: >-
+    Simulated radios reproduce the protocol flow end to end with no hardware, but they do not model real
+    RF, drivers, range, interference, or monitor/injection behaviour — that is the physical path.

@@ -9,3 +9,17 @@
   - [02 · Readiness self-check and preparation path](lessons/module-00/lesson-02.md)
   - [03 · Safety, containment, and the law](lessons/module-00/lesson-03.md)
   - [Module 0 quiz](assessments/module-00-quiz.md)
+
+- Stage 1 — Foundations & setup
+- **Module 1 — RF & 802.11 fundamentals**
+  - [04 · Radio basics for hackers — spectrum, power, and antennas](lessons/module-01/lesson-01.md)
+  - [05 · Bands and channels — 2.4, 5, and 6 GHz, width, DFS, and regulatory domains](lessons/module-01/lesson-02.md)
+  - [06 · The 802.11 frame — management, control, data, addressing, and radiotap](lessons/module-01/lesson-03.md)
+  - [07 · Joining a network — beacons, probes, authentication, and association](lessons/module-01/lesson-04.md)
+  - [Module 1 quiz](assessments/module-01-quiz.md)
+- **Module 2 — Wi-Fi security protocols & the secure baseline**
+  - [08 · The protocol family — Open, OWE, WPA2, WPA3, Enterprise, and PMF](lessons/module-02/lesson-01.md)
+  - [09 · Key hierarchies at a glance — PSK, PMK, PTK, SAE, and 802.1X](lessons/module-02/lesson-02.md)
+  - [10 · The secure wireless baseline](lessons/module-02/lesson-03.md)
+  - [11 · Legacy and deprecated — WEP, TKIP, and RC4](lessons/module-02/lesson-04.md)
+  - [Module 2 quiz](assessments/module-02-quiz.md)

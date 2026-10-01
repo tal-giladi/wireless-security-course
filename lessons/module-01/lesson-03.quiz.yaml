@@ -1,0 +1,64 @@
+- id: q1
+  question: >-
+    In a captured frame the 802.11 header shows ToDS=1 and FromDS=0. What does Addr1 hold, and what is
+    the frame's direction?
+  options:
+    - Addr1 holds the client's MAC, and the frame is downlink traffic travelling from the AP to the client.
+    - Addr1 holds the source behind the AP, and the frame is being bridged between two access points.
+    - Addr1 holds the BSSID (the AP), and the frame is uplink traffic travelling from the client to the AP.
+    - Addr1 holds a broadcast address, and the frame is a beacon advertised to every client in range.
+  correct: 2
+  explanation: >-
+    ToDS=1/FromDS=0 is the client-to-AP (uplink) case. Addr1 is always the receiver of the hop, which
+    here is the AP's BSSID; Addr2 is the transmitting client.
+- id: q2
+  question: >-
+    A capture of a WPA2 network shows the data payloads as encrypted, yet you can still list which
+    client talks to which AP and count management frames. Why?
+  options:
+    - The 802.11 MAC header, including the addresses and type/subtype, is not encrypted even when the payload is.
+    - Wireshark silently decrypts the headers for you using a key it recovers from the beacon frames.
+    - WPA2 encrypts only the data frames, so the addresses on management frames remain fully in cleartext.
+    - The radiotap header carries a decrypted copy of the addresses that your adapter adds on capture.
+  correct: 0
+  explanation: >-
+    Only the payload is protected; the MAC header (addresses, type/subtype, sequence) is always
+    readable. That is why traffic analysis is possible without any key.
+- id: q3
+  question: >-
+    Which statement about the radiotap header in a monitor-mode capture is correct?
+  options:
+    - It is part of every 802.11 frame and is transmitted over the air ahead of the MAC header.
+    - It is only present on management frames and is stripped from data and control frames by the driver.
+    - It replaces the FCS so that corrupted frames can still be dissected by the capture tool.
+    - It is metadata your receiver prepends — channel, rate, signal — and is not sent over the air.
+  correct: 3
+  explanation: >-
+    Radiotap is the receiver's annotation (channel, rate, RSSI, flags), added on capture. It never
+    travels over the air, so its fields describe how you heard the frame, not what the device sent.
+- id: q4
+  question: >-
+    A tester wants to recognise a deauthentication event and the WPA2 4-way handshake in a trace. In
+    which frame types do these respectively live?
+  options:
+    - Deauth is a control frame, and the handshake rides inside separate control frames called Block Acks.
+    - Deauth is a management frame; the handshake's EAPOL messages ride inside data frames.
+    - Both deauth and the handshake are management frames of the same subtype distinguished only by length.
+    - Deauth is a data frame, and the handshake is advertised directly in the AP's beacon frames.
+  correct: 1
+  explanation: >-
+    Deauthentication is a management subtype; the EAPOL messages of the 4-way handshake are carried in
+    data frames. Knowing the type tells you where to look in a capture.
+- id: q5
+  question: >-
+    You report "the client transmitted this frame at −50 dBm." A reviewer corrects you. What is the
+    accurate description of that −50 dBm value?
+  options:
+    - It is the signal strength at which your receiver heard the frame, read from the radiotap header.
+    - It is the transmit power the client set, encoded in the 802.11 frame control field it sent.
+    - It is the AP's configured output power, copied into the beacon and echoed on every client frame.
+    - It is the path loss between the two devices, computed and inserted by the 802.11 MAC layer.
+  correct: 0
+  explanation: >-
+    RSSI in radiotap is received signal strength at your adapter, not a transmit power the device
+    announced. Attributing it to the sender confuses receiver metadata with the over-the-air frame.

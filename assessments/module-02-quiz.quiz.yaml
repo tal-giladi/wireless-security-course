@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    A client connects to a passwordless public Wi-Fi that your tools label "OWE". A colleague concludes
+    the traffic is both private and safe from a rogue AP. Which part of that conclusion is wrong, and why?
+  options:
+    - Neither part is wrong — OWE both encrypts the traffic and cryptographically authenticates the real access point.
+    - The privacy part is wrong — OWE leaves traffic in cleartext and only hides the SSID from passive listeners.
+    - The anti-rogue part is wrong — OWE encrypts per client but authenticates nothing, so a rogue AP can still impersonate the SSID.
+    - Both parts are wrong — OWE neither encrypts traffic nor prevents impersonation and is just a renamed Open network.
+  correct: 2
+  explanation: >-
+    OWE (RFC 8110) gives each client a unique key, defeating passive sniffing, but there is no password
+    or server, so the network is not authenticated and an active rogue/MITM remains possible.
+- id: q2
+  question: >-
+    Two networks share the SSID "Lab". Network A's beacon advertises only the SAE AKM with PMF required;
+    network B's advertises both SAE and PSK. Which is the better offline-cracking target, and why?
+  options:
+    - Network B, because its PSK fallback still yields a crackable 4-way handshake despite the SAE advertisement.
+    - Network A, because SAE with PMF produces the richest handshake material for a wordlist attack.
+    - Neither, because advertising SAE anywhere on a BSS removes all offline-crackable material from it.
+    - Network B, but only after its PMF is disabled, since PMF is what makes a handshake crackable.
+  correct: 0
+  explanation: >-
+    Network B is in transition mode: a WPA2 client still negotiates PSK and produces a crackable
+    handshake. SAE-only network A yields no offline-crackable hash, and PMF does not create crackable material.
+- id: q3
+  question: >-
+    During a WPA3-SAE lab a tester cannot disconnect a client with forged deauthentication frames and
+    assumes the capture rig is broken. What is actually happening, and what should the lab design do?
+  options:
+    - SAE encrypts deauth frames with the passphrase, so the tester must supply the PSK to the tool first.
+    - The adapter has dropped out of monitor mode, so the lab should restart the interface and retry the deauth.
+    - PMF is rejecting the forged deauth as designed, so a successful deauth must not be a prerequisite for WPA3 labs.
+    - The client is simply out of range, so the lab should increase transmit power until the deauth lands.
+  correct: 2
+  explanation: >-
+    WPA3-SAE requires PMF, which protects deauth/disassoc frames, so a forged deauth is rejected. That
+    rejection is expected behaviour, which is why WPA3 labs are designed not to depend on a successful deauth.
+- id: q4
+  question: >-
+    A reviewer asks why a captured WPA2-PSK handshake can be cracked offline but a captured
+    WPA2-Enterprise session cannot, even though both end in a 4-way handshake. What is the correct reason?
+  options:
+    - Enterprise handshakes are always protected by PMF, which encrypts the EAPOL frames end-to-end.
+    - The Enterprise PMK comes from the 802.1X/EAP exchange and is effectively random, not derived from a guessable passphrase.
+    - WPA2-Enterprise never performs a 4-way handshake, so there is no MIC in the capture to attack at all.
+    - Enterprise uses a 512-bit PMK while Personal uses 256-bit, which is the whole difference in crackability.
+  correct: 1
+  explanation: >-
+    In Personal the PMK is PBKDF2 of the passphrase and SSID, so each guess can be recomputed offline.
+    In Enterprise the PMK is produced by the EAP exchange and is effectively random, so there is no passphrase to guess.
+- id: q5
+  question: >-
+    A small office has WPA2-PSK with passphrase "office2021", guests and finance laptops on one subnet,
+    and WPS PIN enabled. Which change gives the largest risk reduction with a clear vulnerable-vs-hardened measurement?
+  options:
+    - Replace the weak passphrase and disable WPS; measure that a bounded crack recovers the old key but fails against a strong one.
+    - Raise the AP transmit power to improve coverage; measure that the signal now reaches every office corner.
+    - Enable the guest SSID's captive portal; measure that guests now see a login page before Internet access.
+    - Shorten the DHCP lease time on the shared subnet; measure that stale client addresses expire more quickly.
+  correct: 0
+  explanation: >-
+    A weak passphrase plus WPS are the most severe, measurable weaknesses here. The bounded-vs-strong
+    crack is exactly the measurement, and disabling WPS removes the Pixie Dust / PIN attack surface.
+- id: q6
+  question: >-
+    An administrator hardens the Enterprise clients so they validate the RADIUS server certificate and
+    expected identity. In a later lab, how is that hardening proven to work?
+  options:
+    - The hardened client connects faster than before, which shows the certificate check added no overhead.
+    - The AP's beacon now advertises the SAE AKM instead of 802.1X, confirming the client policy took effect.
+    - The hardened client's traffic becomes unreadable in monitor mode, proving the certificate encrypted it.
+    - A rogue RADIUS server captures credentials from an unhardened client but the hardened client refuses and logs why.
+  correct: 3
+  explanation: >-
+    The measurable test is the rogue-server scenario: the careless client leaks credentials while the
+    correctly configured client rejects the untrusted server and records the reason. That is the proof.
+- id: q7
+  question: >-
+    You find a device on a client network still using WEP. The owner says "it's encrypted, so it's
+    fine." What is the accurate finding and remediation, consistent with this course's approach?
+  options:
+    - WEP is acceptable for low-value devices, so the finding is informational only and needs no change.
+    - WEP is deprecated and effectively unprotected; upgrade or replace the device, or isolate it as untrusted if it cannot be upgraded.
+    - WEP must be cracked on site to prove the weakness before any remediation can be recommended to the owner.
+    - WEP only needs a longer key to be secure, so the remediation is to raise it from 64-bit to 128-bit.
+  correct: 1
+  explanation: >-
+    WEP's IV reuse and RC4 flaws make it recoverable regardless of key length. It is a finding on its
+    own merits — you need not crack it — and the fix is upgrade/replace, or isolate the device if it cannot be.
+- id: q8
+  question: >-
+    A consumer AP is set to "WPA/WPA2 mixed mode" with TKIP enabled alongside CCMP. Why is the presence
+    of TKIP worth reporting even though CCMP is also available?
+  options:
+    - TKIP silently disables PMF for the whole BSS, so protected management frames stop working entirely.
+    - TKIP broadcasts the network passphrase in cleartext, so any passive listener can read it from the air.
+    - TKIP forces all clients onto WEP-style static keys that can be recovered within minutes of capture.
+    - TKIP is RC4-based and deprecated, so offering it keeps a weaker cipher negotiable and caps legacy behaviour; set CCMP-only.
+  correct: 3
+  explanation: >-
+    TKIP wraps the deprecated RC4 cipher; leaving it enabled means a weaker cipher can still be
+    negotiated. The remediation is CCMP (AES) only, moving toward WPA3-SAE where supported.

@@ -1,0 +1,30 @@
+# SAMPLE AP CONFIGURATION — INTENTIONALLY VULNERABLE (teaching artifact, hostapd-style)
+# For Lesson 02.3 baseline audit. Synthetic lab config; not a real deployment.
+# Audit this against baseline-checklist.md and mark each control vulnerable/hardened.
+
+interface=wlan0
+driver=nl80211
+ssid=OfficeWiFi               # same SSID used for guests AND internal (no segmentation)
+hw_mode=g
+channel=6
+
+# --- Security: WPA2-PSK, mixed cipher, PMF OFF ---
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP CCMP        # TKIP still offered (deprecated, Lesson 02.4)
+rsn_pairwise=TKIP CCMP
+wpa_passphrase=office2021     # short, dictionary-like passphrase (crackable)
+ieee80211w=0                  # PMF disabled -> forged deauth succeeds
+
+# --- WPS enabled with external PIN ---
+wps_state=2                   # 2 = configured/enabled
+ap_setup_locked=0
+config_methods=label display push_button keypad   # PIN methods exposed (Pixie Dust / PIN brute surface)
+
+# --- Management plane ---
+# admin_password=admin        # default admin credentials (documented here; set on the device UI)
+# remote_management=on        # WAN-side management reachable
+# firmware: 2 years old, no advisory tracking
+
+# --- No guest isolation / no VLAN separation configured ---
+# ap_isolate=0                # clients can reach each other

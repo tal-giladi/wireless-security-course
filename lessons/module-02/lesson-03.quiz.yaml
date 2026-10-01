@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    The course says every major lab compares a vulnerable configuration with a hardened one and
+    measures the difference. What does defining the secure baseline in Module 2 provide for that rule?
+  options:
+    - A list of tools each later module must install before it can run any of its attack exercises.
+    - A guarantee that a hardened network cannot be attacked by any technique taught later in the course.
+    - The reference configuration later attacks are measured against, so "the control works" is a provable result.
+    - A replacement for the attack modules, since a well-configured network needs no further testing at all.
+  correct: 2
+  explanation: >-
+    The baseline is the reference point. Without it, "I ran a tool" has no meaning; with it, each attack
+    has a hardened counterpart and demonstrating that the control works is a passing outcome.
+- id: q2
+  question: >-
+    A small office puts guests and the finance laptops on the same SSID and subnet "to keep it simple."
+    Which hardened change addresses this, and how would a later lab measure that it worked?
+  options:
+    - Enable WPS push-button onboarding; measure that guests can connect without typing a passphrase.
+    - Raise the AP's transmit power; measure that the guest signal now reaches the whole office floor.
+    - Rotate the Wi-Fi passphrase monthly; measure that old passphrases stop authenticating after rotation.
+    - Add a guest VLAN with client isolation and firewall rules; measure that a guest client can no longer reach an internal host.
+  correct: 3
+  explanation: >-
+    Segmentation separates guest from internal. The measurable test is reaching an internal host from a
+    guest client: it succeeds on the flat network and is blocked once segmentation is in place.
+- id: q3
+  question: >-
+    Why does the baseline treat client policy — server-cert validation, MAC randomisation, and auto-join
+    hygiene — as part of wireless defence rather than purely an AP concern?
+  options:
+    - Because access points cannot be meaningfully hardened, so every wireless control has to be enforced on the client side instead.
+    - Because clients misbehave on their own — a remembered SSID or a skipped server-cert check is what evil-twin and rogue-RADIUS attacks exploit.
+    - Because MAC randomisation performed on the client is what actually encrypts the 4-way handshake against passive capture.
+    - Because the client's settings determine which firmware version the access point runs and therefore which CVEs apply to it.
+  correct: 1
+  explanation: >-
+    Client behaviour decides the outcome of client-side attacks. Auto-join to a remembered SSID feeds
+    evil twins, and a client that skips server-cert validation hands credentials to a rogue RADIUS.
+- id: q4
+  question: >-
+    An administrator leaves WPS PIN onboarding enabled "for easy printer setup." What is the baseline
+    recommendation, and why?
+  options:
+    - Disable WPS, or at most limit it to time-boxed push-button, because WPS PIN has a history of offline and online attacks.
+    - Keep WPS PIN enabled but lengthen the PIN to sixteen digits, which makes brute forcing computationally infeasible.
+    - Keep WPS enabled and rely on PMF, since protected management frames fully neutralise every WPS attack.
+    - Replace WPS with an open guest SSID, because onboarding convenience matters more than the small residual risk.
+  correct: 0
+  explanation: >-
+    WPS PIN is attackable (Pixie Dust offline and PIN brute online). The baseline is to disable it, or
+    limit to time-boxed push-button only, never leaving the external PIN method enabled.

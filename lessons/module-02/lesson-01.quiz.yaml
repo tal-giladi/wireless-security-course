@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A coffee shop runs an "Enhanced Open" (OWE) network with no password. A customer asks whether OWE
+    means nobody can impersonate the shop's access point. What is the accurate answer?
+  options:
+    - Yes, because OWE cryptographically binds each client to that specific access point's identity.
+    - Yes, because the OWE Diffie-Hellman exchange includes a signed certificate from the real AP.
+    - No, because OWE encrypts the traffic but authenticates nothing, so a rogue AP can still impersonate the SSID.
+    - No, because OWE provides authentication but deliberately leaves all of the traffic unencrypted.
+  correct: 2
+  explanation: >-
+    OWE (RFC 8110) gives each client a unique encryption key, defeating passive sniffing, but there is
+    no password or server, so the network is not authenticated and an active rogue/MITM is still possible.
+- id: q2
+  question: >-
+    You passively capture a beacon whose RSN element lists both the SAE and the PSK authentication key
+    management selectors. What does this single fact tell you about the network?
+  options:
+    - It is a WPA3/WPA2 transition-mode BSS, so a WPA2 client can still negotiate a crackable PSK handshake.
+    - It is a WPA3-SAE-only network, so no client on it can ever produce an offline-crackable handshake.
+    - It is a WPA2-Enterprise network using 802.1X, so each user authenticates to a RADIUS server.
+    - It is an OWE network, so the traffic is encrypted but the access point authenticates nothing at all.
+  correct: 0
+  explanation: >-
+    Two AKM selectors (SAE and PSK) in one RSNE is transition mode. The SAE advertisement does not
+    protect the PSK fallback path, which still yields a crackable 4-way handshake.
+- id: q3
+  question: >-
+    A WPA3-SAE network has PMF required (MFPR set). A tester complains that their deauthentication
+    frames are being ignored and the lab must be broken. What is the correct interpretation?
+  options:
+    - The deauth is failing because SAE encrypts management frames end-to-end with the shared passphrase.
+    - The lab is genuinely broken, since a forged deauth should always succeed against any WPA3 network.
+    - PMF only protects data frames, so the tester should retarget the deauth at the group temporal key.
+    - PMF is working as designed, rejecting the forged deauth, so successful deauth must not be a lab prerequisite.
+  correct: 3
+  explanation: >-
+    PMF/802.11w protects robust management frames including deauth, so a forged deauth is rejected on a
+    PMF-required network. That rejection is the expected behaviour, not a fault.
+- id: q4
+  question: >-
+    Which field inside a beacon's RSN information most directly tells you whether a network uses
+    WPA2-Personal, WPA3-SAE, Enterprise, or OWE?
+  options:
+    - The group cipher suite, because each security mode is defined by whether it uses CCMP or TKIP.
+    - The Authentication and Key Management (AKM) suite selector, which names PSK, SAE, 802.1X, or OWE.
+    - The RSN Capabilities bits, because the MFPC and MFPR flags uniquely identify each security mode.
+    - The pairwise cipher suite, because Personal, Enterprise, and OWE each mandate a distinct cipher.
+  correct: 1
+  explanation: >-
+    The AKM selector is the field that distinguishes the security mode. Ciphers and PMF bits are mostly
+    shared across modern modes, so they do not identify the mode on their own.

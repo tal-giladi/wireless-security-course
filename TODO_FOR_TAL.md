@@ -26,8 +26,16 @@ recommended) before or during content build. Honest unresolved-items list (revie
 - Tool versions in `TOOLS.md` (hcxdumptool/hashcat/eaphammer/hostapd-* etc.).
 - Current OSWP syllabus (re-check before publishing the coverage matrix).
 
-## Not started yet (see BUILD_PROGRESS.md)
-TOOLS.md, _sidebar.md, glossary.md, references/, labs/common/, all lessons, simulations, capstones,
-release checks.
+## Captures must be generated on a real run (never invented)
+Every shipped capture is `PENDING` until generated. The recorded-data labs reference these; they are
+produced by `labs/common/gen-captures.sh` on the virtual (`mac80211_hwsim`) path — no wireless hardware
+needed — and committed with real SHA-256 only after a verified run. **Action:** run the generator on a
+Linux box once modules settle, paste checksums into `labs/common/CAPTURES.md`, commit the (small) files.
+Still-needed generators to add to `gen-captures.sh` (shared file, main session): a beacon set across
+security modes (`baseline-beacons.pcapng`, used by M2) and an SAE exchange (`wpa3-sae.pcapng`, M2);
+module-01 join/beacon/probe captures + V-path configs referenced by M1 labs.
+
+## Progress
+Done & verified (0 import problems): scaffolding, M0, M1, M2. See `BUILD_PROGRESS.md`.
 
 Course is **not** ready to import yet.

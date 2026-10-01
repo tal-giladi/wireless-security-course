@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    An attacker wants only to passively capture frames from a distant AP. Which single change improves
+    what their monitor interface can hear, without increasing what it transmits?
+  options:
+    - Fitting a higher-gain directional antenna aimed at that AP, because antenna gain is reciprocal.
+    - Raising the adapter's transmit power to the maximum the regulatory domain permits for that band.
+    - Switching the adapter from monitor mode into managed mode so it associates with the AP first.
+    - Widening the channel to 160 MHz so that more of the AP's spectrum is covered at once.
+  correct: 0
+  explanation: >-
+    Capturing is receiving; antenna gain is reciprocal, so a directional antenna raises the received
+    signal. TX power only affects transmission, and managed mode or wider channels do not help reception.
+- id: q2
+  question: >-
+    A signal leaves one AP at −45 dBm at your receiver and another at −75 dBm. How much stronger is the
+    first signal, and what does that imply?
+  options:
+    - 30 dBm stronger, meaning the second AP is transmitting with roughly thirty times less power.
+    - About 1000 times stronger, so the first AP is far easier to capture a clean handshake from.
+    - 30% stronger, a minor difference that has essentially no effect on capture reliability at all.
+    - Exactly twice as strong, because every 15 dB step corresponds to a simple doubling of power.
+  correct: 1
+  explanation: >-
+    A 30 dB difference is 10^3, about 1000×. dBm is received power, not transmit power, so the stronger
+    link is the one you can reliably capture from.
+- id: q3
+  question: >-
+    Why does a 2.4 GHz network typically reach farther through an indoor wall than a 5 GHz network at
+    the same transmit power?
+  options:
+    - Because 2.4 GHz uses wider channels, which concentrates more energy into each transmitted frame.
+    - Because 5 GHz radios are legally capped at a far lower transmit power in every regulatory domain.
+    - Because the longer 2.4 GHz wavelength diffracts around and penetrates obstacles more effectively.
+    - Because 2.4 GHz antennas always have higher gain than the antennas built for the 5 GHz band.
+  correct: 2
+  explanation: >-
+    Lower frequency means a longer wavelength, which diffracts around and penetrates obstacles better,
+    so 2.4 GHz generally travels farther indoors while 5 GHz offers more channels and higher rates.
+- id: q4
+  question: >-
+    You read a link budget: 20 dBm transmitter, +5 dBi transmit antenna, −60 dB path loss, +5 dBi
+    receive antenna. What is the signal at the receiver, and is it workable against a −90 dBm sensitivity?
+  options:
+    - −20 dBm, which is below the receiver's sensitivity floor and so cannot be decoded at all.
+    - −60 dBm, meaning the link sits right at the noise floor and will decode only intermittently.
+    - +10 dBm, a level high enough that it would overload and desensitise the receiver's front end.
+    - −30 dBm, which is 60 dB above the sensitivity floor and therefore a very strong, workable link.
+  correct: 3
+  explanation: >-
+    Gains and losses in dB add to the dBm level: 20 + 5 − 60 + 5 = −30 dBm, which is 60 dB above a
+    −90 dBm sensitivity floor — a strong link.

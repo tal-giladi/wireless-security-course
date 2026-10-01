@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    In WPA2-Personal, why can an attacker who captures a 4-way handshake test passphrase guesses
+    entirely offline, with no further contact with the network?
+  options:
+    - Because the handshake transmits the Pairwise Transient Key in cleartext in the fourth message.
+    - Because the access point echoes the passphrase back inside the encrypted Group Temporal Key.
+    - Because the 4096-iteration PBKDF2 step is skipped whenever the client has connected once before.
+    - Because the PMK is PBKDF2 of the passphrase and SSID, so each guess can be recomputed and matched against the captured MIC.
+  correct: 3
+  explanation: >-
+    The PMK is a deterministic function of passphrase and SSID. A cracker recomputes PMK then PTK then
+    MIC for each guess and compares it to the captured MIC, all offline. Nothing is sent in cleartext.
+- id: q2
+  question: >-
+    A tester captures a complete WPA3-SAE authentication exchange and wants to recover the passphrase
+    offline with hashcat. What is the fundamental obstacle?
+  options:
+    - The SAE frames are encrypted with the GTK, so they must be decrypted with the group key first.
+    - The passive capture contains no passphrase-only quantity to recompute and compare, so there is nothing to crack offline.
+    - The capture is crackable, but only after converting it to the hc22000 format with hcxtools first.
+    - The SAE exchange uses a 512-bit PMK, which is simply beyond current hardware to brute force.
+  correct: 1
+  explanation: >-
+    SAE's commit/confirm values depend on the live Diffie-Hellman exchange, not on the passphrase alone,
+    so a passive capture offers an offline cracker nothing to compare against — it is structural, not a key-length issue.
+- id: q3
+  question: >-
+    In the 4-way handshake, what is the role of the ANonce and SNonce in deriving the PTK?
+  options:
+    - They are the random values from the AP and client that, with the PMK and MAC addresses, derive a fresh per-session PTK.
+    - They are the two halves of the passphrase, split between the AP and client for transport security.
+    - They are sequence counters that only prevent replay and play no part in deriving the PTK.
+    - They are the encrypted GTK fragments that the client reassembles to protect broadcast traffic.
+  correct: 0
+  explanation: >-
+    The ANonce (AP) and SNonce (client) are fresh random nonces. Combined with the PMK and both MAC
+    addresses in a PRF, they produce a unique per-session PTK without sending it over the air.
+- id: q4
+  question: >-
+    Why can you not run a wordlist against a captured WPA2-Enterprise (802.1X) session the same way you
+    would against WPA2-Personal?
+  options:
+    - Because Enterprise sessions are always protected by PMF, which encrypts the entire 4-way handshake.
+    - Because Enterprise uses a 256-character machine-generated passphrase that no wordlist could contain.
+    - Because the Enterprise PMK comes from the EAP exchange and is effectively random per session, not a function of a guessable secret.
+    - Because the RADIUS server stores the PMK, so the handshake over the air never actually contains it.
+  correct: 2
+  explanation: >-
+    In Enterprise the PMK is produced by the 802.1X/EAP exchange and is effectively random per session,
+    so there is no guessable passphrase to recompute it from. The attackable material lives elsewhere (Modules 10-11).

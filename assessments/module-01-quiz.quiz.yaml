@@ -1,0 +1,105 @@
+- id: q1
+  question: >-
+    A learner can only capture faintly from an AP two rooms away and asks how to hear it better without
+    breaking the Module 0 containment rules. Which change is both effective and containment-friendly?
+  options:
+    - Raise the adapter's transmit power to maximum so the link budget in both directions improves.
+    - Change the regulatory domain to one that permits higher power on this band for extra reach.
+    - Fit a directional antenna aimed at that AP, raising received signal while focusing away from others.
+    - Widen the monitor interface to 160 MHz so it captures more of the AP's spectrum at once.
+  correct: 2
+  explanation: >-
+    Capture is reception, and antenna gain is reciprocal, so a directional antenna raises received
+    signal and, by pointing away from other networks, aids containment. TX power and domain spoofing
+    only increase the over-the-air footprint.
+- id: q2
+  question: >-
+    Two 2.4 GHz APs read −50 dBm and −80 dBm at your receiver. A colleague says "they are basically the
+    same, 30 is a small number." How should you correct this, and what follows for capture?
+  options:
+    - The −50 dBm signal is about 1000 times stronger, so it is the one you can reliably capture from.
+    - They differ by 30%, a negligible gap, so either AP is equally easy to capture a handshake from.
+    - The −80 dBm signal is stronger because a larger negative number means more received power overall.
+    - The difference is 30 dBm of transmit power, so the weaker AP is simply configured to send less.
+  correct: 0
+  explanation: >-
+    dB is logarithmic: 30 dB is 10^3, about 1000×. Values closer to zero are stronger, and dBm is
+    received power, not transmit power, so the −50 dBm AP is far easier to capture from.
+- id: q3
+  question: >-
+    A capture on 2.4 GHz channel 6 is empty, yet a scan lists the target "on channel 6." Before blaming
+    the adapter, which explanation should you rule out first?
+  options:
+    - The passphrase is wrong, so the AP is silently refusing to emit any frames the capture could see.
+    - The FCS is failing on every frame, so the capture tool is discarding all of them before display.
+    - The radiotap header is missing, so Wireshark cannot associate the frames with channel 6 at all.
+    - The "channel 6" is a 5 GHz channel, so a 2.4 GHz capture never covers that frequency at all.
+  correct: 3
+  explanation: >-
+    Channel numbers repeat across bands, so a target "on 6" may be in 5 GHz, which a 2.4 GHz capture
+    cannot reach. Confirm band and channel with a full scan before suspecting hardware.
+- id: q4
+  question: >-
+    Mid-capture, a 5 GHz target goes quiet and reappears on another channel while no attack is running.
+    What is the most likely cause, and is it a security event?
+  options:
+    - A nearby client sent a deauth that bounced the AP to a new channel; it is an attack you should log.
+    - DFS made the AP vacate a radar-shared channel; it is regulatory behaviour, not a security event.
+    - The regulatory domain was spoofed, moving every AP in range; it is a configuration attack to report.
+    - The channel width renegotiated upward, which always forces a move; it is a benign performance tweak.
+  correct: 1
+  explanation: >-
+    On DFS channels an AP must listen for radar and vacate when it detects a pattern, so a quiet-then-
+    moved target is normal regulatory behaviour rather than an attack.
+- id: q5
+  question: >-
+    In a capture you see a data frame on a WPA2 network. The payload is encrypted, but you can still
+    read the source and destination MACs and the frame subtype. What does this tell you?
+  options:
+    - The 802.11 MAC header is unencrypted, so traffic analysis works without any key on protected networks.
+    - Wireshark has decrypted the frame using a key it extracted from the AP's beacon advertisement.
+    - This must be an open network, because on WPA2 the addresses would also be encrypted and unreadable.
+    - The frame is actually a management frame, since only those keep their addresses in the clear.
+  correct: 0
+  explanation: >-
+    Only the payload is protected; the MAC header (addresses, type/subtype, sequence) is always
+    readable. That is why you can map who talks to whom without recovering any key.
+- id: q6
+  question: >-
+    A frame's 802.11 header shows ToDS=0, FromDS=1, and the radiotap header reports −60 dBm. How should
+    you describe the frame's direction and that −60 dBm value in a report?
+  options:
+    - Uplink from client to AP, received at −60 dBm, with the client's transmit power set to −60 dBm.
+    - AP-to-AP bridged traffic, and −60 dBm is the path loss the MAC layer computed for the hop.
+    - Downlink from AP to client, and −60 dBm is a beacon interval field carried inside the frame.
+    - Downlink from AP to client, received by your adapter at −60 dBm per the radiotap metadata.
+  correct: 3
+  explanation: >-
+    ToDS=0/FromDS=1 is the AP-to-client (downlink) case. The −60 dBm is radiotap received-signal
+    metadata your adapter added, not a transmit power or a field the device sent over the air.
+- id: q7
+  question: >-
+    A learner reports "the client authenticated, so the AP accepted its WPA2 passphrase." Tracing the
+    capture, where is the passphrase actually proven, and what did the authentication frames show?
+  options:
+    - The passphrase is proven in the probe response, and the authentication frames carried the PMK in clear.
+    - The passphrase is proven in the post-association 4-way handshake; the auth frames were open-system.
+    - The passphrase is proven during open-system authentication, which is exactly why it reported success.
+    - The passphrase is proven in the beacon, and the authentication frames simply acknowledged receipt of it.
+  correct: 1
+  explanation: >-
+    Modern 802.11 authentication is open-system, a formality that checks no credential. The passphrase
+    is proven in the 4-way handshake carried in EAPOL data frames after the association response.
+- id: q8
+  question: >-
+    You want to study the full discovery → authentication → association flow but own no wireless
+    hardware and must transmit nothing. Which path fits, and what is its honest limitation?
+  options:
+    - The physical path, whose only limitation is that it happens to need no special driver support.
+    - The recorded-data path, whose limitation is that you can still reconfigure the live AP as you watch.
+    - The virtual (`mac80211_hwsim`) path, which reproduces the flow but not real RF, drivers, or injection.
+    - No path supports this unless you first attach a monitor-mode USB adapter and enable injection.
+  correct: 2
+  explanation: >-
+    `mac80211_hwsim` reproduces the protocol flow end to end with no hardware and no transmission, but
+    it cannot model real RF, drivers, range, interference, or monitor/injection behaviour.

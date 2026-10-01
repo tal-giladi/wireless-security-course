@@ -1,0 +1,51 @@
+- id: q1
+  question: >-
+    A tester parks a monitor interface on 2.4 GHz channel 1 and captures nothing from a target that a
+    scan shows on channel 44. What is the actual problem?
+  options:
+    - The capture width is wrong, so the channel-1 interface sees channel 44 but cannot dissect its frames.
+    - Channel 44 is a 5 GHz channel, and an interface tuned to 2.4 GHz channel 1 never covers that frequency.
+    - DFS has moved the target, so it is no longer on channel 44 despite what the earlier scan reported.
+    - The regulatory domain forbids channel 1, so the adapter silently refused to tune to it at all.
+  correct: 1
+  explanation: >-
+    Channel numbers repeat across bands; channel 44 is in 5 GHz. A radio hears only the channel it is
+    tuned to, so a 2.4 GHz capture can never see a 5 GHz network regardless of signal strength.
+- id: q2
+  question: >-
+    Why are channels 1, 6, and 11 the standard non-overlapping choices in the 2.4 GHz band?
+  options:
+    - They are the only 2.4 GHz channels that most regulatory domains legally permit for client use.
+    - They are the three channels that DFS never applies to, so an AP on them cannot be forced to move.
+    - They each support 40 MHz operation, which the other 2.4 GHz channels are technically unable to do.
+    - They are spaced about 25 MHz apart, enough that their 20 MHz signals do not overlap each other.
+  correct: 3
+  explanation: >-
+    2.4 GHz channels are spaced only 5 MHz apart while a signal is 20 MHz wide, so neighbours overlap.
+    Channels 1, 6, and 11 are far enough apart that their occupied spectrum does not collide.
+- id: q3
+  question: >-
+    During a 5 GHz capture the target AP suddenly goes silent and reappears on a different channel.
+    What is the most likely regulatory cause?
+  options:
+    - The AP is on a DFS channel and vacated it after detecting a radar pattern, as regulators require.
+    - The regulatory domain changed mid-session, forcing every nearby AP onto a new default channel.
+    - The channel width auto-negotiated from 80 MHz down to 20 MHz, which always triggers a channel move.
+    - The 6 GHz band took over the session because Wi-Fi 6E clients always prefer it when available.
+  correct: 0
+  explanation: >-
+    Parts of 5 GHz are shared with radar, so DFS requires an AP to listen and vacate a channel when it
+    detects a radar pattern. That is a regulatory behaviour, not a security event.
+- id: q4
+  question: >-
+    A learner wants to capture a 5 GHz AP running an 80 MHz channel but sets their monitor interface to
+    20 MHz. What is the practical consequence?
+  options:
+    - The capture is impossible, because 80 MHz traffic can only ever be received by an 80 MHz radio.
+    - Nothing changes, since channel width affects only transmission and never affects what you receive.
+    - A width mismatch means they may miss the primary channel or see only part of the traffic cleanly.
+    - The adapter raises its transmit power automatically to compensate, breaching containment limits.
+  correct: 2
+  explanation: >-
+    The monitor interface should match the target's width. A mismatch can leave you off the primary
+    20 MHz channel or dissecting only part of the wider signal, so captures look incomplete.

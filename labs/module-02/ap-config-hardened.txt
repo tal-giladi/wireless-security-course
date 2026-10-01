@@ -1,0 +1,30 @@
+# SAMPLE AP CONFIGURATION — HARDENED (teaching artifact, hostapd-style)
+# For Lesson 02.3 baseline audit. Synthetic lab config; not a real deployment.
+# This is the counterpart to ap-config-vulnerable.txt — compare them control by control.
+
+interface=wlan0
+driver=nl80211
+ssid=Office-Internal          # internal SSID; guests are on a SEPARATE SSID/VLAN (see note below)
+hw_mode=a
+channel=36
+
+# --- Security: WPA3-SAE, CCMP only, PMF REQUIRED ---
+wpa=2
+wpa_key_mgmt=SAE             # WPA3-Personal (SAE): no offline-crackable hash from passive capture
+rsn_pairwise=CCMP           # AES only; TKIP removed (Lesson 02.4)
+sae_password=Zx9!qR4m-Tf2@Lp7Kvue   # long, high-entropy passphrase
+ieee80211w=2                # PMF required -> forged deauth is rejected
+sae_require_mfp=1
+
+# --- WPS disabled ---
+wps_state=0                 # no WPS -> no Pixie Dust / PIN attack surface
+
+# --- Management plane ---
+# admin_password: unique, non-default (set on device UI)
+# remote_management=off     # no WAN-side management
+# firmware: current, vendor advisories tracked and patched on a schedule
+
+# --- Guest / internal segmentation (configured on the gateway/switch) ---
+# Guest SSID "Office-Guest" on its own VLAN, Internet-only, with:
+ap_isolate=1                # guest clients cannot reach each other
+# firewall: guest VLAN -> internal = DENY; guest VLAN -> Internet = ALLOW

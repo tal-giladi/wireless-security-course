@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    Why is WEP considered effectively unprotected regardless of whether a 64-bit or 128-bit key is
+    configured?
+  options:
+    - Because WEP transmits its key in cleartext inside every beacon, so key length is irrelevant.
+    - Because WEP only ever encrypts management frames and leaves all data frames in the clear.
+    - Because WEP keys are stored unhashed on the AP and can be read from its web interface remotely.
+    - Because its 24-bit IV repeats and RC4 keystream reuse and weak-IV flaws allow key recovery from captured traffic.
+  correct: 3
+  explanation: >-
+    WEP's short 24-bit IV repeats on busy networks, and RC4 keystream reuse plus weak-IV and
+    known-plaintext attacks recover the key from enough traffic — a longer key does not fix this.
+- id: q2
+  question: >-
+    A consumer AP is set to "WPA/WPA2 mixed mode" with TKIP still enabled alongside CCMP. Why is leaving
+    TKIP available a weakness worth reporting?
+  options:
+    - TKIP disables PMF on the whole BSS, so forged deauthentication frames can never be rejected.
+    - TKIP exposes the plaintext Wi-Fi passphrase in the beacon so any passive listener can read it.
+    - TKIP is RC4-based and deprecated, so offering it keeps a weaker cipher on the menu and caps legacy behaviour.
+    - TKIP forces every client onto WEP-length keys, which are recoverable within minutes of capture.
+  correct: 2
+  explanation: >-
+    TKIP wraps RC4 and is deprecated; leaving it enabled means clients can negotiate the weaker cipher.
+    The remediation is CCMP (AES) only, moving toward WPA3-SAE.
+- id: q3
+  question: >-
+    This course gives WEP a one-paragraph note and no lab. What is the honest consequence it discloses
+    for a learner targeting OSWP?
+  options:
+    - OSWP can still touch encryption history, so the learner must practise WEP key recovery separately on owned equipment.
+    - None, because the current OSWP exam has removed every reference to WEP and legacy ciphers entirely.
+    - The learner cannot attempt OSWP at all until they complete a separate paid legacy-cipher add-on first.
+    - WEP practice is unnecessary because WPA3-SAE skills transfer directly to recovering WEP keys anyway.
+  correct: 0
+  explanation: >-
+    The modernity rule leaves a disclosed gap: OSWP's environment can be legacy-flavoured, so an OSWP
+    candidate should set up and practise WEP recovery separately with an external guide.
+- id: q4
+  question: >-
+    You spot RC4 referenced in the cipher details of a wireless configuration. What should that
+    immediately tell you?
+  options:
+    - That the network is running a modern GCMP mode, since RC4 is the cipher used by Wi-Fi 6 and 6E.
+    - That you are almost certainly looking at WEP or TKIP, and therefore at a deprecated configuration.
+    - That the network is Enterprise, because RC4 is the stream cipher used inside EAP-TLS sessions.
+    - That PMF must be enabled, since RC4 is only permitted on networks that require protected frames.
+  correct: 1
+  explanation: >-
+    RC4 is the stream cipher underneath both WEP and TKIP. Modern Wi-Fi uses AES (CCMP/GCMP), so an RC4
+    reference is a signal that the configuration is legacy and should be replaced.
