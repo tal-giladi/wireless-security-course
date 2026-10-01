@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    The readiness self-check in this lesson is best described as what?
+  options:
+    - A graded entry exam you must pass with 70% to unlock Module 1.
+    - A self-assessment with no answer key, where the honest answer is whether you can perform each task.
+    - A list of wireless-specific skills the course does not otherwise teach.
+    - A certification pre-test scored by OffSec.
+  correct: 1
+  explanation: >-
+    It is a self-assessment: each item asks whether you can actually do the task at a terminal. There is
+    no answer key because performing the task is the answer.
+- id: q2
+  question: >-
+    A learner can navigate the filesystem and use `sudo`, but cannot explain the difference between a
+    MAC address and an IP address or what DHCP does. What does the lesson advise?
+  options:
+    - Skip the prep path entirely, since wireless attacks never touch IP addressing, DHCP, or layer 3.
+    - Buy a wireless adapter first, since owning capable hardware tends to resolve conceptual gaps itself.
+    - Close that TCP/IP gap now with a targeted primer, because wireless attacks live mostly at layer 2–3.
+    - Restart the course from Module 1 and keep repeating it until the networking somehow makes sense.
+  correct: 2
+  explanation: >-
+    The gap is in TCP/IP, not Linux CLI. The lesson's prep path is to close that specific gap with a
+    focused resource rather than pushing on and getting stuck later.
+- id: q3
+  question: >-
+    Which best captures why "hash" appears in a wireless readiness check?
+  options:
+    - Because cracking WPA2 means hashing each guessed passphrase and comparing, not reversing a hash.
+    - Because Wi-Fi frames are encrypted by hashing them with the SSID.
+    - Because hashes are only relevant to web applications, not wireless.
+    - Because a hash is a reversible encoding you decode to recover the passphrase.
+  correct: 0
+  explanation: >-
+    A hash is a one-way fingerprint. WPA2 cracking guesses the passphrase, derives the same value, and
+    compares — understanding this upfront prevents a common misconception in Module 6.
+- id: q4
+  question: >-
+    According to the lesson, what is the right outcome of the self-check for a learner who already has
+    all three skill areas?
+  options:
+    - They should still spend an evening on every prep primer to be safe.
+    - They should skip Module 0 entirely, including the safety lesson.
+    - They should repeat the self-check weekly throughout the course regardless.
+    - They should deliberately record "ready" and continue, without wasting time on prep they don't need.
+  correct: 3
+  explanation: >-
+    The self-check is meant to produce a deliberate decision. A ready learner confirms it and moves on;
+    the safety lesson (00.3) still applies to everyone.

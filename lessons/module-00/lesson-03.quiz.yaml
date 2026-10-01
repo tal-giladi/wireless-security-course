@@ -1,0 +1,65 @@
+- id: q1
+  question: >-
+    Why is "my lab is on an isolated, air-gapped subnet" an insufficient safety control for wireless
+    attack practice?
+  options:
+    - Because air-gapped subnets run slower, and the added latency quietly corrupts your packet captures.
+    - Because radio propagates over the air regardless of wired isolation and reaches any device in range.
+    - Because an isolated subnet is physically unable to carry 802.11 management frames such as deauth.
+    - Because network isolation only matters for WPA3 networks and has no bearing at all on WPA2 ones.
+  correct: 1
+  explanation: >-
+    Network isolation contains traffic on the wire, not in the air. Deauth, beacons, and probes are
+    radiated and affect devices in range, so containment must be an RF discipline.
+- id: q2
+  question: >-
+    You are about to run a transmit-heavy exercise (a deauth-based capture) and want to minimise the
+    blast radius. Which combination best reflects the course's containment guidance?
+  options:
+    - Transmit at maximum TX power across every channel to finish quickly, then run cleanup afterwards.
+    - Rely on the lab VLAN and a disabled Internet connection to keep all of the attack traffic contained.
+    - Run the exercise against a neighbouring open network so that none of your own devices are affected.
+    - Use an allowlist, a controlled client, minimum TX power on a set channel, stop conditions, and the virtual path.
+  correct: 3
+  explanation: >-
+    Containment is a set of RF-level controls plus preferring setups that don't radiate. More power and
+    network isolation do not limit the over-the-air blast radius.
+- id: q3
+  question: >-
+    Capturing a neighbour's Wi-Fi frames in monitor mode, even without decrypting them, is best
+    described as which legal concern?
+  options:
+    - No concern at all, since passive capture is universally legal.
+    - A trademark issue, because the SSID is a brand name.
+    - Potential unlawful interception of communications, which can apply even without decryption.
+    - Only a problem if you later crack the passphrase.
+  correct: 2
+  explanation: >-
+    Interception law can be triggered by capturing others' communications regardless of decryption.
+    Monitor mode is indiscriminate, so keep it pointed only at equipment you own.
+- id: q4
+  question: >-
+    A learner changes their adapter's regulatory domain to a country that allows higher TX power and
+    extra channels, purely to make an attack reach further. Why is this a problem?
+  options:
+    - Using power or channels you are not permitted to use can itself be unlawful and raise interference risk.
+    - It isn't really a problem, because the regulatory domain is only a cosmetic, non-binding setting.
+    - It permanently damages the adapter's radio hardware and voids the manufacturer's hardware warranty.
+    - It silently disables monitor and injection mode on every chipset the Linux driver happens to support.
+  correct: 0
+  explanation: >-
+    Regulatory domains encode legal limits on TX power, channels, and DFS. Spoofing one to exceed your
+    jurisdiction's limits can break radio law and spills your transmissions further than needed.
+- id: q5
+  question: >-
+    Which statement about the "LAB TARGET vs REAL NETWORK" framing used throughout the course is
+    correct?
+  options:
+    - It means lab targets and real networks are interchangeable once you have a tool installed.
+    - It applies only to the enterprise modules.
+    - It is a branding label with no bearing on authorisation.
+    - It is a reminder that the only authorised targets are equipment the learner personally owns.
+  correct: 3
+  explanation: >-
+    The framing is repeated deliberately: offensive techniques are practised only against owned lab
+    equipment with synthetic credentials, never against networks you are not authorised to test.

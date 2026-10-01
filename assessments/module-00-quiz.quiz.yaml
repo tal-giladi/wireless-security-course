@@ -1,0 +1,104 @@
+- id: q1
+  question: >-
+    A learner on the recorded-data path finishes Module 6 and writes in their report: "I captured and
+    cracked a WPA2 handshake from the target AP." A reviewer pushes back. What is the accurate correction?
+  options:
+    - The claim is fine; cracking a supplied capture is identical to capturing it live.
+    - They cracked a supplied handshake and should say so; they did not perform the live capture themselves.
+    - They should instead claim they performed frame injection.
+    - They should remove all mention of WPA2 to avoid overclaiming.
+  correct: 1
+  explanation: >-
+    Recorded-data work proves interpretation and the cracking workflow, not live capture. Honest
+    scoping means stating the capture was supplied, not performed by the learner.
+- id: q2
+  question: >-
+    You need to demonstrate the mechanics of the 4-way handshake and WPA2 configuration but own no
+    wireless hardware and want to transmit nothing over the air. Which path fits, and what is its
+    honest limitation?
+  options:
+    - The physical path, whose only real limitation is that it happens to need no special drivers to work.
+    - The recorded-data path, whose limitation is that you can still reconfigure the AP live as you go along.
+    - The virtual (`mac80211_hwsim`) path, which does not reproduce real RF, drivers, or injection quirks.
+    - No path can support this at all unless you attach a monitor-mode capable USB wireless adapter first.
+  correct: 2
+  explanation: >-
+    `mac80211_hwsim` reproduces protocol flows and configuration without radios, but cannot stand in
+    for real RF, drivers, range, interference, or hardware monitor/injection behaviour.
+- id: q3
+  question: >-
+    A learner's lab is a single laptop and one AP they own, both on a VLAN with no Internet. They plan
+    a deauth-based capture at full TX power "because nothing can escape the VLAN." What is the main risk?
+  options:
+    - The VLAN boundary will leak the attack's IP packets out to the public Internet during the capture.
+    - Running at full TX power will corrupt the captured 4-way handshake and quietly make it fail to crack.
+    - There is genuinely no risk here, because this is already a correctly and fully contained lab setup.
+    - The deauth frames are radiated and can disrupt any neighbouring device in range, VLAN or no VLAN.
+  correct: 3
+  explanation: >-
+    Deauthentication is an over-the-air management frame. Network isolation does nothing to contain it;
+    minimum TX power, a controlled client, a set channel, and stop conditions do.
+- id: q4
+  question: >-
+    Which action is consistent with the course's legal framing for a learner practising at home?
+  options:
+    - Testing only APs and clients they personally own, with synthetic credentials and documented scope.
+    - Passively capturing the strongest nearby network to "just look at the frames."
+    - Running an evil twin of a local coffee shop's SSID to study client behaviour.
+    - Changing the regulatory domain to raise TX power beyond the local limit for better range.
+  correct: 0
+  explanation: >-
+    Authorisation in this course means equipment you own. Capturing others' traffic (interception),
+    impersonating real SSIDs, and exceeding radio-power limits are all out of bounds.
+- id: q5
+  question: >-
+    A learner scores well on the Linux and TCP/IP self-check but cannot explain what a hash is or why
+    it can't be trivially reversed. What does Module 0 recommend, and why does it matter for Module 6?
+  options:
+    - Skip the concept, because hashing is essentially irrelevant to how Wi-Fi passphrase cracking works.
+    - Buy a faster GPU, since enough raw hardware removes any real need to understand how hashing works.
+    - Close that gap now, because WPA2 cracking hashes each guessed passphrase and compares, not reverses.
+    - Restart the whole course from Module 1 and continue until the hashing concept eventually appears.
+  correct: 2
+  explanation: >-
+    The gap is conceptual and directly underpins Module 6. Understanding that cracking is guess-and-hash,
+    not reversal, prevents a common misconception before the WPA2 module.
+- id: q6
+  question: >-
+    Why does every offensive lesson repeat "LAB TARGET vs REAL NETWORK" and open risky steps with a
+    warning, rather than stating it once in Module 0?
+  options:
+    - To pad each lesson out to a minimum required length that the course template enforces on authors.
+    - Because the course importer technically requires a safety warning to appear in every single file.
+    - Because real production networks quietly become valid, authorised targets once Module 0 is finished.
+    - Because the authorisation requirement applies at the moment of each offensive action, where mistakes happen.
+  correct: 3
+  explanation: >-
+    Repetition puts the reminder where the risk is — at the point of action — which is a deliberate
+    safety design choice, not filler.
+- id: q7
+  question: >-
+    After finishing an evil-twin exercise against your own test client, which cleanup best matches the
+    course's containment discipline?
+  options:
+    - Stop services, remove the rogue AP, restore the client and interfaces, and delete synthetic creds.
+    - Leave the rogue AP broadcasting in case you decide you want to run the whole retest again a bit later.
+    - Only power the laptop off, trusting that all of the attack services will reset by themselves on reboot.
+    - Change the rogue AP's SSID to something harmless-looking and simply keep it broadcasting in the background.
+  correct: 0
+  explanation: >-
+    Cleanup is part of containment: a lingering rogue AP keeps radiating to clients in range.
+    `reset-lab.sh` performs exactly these steps, and making it a reflex is the point.
+- id: q8
+  question: >-
+    A learner wants OSWP and assumes finishing this course alone guarantees a pass. What does the
+    course actually claim, and what gap is most relevant to that assumption?
+  options:
+    - It guarantees a passing result on the OSWP exam and has no disclosed gaps in its coverage at all.
+    - It covers most OSWP objectives plus modern material, promises no pass, and notes WEP has no lab.
+    - It is entirely unrelated to OSWP, so the learner's assumption about the exam simply does not apply.
+    - It only ever prepares learners for WPA3 material, not for the legacy-flavoured OSWP exam environment.
+  correct: 1
+  explanation: >-
+    The course aligns with most OSWP objectives and modernises them but makes no pass guarantee. A key
+    disclosed gap is WEP: taught as a short legacy note, so OSWP candidates must practise WEP separately.

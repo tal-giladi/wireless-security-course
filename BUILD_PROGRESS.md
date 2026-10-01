@@ -16,14 +16,15 @@ Run `npm run check-course` until 0 problems before declaring done.
 - [x] curriculum/lesson-templates.md
 - [x] curriculum/course-details.md
 - [x] CLAUDE.md · README.md · PUBLISHING_WARNING.md · BUILD_PROGRESS.md · TODO_FOR_TAL.md
-- [ ] TOOLS.md (pin adapters/drivers/tool versions — verify at build time)
-- [ ] _sidebar.md skeleton
-- [ ] glossary.md
-- [ ] references/ (802.11, Dragonblood, KRACK, FragAttacks, Kr00k, OWE, OWASP wireless)
-- [ ] labs/common/ (validated captures + provenance/checksums + reset helper + hwsim scripts)
+- [x] TOOLS.md (versions marked VERIFY — confirm on a real build)
+- [x] _sidebar.md (incremental — top links + modules appended as built)
+- [x] glossary.md
+- [x] references/ (index with standards + original research + tooling)
+- [x] labs/common/ (hwsim scripts, gen-captures, wordlists, reset, CAPTURES provenance — captures PENDING real run)
+- [x] templates/ (report, authorisation, lab-notebook)
 
 ## Phase 1 — content (each = lessons .md + .quiz.yaml + labs + module quiz + log)
-- [ ] M0 Onboarding & safe lab practice (core)
+- [x] M0 Onboarding & safe lab practice (core) — 3 lessons + quizzes + module quiz, 0 import problems
 - [ ] M1 RF & 802.11 fundamentals (core)
 - [ ] M2 Wi-Fi security protocols & the secure baseline (core)
 - [ ] M3 Building your lab — three paths (core)

@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    A learner completes every WPA2 lab using only the supplied capture files (the recorded-data path).
+    Which claim can they honestly make afterwards?
+  options:
+    - They correctly interpreted captures and ran the cracking workflow, without performing live capture.
+    - They demonstrated real monitor-mode capture against an access point.
+    - They proved frame injection works with their adapter.
+    - They verified RF range and interference behaviour in their environment.
+  correct: 0
+  explanation: >-
+    The recorded-data path proves interpretation and the cracking workflow only. Live capture,
+    injection, and RF behaviour require the physical path, so those claims would be dishonest.
+- id: q2
+  question: >-
+    Which statement about the virtual (`mac80211_hwsim`) path is accurate?
+  options:
+    - It is identical to the physical path and replaces owned hardware for every objective.
+    - It reproduces protocol flows and AP/supplicant/RADIUS config, but not real RF or injection quirks.
+    - It requires a monitor-mode USB adapter to function at all.
+    - It proves your adapter's real-world injection reliability.
+  correct: 1
+  explanation: >-
+    `mac80211_hwsim` simulates radios in the kernel, so it is excellent for protocol and configuration
+    mechanics but cannot reproduce real RF, drivers, range, interference, or hardware-specific quirks.
+- id: q3
+  question: >-
+    How does the course describe its relationship to the OSWP (PEN-210) certification?
+  options:
+    - It guarantees a passing grade on the OSWP exam for anyone who finishes.
+    - It is unrelated to OSWP and shares none of its objectives.
+    - It covers most OSWP objectives plus modern material, with disclosed gaps and no exam-pass promise.
+    - It replaces the official course, including OSWP's WEP hands-on labs.
+  correct: 2
+  explanation: >-
+    The course aligns with most OSWP objectives and modernises them, but it openly discloses gaps
+    (no WEP hands-on, optional deep bettercap drills) and makes no promise about passing the exam.
+- id: q4
+  question: >-
+    A learner has no wireless hardware and does not want to buy any. What is true about their ability
+    to complete the course?
+  options:
+    - They cannot start the course at all without a monitor-mode adapter.
+    - They can only complete the onboarding module and nothing else.
+    - They must buy an access point they own before Module 1 begins.
+    - They can complete the course on the recorded-data and virtual paths with zero purchases.
+  correct: 3
+  explanation: >-
+    The course is designed to be completable on R + V with no purchases; the physical path is optional
+    and is the only one that additionally proves real RF capture and injection.

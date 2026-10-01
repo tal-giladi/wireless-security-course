@@ -1,0 +1,11 @@
+- [Home](/)
+- [Glossary](glossary.md)
+- [Tools & versions](TOOLS.md)
+- [References](references/README.md)
+
+- Stage 0 — Onboarding
+- **Module 0 — How this course works & safe lab practice**
+  - [01 · What you'll learn, the three lab paths, and expectations](lessons/module-00/lesson-01.md)
+  - [02 · Readiness self-check and preparation path](lessons/module-00/lesson-02.md)
+  - [03 · Safety, containment, and the law](lessons/module-00/lesson-03.md)
+  - [Module 0 quiz](assessments/module-00-quiz.md)
