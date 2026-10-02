@@ -37,6 +37,18 @@ neighbours offline; a rogue AP lures a stranger's phone; a capture records traff
 intercept. Getting containment and legality right in Module 0, before you own any attack tools, is what
 lets you learn aggressively later without hurting anyone or exposing yourself to liability.
 
+## Learning objectives
+
+- Explain why a private subnet does **not** isolate radio, and name the real leakage paths.
+- Apply the containment controls — allowlist, controlled client, minimum transmission, stop conditions,
+  cleanup — to your own lab.
+- Frame wireless testing legally around authorisation, interception, interference, and local radio law.
+
+## Prerequisites
+
+- [00.1 · What you'll learn, the three lab paths, and expectations](lesson-01.md). No technical setup is
+  needed yet — this lesson is the ground rules you apply from the first lab onward.
+
 ## Concept
 
 ### Radio is not contained by the network

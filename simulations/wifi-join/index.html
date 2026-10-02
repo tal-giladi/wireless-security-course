@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>802.11 Join &amp; Frame Exchange — educational model</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1b2330; --muted:#53617a; --line:#c7d0de;
+    --panel:#f3f6fb; --panel-br:#d6deea;
+    --client:#1d6fb8; --ap:#9a3fb0; --data:#1f8a52;
+    --mgmt:#b85c00; --accent:#113a63; --focus:#0a5bd3;
+    --warn-bg:#fff4e0; --warn-br:#e3b25a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--fg); background:var(--bg); line-height:1.5;
+    padding:14px; max-width:860px; margin:0 auto;
+  }
+  h1{font-size:1.25rem; margin:0 0 2px}
+  .tag{
+    display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:#5a4100; background:var(--warn-bg);
+    border:1px solid var(--warn-br); border-radius:999px; padding:2px 10px; margin-bottom:10px;
+  }
+  .sub{color:var(--muted); font-size:.9rem; margin:0 0 12px}
+  figure{margin:0}
+  svg{width:100%; height:auto; display:block; border:1px solid var(--panel-br);
+      border-radius:10px; background:var(--panel)}
+  .caption{
+    border:1px solid var(--panel-br); border-top:none;
+    border-radius:0 0 10px 10px; background:#fff; padding:12px 14px; margin-top:-6px;
+  }
+  .caption .step-no{font-size:.78rem; color:var(--muted); font-weight:600}
+  .caption h2{font-size:1.02rem; margin:2px 0 4px}
+  .caption .frame{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.82rem; color:var(--accent); background:#eef3fa; border:1px solid var(--panel-br);
+    border-radius:6px; padding:2px 7px; display:inline-block; margin-bottom:6px}
+  .caption p{margin:4px 0 0; font-size:.92rem}
+  .controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0 4px}
+  button{
+    font:inherit; font-weight:600; color:#fff; background:var(--accent);
+    border:1px solid var(--accent); border-radius:8px; padding:8px 16px; cursor:pointer;
+  }
+  button.secondary{background:#fff; color:var(--accent)}
+  button:disabled{opacity:.4; cursor:default}
+  button:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+  .progress{font-size:.85rem; color:var(--muted); margin-left:auto}
+  .hint{font-size:.8rem; color:var(--muted); margin:8px 0 0}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; font-size:.8rem; color:var(--muted); margin:10px 0 0}
+  .legend span{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:11px; height:11px; border-radius:3px; display:inline-block}
+  @media (max-width:420px){
+    .controls button{flex:1 1 auto}
+    .progress{margin-left:0; width:100%; order:5}
+  }
+</style>
+</head>
+<body>
+  <span class="tag">Educational model</span>
+  <h1>Joining a Wi-Fi network — frame exchange</h1>
+  <p class="sub">Step through discovery, open-system authentication, and association between one client (STA) and one access point (AP). Each step names the 802.11 frame type / subtype.</p>
+
+  <figure>
+    <svg id="stage" viewBox="0 0 700 300" role="img" aria-labelledby="svg-title svg-desc">
+      <title id="svg-title">802.11 join sequence diagram</title>
+      <desc id="svg-desc">A client on the left and an access point on the right, with the current frame shown travelling between them.</desc>
+
+      <!-- endpoints -->
+      <g>
+        <rect x="18" y="40" width="120" height="58" rx="10" fill="#fff" stroke="var(--client)" stroke-width="2"/>
+        <text x="78" y="64" text-anchor="middle" font-weight="700" fill="var(--client)" font-size="15">Client</text>
+        <text x="78" y="84" text-anchor="middle" fill="var(--muted)" font-size="12">STA</text>
+      </g>
+      <g>
+        <rect x="562" y="40" width="120" height="58" rx="10" fill="#fff" stroke="var(--ap)" stroke-width="2"/>
+        <text x="622" y="64" text-anchor="middle" font-weight="700" fill="var(--ap)" font-size="15">Access Point</text>
+        <text x="622" y="84" text-anchor="middle" fill="var(--muted)" font-size="12">AP / BSSID</text>
+      </g>
+
+      <!-- lifelines -->
+      <line x1="78" y1="100" x2="78" y2="270" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+      <line x1="622" y1="100" x2="622" y2="270" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+
+      <!-- animated frame -->
+      <g id="frameGroup" opacity="0">
+        <line id="frameLine" x1="78" y1="150" x2="622" y2="150" stroke="var(--mgmt)" stroke-width="3"/>
+        <polygon id="frameHead" points="0,0 -13,-6 -13,6" fill="var(--mgmt)"/>
+        <rect id="frameLabelBg" x="250" y="128" width="200" height="22" rx="5" fill="#fff" stroke="var(--mgmt)" stroke-width="1.4"/>
+        <text id="frameLabel" x="350" y="143" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--mgmt)">frame</text>
+      </g>
+
+      <!-- state machine -->
+      <text x="350" y="212" text-anchor="middle" font-size="12" fill="var(--muted)">Client state</text>
+      <g id="states" font-size="11.5">
+        <g id="st0"><rect x="40" y="224" width="180" height="40" rx="8" fill="#fff" stroke="var(--line)" stroke-width="1.6"/>
+          <text x="130" y="241" text-anchor="middle" fill="var(--fg)">Unauthenticated,</text>
+          <text x="130" y="256" text-anchor="middle" fill="var(--fg)">unassociated</text></g>
+        <g id="st1"><rect x="260" y="224" width="180" height="40" rx="8" fill="#fff" stroke="var(--line)" stroke-width="1.6"/>
+          <text x="350" y="241" text-anchor="middle" fill="var(--fg)">Authenticated,</text>
+          <text x="350" y="256" text-anchor="middle" fill="var(--fg)">unassociated</text></g>
+        <g id="st2"><rect x="480" y="224" width="180" height="40" rx="8" fill="#fff" stroke="var(--line)" stroke-width="1.6"/>
+          <text x="570" y="241" text-anchor="middle" fill="var(--fg)">Authenticated,</text>
+          <text x="570" y="256" text-anchor="middle" fill="var(--fg)">associated</text></g>
+      </g>
+    </svg>
+
+    <div class="caption" aria-live="polite">
+      <div class="step-no" id="stepNo">Step 1 of 8</div>
+      <h2 id="capTitle">Title</h2>
+      <span class="frame" id="capFrame">frame</span>
+      <p id="capText">Description.</p>
+    </div>
+  </figure>
+
+  <div class="legend" aria-hidden="true">
+    <span><i class="dot" style="background:var(--mgmt)"></i> Management frame</span>
+    <span><i class="dot" style="background:var(--data)"></i> Data frame (EAPOL / payload)</span>
+  </div>
+
+  <div class="controls">
+    <button id="prev" class="secondary" type="button">&larr; Prev</button>
+    <button id="next" type="button">Next &rarr;</button>
+    <button id="reset" class="secondary" type="button">Reset</button>
+    <span class="progress" id="progress" role="status" aria-live="polite"></span>
+  </div>
+  <p class="hint">Keyboard: <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> or <kbd>Enter</kbd> to advance, <kbd>Home</kbd> to reset. This is a simplified model of the protocol flow, not a packet capture.</p>
+
+<script>
+"use strict";
+(function(){
+  // dir: +1 client->AP, -1 AP->client. state: resulting client state index (0,1,2).
+  var steps = [
+    { title:"Beacon", frame:"Type: Management · Subtype: Beacon (0x08)", dir:-1, color:"mgmt",
+      text:"The AP periodically broadcasts beacons advertising its SSID, supported rates, channel, and security (the RSN element). A client can discover the network passively just by listening — it transmits nothing.", state:0 },
+    { title:"Probe Request", frame:"Type: Management · Subtype: Probe Request (0x04)", dir:1, color:"mgmt",
+      text:"Active scanning: the client sends a probe request (broadcast, or naming an SSID). This makes the client transmit, and the SSIDs it asks for can reveal its preferred-network list.", state:0 },
+    { title:"Probe Response", frame:"Type: Management · Subtype: Probe Response (0x05)", dir:-1, color:"mgmt",
+      text:"The AP answers with a probe response carrying the same capability information as a beacon. The client now has a concrete candidate BSS to join.", state:0 },
+    { title:"Authentication (request)", frame:"Type: Management · Subtype: Authentication (0x0b)", dir:1, color:"mgmt",
+      text:"Open-System authentication — frame 1 of 2. On modern WPA2/WPA3-Personal this is a formality that authenticates nothing and always succeeds. It is NOT the security handshake.", state:0 },
+    { title:"Authentication (response)", frame:"Type: Management · Subtype: Authentication (0x0b)", dir:-1, color:"mgmt",
+      text:"Open-System authentication — frame 2 of 2, status 'Success'. The client is now authenticated but still unassociated. No cryptography has happened yet.", state:1 },
+    { title:"Association Request", frame:"Type: Management · Subtype: Association Request (0x00)", dir:1, color:"mgmt",
+      text:"The client requests association, listing its capabilities and chosen security parameters (its RSN element).", state:1 },
+    { title:"Association Response", frame:"Type: Management · Subtype: Association Response (0x01)", dir:-1, color:"mgmt",
+      text:"The AP replies with a status code and, on success, an Association ID (AID). Only now is the client a member of the BSS.", state:2 },
+    { title:"4-way handshake / data", frame:"Type: Data · EAPOL-Key, then encrypted data", dir:1, color:"data",
+      text:"For a secured network the real key agreement — the WPA2 4-way handshake, or SAE for WPA3 — runs AFTER association, carried in EAPOL data frames. Then encrypted data can flow.", state:2 }
+  ];
+
+  var i = 0;
+  var colors = { mgmt:"#b85c00", data:"#1f8a52" };
+
+  var el = {
+    stepNo:document.getElementById("stepNo"),
+    capTitle:document.getElementById("capTitle"),
+    capFrame:document.getElementById("capFrame"),
+    capText:document.getElementById("capText"),
+    progress:document.getElementById("progress"),
+    prev:document.getElementById("prev"),
+    next:document.getElementById("next"),
+    reset:document.getElementById("reset"),
+    frameGroup:document.getElementById("frameGroup"),
+    frameLine:document.getElementById("frameLine"),
+    frameHead:document.getElementById("frameHead"),
+    frameLabel:document.getElementById("frameLabel"),
+    frameLabelBg:document.getElementById("frameLabelBg"),
+    st0:document.getElementById("st0"),
+    st1:document.getElementById("st1"),
+    st2:document.getElementById("st2")
+  };
+
+  function drawFrame(s){
+    var c = colors[s.color];
+    var leftX = 78, rightX = 622, y = 150;
+    var x1, x2, headX, headRot;
+    if(s.dir === 1){ x1 = leftX; x2 = rightX; headX = rightX; headRot = 0; }
+    else { x1 = rightX; x2 = leftX; headX = leftX; headRot = 180; }
+    el.frameLine.setAttribute("x1", x1);
+    el.frameLine.setAttribute("x2", x2);
+    el.frameLine.setAttribute("stroke", c);
+    el.frameHead.setAttribute("fill", c);
+    el.frameHead.setAttribute("transform", "translate("+headX+","+y+") rotate("+headRot+")");
+    el.frameLabelBg.setAttribute("stroke", c);
+    el.frameLabel.setAttribute("fill", c);
+    el.frameLabel.textContent = s.title;
+    el.frameGroup.setAttribute("opacity", "1");
+  }
+
+  function highlightState(n){
+    [el.st0, el.st1, el.st2].forEach(function(g, idx){
+      var rect = g.querySelector("rect");
+      if(idx === n){
+        rect.setAttribute("stroke", "#113a63");
+        rect.setAttribute("stroke-width", "3");
+        rect.setAttribute("fill", "#e6eefc");
+      } else {
+        rect.setAttribute("stroke", "#c7d0de");
+        rect.setAttribute("stroke-width", "1.6");
+        rect.setAttribute("fill", "#fff");
+      }
+    });
+  }
+
+  function render(){
+    var s = steps[i];
+    el.stepNo.textContent = "Step " + (i+1) + " of " + steps.length;
+    el.capTitle.textContent = s.title;
+    el.capFrame.textContent = s.frame;
+    el.capText.textContent = s.text;
+    el.progress.textContent = "Step " + (i+1) + " / " + steps.length;
+    drawFrame(s);
+    highlightState(s.state);
+    el.prev.disabled = (i === 0);
+    el.next.disabled = (i === steps.length - 1);
+  }
+
+  function go(n){ i = Math.max(0, Math.min(steps.length - 1, n)); render(); }
+
+  el.next.addEventListener("click", function(){ go(i+1); });
+  el.prev.addEventListener("click", function(){ go(i-1); });
+  el.reset.addEventListener("click", function(){ go(0); });
+
+  document.addEventListener("keydown", function(e){
+    if(e.target && (e.target.tagName === "BUTTON")) {
+      // let Enter/Space activate the focused button natively; only intercept arrows
+    }
+    switch(e.key){
+      case "ArrowRight": case "Enter": go(i+1); e.preventDefault(); break;
+      case "ArrowLeft": go(i-1); e.preventDefault(); break;
+      case "Home": go(0); e.preventDefault(); break;
+      case "End": go(steps.length-1); e.preventDefault(); break;
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

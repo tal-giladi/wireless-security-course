@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WPA2 4-way handshake vs WPA3 SAE — educational model</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1b2330; --muted:#53617a; --line:#c7d0de;
+    --panel:#f3f6fb; --panel-br:#d6deea; --accent:#113a63; --focus:#0a5bd3;
+    --client:#1d6fb8; --ap:#9a3fb0;
+    --danger:#b3261e; --danger-bg:#fdecea; --danger-br:#e3a8a3;
+    --safe:#1f7a4d; --safe-bg:#e7f6ee; --safe-br:#9ad0b4;
+    --warn-bg:#fff4e0; --warn-br:#e3b25a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--fg); background:var(--bg); line-height:1.5;
+    padding:14px; max-width:880px; margin:0 auto;
+  }
+  h1{font-size:1.25rem; margin:0 0 2px}
+  .tag{
+    display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:#5a4100; background:var(--warn-bg);
+    border:1px solid var(--warn-br); border-radius:999px; padding:2px 10px; margin-bottom:10px;
+  }
+  .sub{color:var(--muted); font-size:.9rem; margin:0 0 12px}
+  .tabs{display:flex; gap:6px; margin-bottom:12px}
+  .tabs button{
+    font:inherit; font-weight:600; flex:1 1 0; padding:10px 8px; cursor:pointer;
+    background:#fff; color:var(--accent); border:1.6px solid var(--panel-br); border-radius:9px;
+  }
+  .tabs button[aria-selected="true"]{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .tabs button:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+  figure{margin:0}
+  svg{width:100%; height:auto; display:block; border:1px solid var(--panel-br);
+      border-radius:10px; background:var(--panel)}
+  .caption{border:1px solid var(--panel-br); border-top:none; border-radius:0 0 10px 10px;
+    background:#fff; padding:12px 14px; margin-top:-6px}
+  .caption .step-no{font-size:.78rem; color:var(--muted); font-weight:600}
+  .caption h2{font-size:1.02rem; margin:2px 0 4px}
+  .caption .frame{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.82rem; color:var(--accent); background:#eef3fa; border:1px solid var(--panel-br);
+    border-radius:6px; padding:2px 7px; display:inline-block; margin-bottom:6px}
+  .caption p{margin:4px 0 0; font-size:.92rem}
+  .verdict{margin:10px 0 0; padding:10px 12px; border-radius:9px; font-size:.9rem; border:1.5px solid}
+  .verdict.danger{background:var(--danger-bg); border-color:var(--danger-br); color:#7a1a14}
+  .verdict.safe{background:var(--safe-bg); border-color:var(--safe-br); color:#13543a}
+  .verdict strong{display:block; margin-bottom:2px}
+  .controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0 4px}
+  button.ctl{font:inherit; font-weight:600; color:#fff; background:var(--accent);
+    border:1px solid var(--accent); border-radius:8px; padding:8px 16px; cursor:pointer}
+  button.ctl.secondary{background:#fff; color:var(--accent)}
+  button.ctl:disabled{opacity:.4; cursor:default}
+  button.ctl:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+  .progress{font-size:.85rem; color:var(--muted); margin-left:auto}
+  .hint{font-size:.8rem; color:var(--muted); margin:8px 0 0}
+  @media (max-width:420px){
+    .controls button.ctl{flex:1 1 auto}
+    .progress{margin-left:0; width:100%; order:5}
+  }
+</style>
+</head>
+<body>
+  <span class="tag">Educational model</span>
+  <h1>Key agreement: WPA2 4-way handshake vs WPA3 SAE</h1>
+  <p class="sub">Step through each exchange and compare what an attacker who passively captured it can do offline. Conceptual model of the protocol, not a packet capture.</p>
+
+  <div class="tabs" role="tablist" aria-label="Handshake type">
+    <button id="tab-wpa2" role="tab" aria-selected="true" aria-controls="panel" type="button">WPA2 — 4-way handshake</button>
+    <button id="tab-sae" role="tab" aria-selected="false" aria-controls="panel" type="button">WPA3 — SAE (Dragonfly)</button>
+  </div>
+
+  <figure id="panel" role="tabpanel">
+    <svg id="stage" viewBox="0 0 700 320" role="img" aria-labelledby="svg-title svg-desc">
+      <title id="svg-title">Handshake message diagram</title>
+      <desc id="svg-desc">A client and an access point exchanging the messages of the selected handshake, with the current message highlighted.</desc>
+
+      <g>
+        <rect x="18" y="34" width="120" height="54" rx="10" fill="#fff" stroke="var(--client)" stroke-width="2"/>
+        <text x="78" y="57" text-anchor="middle" font-weight="700" fill="var(--client)" font-size="15">Client</text>
+        <text x="78" y="76" text-anchor="middle" fill="var(--muted)" font-size="12">supplicant</text>
+      </g>
+      <g>
+        <rect x="562" y="34" width="120" height="54" rx="10" fill="#fff" stroke="var(--ap)" stroke-width="2"/>
+        <text x="622" y="57" text-anchor="middle" font-weight="700" fill="var(--ap)" font-size="15">Access Point</text>
+        <text x="622" y="76" text-anchor="middle" fill="var(--muted)" font-size="12">authenticator</text>
+      </g>
+
+      <line x1="78" y1="90" x2="78" y2="248" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+      <line x1="622" y1="90" x2="622" y2="248" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+
+      <!-- derivation notes under each lifeline -->
+      <text id="deriveClient" x="78" y="268" text-anchor="middle" font-size="11" fill="var(--muted)"></text>
+      <text id="deriveAP" x="622" y="268" text-anchor="middle" font-size="11" fill="var(--muted)"></text>
+
+      <g id="frameGroup" opacity="0">
+        <line id="frameLine" x1="78" y1="150" x2="622" y2="150" stroke="var(--accent)" stroke-width="3"/>
+        <polygon id="frameHead" points="0,0 -13,-6 -13,6" fill="var(--accent)"/>
+        <rect id="frameLabelBg" x="210" y="128" width="280" height="22" rx="5" fill="#fff" stroke="var(--accent)" stroke-width="1.4"/>
+        <text id="frameLabel" x="350" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent)">msg</text>
+      </g>
+
+      <!-- on-air exposure indicator -->
+      <rect x="250" y="286" width="200" height="26" rx="13" id="airBadge" fill="#fff" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="350" y="303" text-anchor="middle" font-size="11.5" font-weight="700" id="airBadgeText" fill="var(--muted)">on the air</text>
+    </svg>
+
+    <div class="caption" aria-live="polite">
+      <div class="step-no" id="stepNo">Step 1</div>
+      <h2 id="capTitle">Title</h2>
+      <span class="frame" id="capFrame">frame</span>
+      <p id="capText">Description.</p>
+    </div>
+  </figure>
+
+  <div class="verdict" id="verdict"><strong id="verdictHead"></strong><span id="verdictBody"></span></div>
+
+  <div class="controls">
+    <button id="prev" class="ctl secondary" type="button">&larr; Prev</button>
+    <button id="next" class="ctl" type="button">Next &rarr;</button>
+    <button id="reset" class="ctl secondary" type="button">Reset</button>
+    <span class="progress" id="progress" role="status" aria-live="polite"></span>
+  </div>
+  <p class="hint">Keyboard: <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> or <kbd>Enter</kbd> to step, <kbd>1</kbd>/<kbd>2</kbd> to switch handshake, <kbd>Home</kbd> to reset.</p>
+
+<script>
+"use strict";
+(function(){
+  var C = { client:"#1d6fb8", ap:"#9a3fb0", mint:"#1f7a4d", danger:"#b3261e", accent:"#113a63" };
+
+  var wpa2 = {
+    verdictClass:"danger",
+    verdictHead:"Offline-crackable: a captured value depends on the passphrase alone.",
+    verdictBody:"The PMK = PBKDF2(passphrase, SSID). The MIC on M2/M3 is computed from it. An attacker guesses a passphrase, recomputes PMK → PTK → MIC', and compares to the captured MIC — entirely offline, as many guesses as they like.",
+    steps:[
+      { title:"Before: derive PMK", frame:"PMK = PBKDF2(passphrase, SSID, 4096, 256)", dir:0, color:"accent",
+        text:"Both sides already hold the Pairwise Master Key, derived once from the shared passphrase and the SSID (the salt). It is never transmitted — but it is a function of the passphrase alone.",
+        dClient:"has PMK", dAP:"has PMK", air:"neutral", airText:"nothing on air yet" },
+      { title:"Message 1 (AP → client)", frame:"EAPOL-Key · ANonce", dir:-1, color:"ap",
+        text:"The AP sends its random nonce, ANonce. No MIC yet — the client cannot compute one until it has both nonces.",
+        dClient:"has PMK, ANonce", dAP:"has PMK, ANonce", air:"neutral", airText:"ANonce (public)" },
+      { title:"Message 2 (client → AP)", frame:"EAPOL-Key · SNonce + MIC", dir:1, color:"client",
+        text:"The client sends its nonce SNonce and a MIC. It now derives the PTK = PRF(PMK, nonces, MACs); the MIC proves it holds the PMK — without sending it.",
+        dClient:"derives PTK", dAP:"has both nonces", air:"danger", airText:"MIC = f(passphrase)" },
+      { title:"Message 3 (AP → client)", frame:"EAPOL-Key · GTK + MIC", dir:-1, color:"ap",
+        text:"The AP confirms (it derived the same PTK), delivers the group key (GTK), and is itself MIC-protected.",
+        dClient:"has PTK", dAP:"derives PTK", air:"danger", airText:"MIC = f(passphrase)" },
+      { title:"Message 4 (client → AP)", frame:"EAPOL-Key · ack", dir:1, color:"client",
+        text:"The client acknowledges. Keys are installed on both sides and encrypted data can flow.",
+        dClient:"keys installed", dAP:"keys installed", air:"danger", airText:"crackable MIC captured" }
+    ]
+  };
+
+  var sae = {
+    verdictClass:"safe",
+    verdictHead:"No offline-crackable value is ever put on the air.",
+    verdictBody:"The confirm hash covers a shared key that depends on BOTH sides' fresh per-session random secrets, which never leave the devices. For a guessed passphrase an attacker can compute a candidate PWE but cannot reconstruct the shared key, so there is nothing to recompute-and-compare. The only remaining attack is online: one live exchange per guess, rate-limited and PMF-covered.",
+    steps:[
+      { title:"Before: derive PWE", frame:"PWE / PT from passphrase (H&P or constant-time H2E)", dir:0, color:"accent",
+        text:"Each side turns the passphrase into a shared password element (PWE) on an elliptic curve. H2E does this in constant time, closing the timing side-channel that older hunting-and-pecking leaked.",
+        dClient:"has PWE", dAP:"has PWE", air:"neutral", airText:"nothing on air yet" },
+      { title:"Commit (client → AP)", frame:"Auth frame · SAE commit: scalar + element", dir:1, color:"client",
+        text:"The client picks fresh random secrets, computes a public scalar and element from them and the PWE, and sends them. This is a Diffie-Hellman-style commitment mixed with the password.",
+        dClient:"secret rand #1", dAP:"receives commit", air:"safe", airText:"blinded by random" },
+      { title:"Commit (AP → client)", frame:"Auth frame · SAE commit: scalar + element", dir:-1, color:"ap",
+        text:"The AP does the same with its own fresh random secrets. Both sides now derive the same shared key from their own secret plus the other's public values — the secrets never cross the air.",
+        dClient:"derives shared key", dAP:"secret rand #2", air:"safe", airText:"blinded by random" },
+      { title:"Confirm (client → AP)", frame:"Auth frame · SAE confirm (hash)", dir:1, color:"client",
+        text:"The client sends a confirm hash over the exchanged commit values and the shared key it derived. A matching confirm proves the peer used the same passphrase — but the hash cannot be reproduced without the secret randomness.",
+        dClient:"has PMK", dAP:"verifies confirm", air:"safe", airText:"not recomputable offline" },
+      { title:"Confirm (AP → client)", frame:"Auth frame · SAE confirm (hash)", dir:-1, color:"ap",
+        text:"The AP confirms in return. Both sides now hold an identical PMK, fed into the same 4-way handshake as WPA2 — but keyed from the SAE PMK, not from PBKDF2 of the passphrase.",
+        dClient:"has PMK", dAP:"has PMK", air:"safe", airText:"PMK agreed, no leak" }
+    ]
+  };
+
+  var model = { wpa2:wpa2, sae:sae };
+  var current = "wpa2";
+  var i = 0;
+
+  var el = {};
+  ["stepNo","capTitle","capFrame","capText","progress","prev","next","reset",
+   "frameGroup","frameLine","frameHead","frameLabel","frameLabelBg",
+   "deriveClient","deriveAP","airBadge","airBadgeText",
+   "verdict","verdictHead","verdictBody"].forEach(function(id){ el[id]=document.getElementById(id); });
+  var tabWpa2 = document.getElementById("tab-wpa2");
+  var tabSae = document.getElementById("tab-sae");
+
+  var airStyle = {
+    neutral:{ fill:"#fff", stroke:"#c7d0de", text:"#53617a" },
+    danger:{ fill:"#fdecea", stroke:"#e3a8a3", text:"#b3261e" },
+    safe:{ fill:"#e7f6ee", stroke:"#9ad0b4", text:"#1f7a4d" }
+  };
+
+  function drawFrame(s){
+    if(s.dir === 0){ el.frameGroup.setAttribute("opacity","0"); return; }
+    var c = C[s.color] || C.accent;
+    var leftX=78, rightX=622, y=150, x1,x2,headX,rot;
+    if(s.dir===1){ x1=leftX; x2=rightX; headX=rightX; rot=0; }
+    else { x1=rightX; x2=leftX; headX=leftX; rot=180; }
+    el.frameLine.setAttribute("x1",x1); el.frameLine.setAttribute("x2",x2);
+    el.frameLine.setAttribute("stroke",c);
+    el.frameHead.setAttribute("fill",c);
+    el.frameHead.setAttribute("transform","translate("+headX+","+y+") rotate("+rot+")");
+    el.frameLabelBg.setAttribute("stroke",c);
+    el.frameLabel.setAttribute("fill",c);
+    el.frameLabel.textContent = s.title;
+    el.frameGroup.setAttribute("opacity","1");
+  }
+
+  function render(){
+    var m = model[current];
+    var s = m.steps[i];
+    el.stepNo.textContent = "Step " + (i+1) + " of " + m.steps.length;
+    el.capTitle.textContent = s.title;
+    el.capFrame.textContent = s.frame;
+    el.capText.textContent = s.text;
+    el.progress.textContent = (current==="wpa2"?"WPA2":"SAE") + " · " + (i+1) + " / " + m.steps.length;
+    el.deriveClient.textContent = s.dClient || "";
+    el.deriveAP.textContent = s.dAP || "";
+    var a = airStyle[s.air] || airStyle.neutral;
+    el.airBadge.setAttribute("fill", a.fill);
+    el.airBadge.setAttribute("stroke", a.stroke);
+    el.airBadgeText.setAttribute("fill", a.text);
+    el.airBadgeText.textContent = s.airText || "";
+    drawFrame(s);
+    el.verdict.className = "verdict " + m.verdictClass;
+    el.verdictHead.textContent = m.verdictHead;
+    el.verdictBody.textContent = m.verdictBody;
+    el.prev.disabled = (i===0);
+    el.next.disabled = (i===m.steps.length-1);
+  }
+
+  function go(n){ var m=model[current]; i=Math.max(0,Math.min(m.steps.length-1,n)); render(); }
+  function setTab(name){
+    current = name; i = 0;
+    tabWpa2.setAttribute("aria-selected", name==="wpa2" ? "true":"false");
+    tabSae.setAttribute("aria-selected", name==="sae" ? "true":"false");
+    render();
+  }
+
+  el.next.addEventListener("click", function(){ go(i+1); });
+  el.prev.addEventListener("click", function(){ go(i-1); });
+  el.reset.addEventListener("click", function(){ go(0); });
+  tabWpa2.addEventListener("click", function(){ setTab("wpa2"); });
+  tabSae.addEventListener("click", function(){ setTab("sae"); });
+
+  document.addEventListener("keydown", function(e){
+    switch(e.key){
+      case "ArrowRight": case "Enter": go(i+1); e.preventDefault(); break;
+      case "ArrowLeft": go(i-1); e.preventDefault(); break;
+      case "Home": go(0); e.preventDefault(); break;
+      case "End": go(model[current].steps.length-1); e.preventDefault(); break;
+      case "1": setTab("wpa2"); e.preventDefault(); break;
+      case "2": setTab("sae"); e.preventDefault(); break;
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
