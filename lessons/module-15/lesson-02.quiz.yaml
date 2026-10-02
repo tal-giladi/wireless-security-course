@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    During a site visit you find the building's door badges are 125 kHz proximity cards. What is the
+    honest headline you would record about them?
+  options:
+    - They transmit a static ID with no cryptography, so they are trivially clonable; migrate to AES-based cards.
+    - They use AES mutual authentication, so there is no known practical cloning attack against them.
+    - They are encrypted with WPA2, so the fix is to raise the badge passphrase entropy and enable PMF.
+    - They are out of radio range of any reader, so cloning them would require physical theft of a card.
+  correct: 0
+  explanation: >-
+    Low-frequency 125 kHz prox cards typically send a static ID with no cryptography and are trivially
+    cloned. The remediation is migration to AES-based cards such as MIFARE DESFire.
+- id: q2
+  question: >-
+    A client's door cards are MIFARE Classic. A colleague says "they're 13.56 MHz with their own cipher,
+    so they're fine." How should you correct this?
+  options:
+    - Classic is fine because its Crypto1 cipher was strengthened to AES in a mandatory firmware update.
+    - Classic's Crypto1 cipher has been broken since 2008, so the cards are clonable with inexpensive tooling.
+    - Classic cannot be read at all without the diversified per-card key held only in the reader's secure element.
+    - Classic is only vulnerable over Wi-Fi, so an air-gapped badge network removes the cloning risk entirely.
+  correct: 1
+  explanation: >-
+    MIFARE Classic's proprietary Crypto1 cipher has well-documented key-recovery and cloning attacks
+    dating to 2008. Being 13.56 MHz with "its own cipher" is not protection; DESFire (AES) is the upgrade.
+- id: q3
+  question: >-
+    A facilities manager asks whether your Wi-Fi engagement also covers the building's Zigbee lighting.
+    What is the accurate answer and the first security question you would raise?
+  options:
+    - Yes, because Zigbee rides on the same 802.11 radio, so monitor mode and handshake capture apply directly.
+    - Yes, because Zigbee uses the WPA3 SAE handshake, so the existing WPA3 lessons cover it unchanged.
+    - No; it is a separate 802.15.4 mesh, and the first question is how devices commissioned and whether keys are default/weak.
+    - No; it is a separate protocol, but it has no encryption at all, so there is nothing to assess beyond range.
+  correct: 2
+  explanation: >-
+    Zigbee is a separate 802.15.4 mesh, not 802.11, so Wi-Fi techniques do not apply. It does use AES;
+    the recurring weak points are commissioning (e.g. Touchlink) and default or weak keys.
+- id: q4
+  question: >-
+    Reviewing a contactless payment reader, a teammate claims "the NFC card can be read, so payments can
+    be forged." Why is that overclaiming?
+  options:
+    - Because NFC operates at 125 kHz, which no attacker hardware on the market is actually able to receive.
+    - Because reading an NFC tag always requires the cardholder to first enter a PIN into the attacker's device.
+    - Because NFC's few-centimetre range makes any interaction physically impossible without the owner's consent.
+    - Because EMV contactless payments layer their own transaction cryptography on top, so reading the card is not forging a payment.
+  correct: 3
+  explanation: >-
+    "Readable" is not "forgeable." EMV contactless adds transaction-level cryptographic protection, so a
+    card being read does not mean a payment can be forged — the same capture-versus-crypto-break distinction used elsewhere.

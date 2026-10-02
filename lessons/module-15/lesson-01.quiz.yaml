@@ -1,0 +1,52 @@
+- id: q1
+  question: >-
+    A client points at a smart lock and a fitness band and asks you to "test the wireless security."
+    You confirm both speak BLE, not Wi-Fi. What is the honest first thing to tell them?
+  options:
+    - These need a BLE-specific assessment; the Wi-Fi tools and attacks in this course do not apply to them.
+    - Put both devices into monitor mode and capture their 4-way handshake to recover the pairing key.
+    - They are safe, because BLE always uses LE Secure Connections with elliptic-curve authentication.
+    - Run an evil-twin access point to clone the lock's SSID and capture the companion app's traffic.
+  correct: 0
+  explanation: >-
+    BLE is a different protocol from 802.11, so handshakes, monitor mode, and evil twins are meaningless
+    here. The honest answer is that a BLE-specific, separately scoped assessment is required.
+- id: q2
+  question: >-
+    A low-cost BLE sensor has no screen or keypad and pairs with "Just Works." What does that choice
+    mean for its security in one sentence?
+  options:
+    - It encrypts every GATT read with a per-attribute key, so no pairing step is ever needed.
+    - It pairs without authentication, so it offers no protection against a man-in-the-middle during pairing.
+    - It disables GATT entirely until a passkey is entered, so no data is reachable before pairing.
+    - It uses out-of-band pairing over NFC, so a radio attacker can never observe the key agreement.
+  correct: 1
+  explanation: >-
+    Just Works agrees a key but authenticates nothing, so a device in range during pairing can interpose.
+    It is common on devices lacking a screen or keypad, which cannot support a stronger association model.
+- id: q3
+  question: >-
+    Reviewing a BLE product, you find a characteristic that influences an unlock and is writable with no
+    authentication required. Which recurring BLE weakness class is this?
+  options:
+    - A tracking issue, because the device advertises a stable address that lets it be followed around.
+    - A pairing-key storage issue, because the long-term key is held in flash rather than secure hardware.
+    - An unprotected-GATT issue, because an attribute is writable without authentication by a nearby device.
+    - A spectrum issue, because BLE and Wi-Fi share 2.4 GHz and collide on overlapping channels.
+  correct: 2
+  explanation: >-
+    Whether a characteristic requires authentication is a per-attribute setting the vendor must configure.
+    A writable, unauthenticated characteristic is the most common real-world BLE finding.
+- id: q4
+  question: >-
+    You want to make the pairing/GATT model concrete before an engagement, but this course ships no BLE
+    attack lab. What is the appropriate, in-scope hands-on step?
+  options:
+    - Capture and replay a neighbour's smart-bulb commands to confirm the write characteristic is open.
+    - Deauthenticate the nearest BLE peripheral and observe how quickly it re-pairs with your phone.
+    - Clone a stranger's fitness band advertisement to test whether their phone will auto-connect to it.
+    - Passively scan and, on a device you own, read a harmless characteristic like Battery Level with a phone app.
+  correct: 3
+  explanation: >-
+    The lesson's only hands-on is a passive, owned-device observation: read advertisements and the GATT
+    tree, and read a safe characteristic on your own device. Touching others' devices is out of scope and unlawful.

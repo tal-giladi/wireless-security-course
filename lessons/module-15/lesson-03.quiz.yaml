@@ -1,0 +1,50 @@
+- id: q1
+  question: >-
+    What is the defining idea of software-defined radio compared with a traditional fixed-function radio?
+  options:
+    - The hardware digitises a chunk of spectrum and software does the demodulation, so one device handles many protocols.
+    - The hardware permanently decodes a single protocol that cannot be changed after manufacture.
+    - The device transmits on every band at once to guarantee a signal is always received somewhere.
+    - The radio replaces antennas with software so that no physical RF front-end is needed at all.
+  correct: 0
+  explanation: >-
+    In SDR the front-end just shifts and digitises spectrum; software performs demodulation, so changing
+    software (not hardware) lets one device receive many different protocols.
+- id: q2
+  question: >-
+    Why is the receive-only versus transmit-capable distinction in SDR hardware a legal matter, not just
+    a feature difference?
+  options:
+    - Receive-only devices are more expensive, so the distinction is mainly about budget.
+    - Transmitting on almost any band without authorisation is illegal, so a TX-capable device carries real legal exposure.
+    - Receive-only devices are illegal in most countries, while transmitters are generally unrestricted.
+    - The distinction only affects signal quality and has no bearing on legality at all.
+  correct: 1
+  explanation: >-
+    A receive-only device like the RTL-SDR cannot transmit, so it avoids the serious legal exposure of
+    radiating on bands you are not licensed for, which TX-capable devices make possible.
+- id: q3
+  question: >-
+    A learner says "receiving is always legal, so I can intercept anything as long as I never transmit."
+    How should this be corrected?
+  options:
+    - It is correct; passive reception is universally lawful with no exceptions anywhere.
+    - It is wrong only because receivers always leak a small transmission that breaks the law.
+    - It is wrong because some jurisdictions restrict intercepting certain communications even passively.
+    - It is correct, but only for frequencies below 1 GHz where reception is unregulated worldwide.
+  correct: 2
+  explanation: >-
+    Receiving is more permissive than transmitting but not unlimited: intercepting some communications
+    (e.g. cellular, pager) can be restricted even when purely passive, and it varies by jurisdiction.
+- id: q4
+  question: >-
+    Which best reflects how this course treats SDR?
+  options:
+    - As a deep hands-on attack module where learners transmit against test devices to learn fastest.
+    - As the recommended way to attack Wi-Fi, replacing the monitor-mode adapter entirely.
+    - As a mandatory core skill every learner must demonstrate by replaying a signal they captured.
+    - As an awareness topic with no attack lab, receive-only by default, and strong legal caution on transmitting.
+  correct: 3
+  explanation: >-
+    SDR here is awareness-only: no attack lab, receive-only as the safe entry point, and a strong
+    caution that transmitting is the most legally dangerous activity in the course.

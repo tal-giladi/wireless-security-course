@@ -39,9 +39,9 @@ Run `npm run check-course` until 0 problems before declaring done.
 - [x] M12 Protections & residual attacks (elective) — 4 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M13 Wireless engagements & methodology (core) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
 - [x] M14 Defence program & reporting (core) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
-- [ ] M15 Adjacent wireless (elective, awareness)
-- [ ] Capstone — recorded-data (projects/)
-- [ ] Capstone — physical-lab (projects/)
+- [x] M15 Adjacent wireless (elective, awareness) — 3 lessons + quizzes + module quiz, glossary merged, 0 problems
+- [x] Capstone — recorded-data (projects/) — brief + rubric
+- [x] Capstone — physical-lab (projects/) — brief + rubric; plus projects/README.md + sample-report.md
 
 ## Phase 2 — simulations (optional)
 - [ ] 802.11 join / frame-exchange animation

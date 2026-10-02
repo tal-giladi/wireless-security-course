@@ -1,0 +1,99 @@
+- id: q1
+  question: >-
+    How does this module position the adjacent-wireless topics (BLE, Zigbee/Thread, RFID/NFC, SDR)
+    relative to the rest of the course?
+  options:
+    - As awareness-only orientation — enough to recognise and scope them and know where to go deeper, not deep attack training.
+    - As the core of the course, replacing the Wi-Fi modules with broader RF attacks.
+    - As mandatory hands-on attack labs every learner must complete to pass the course.
+    - As deprecated material kept only for historical interest with no current relevance.
+  correct: 0
+  explanation: >-
+    Module 15 is explicitly elective and awareness-only: it helps you recognise and scope adjacent
+    technologies and points to dedicated resources, rather than teaching deep attacks.
+- id: q2
+  question: >-
+    A site assessment finds BLE devices in scope. What is the honest limit of what this module prepares
+    you to do with them?
+  options:
+    - Perform a full BLE exploitation engagement using techniques taught here in depth.
+    - Recognise BLE, understand its security model at a high level, and know you need a dedicated resource to go deeper.
+    - Immediately crack BLE pairing, since the course covered the attacks in full.
+    - Ignore BLE entirely, because non-Wi-Fi radios are never relevant to a wireless assessment.
+  correct: 1
+  explanation: >-
+    The module gives high-level awareness of BLE's model and concerns and points onward; it does not
+    make you a BLE tester, which is the honest scope boundary.
+- id: q3
+  question: >-
+    Which statement about Zigbee/Thread and 802.15.4-based mesh IoT is accurate at the awareness level?
+  options:
+    - They run on the Wi-Fi 4-way handshake, so WPA2 cracking applies to them directly.
+    - They are licensed cellular protocols and cannot be observed without a carrier agreement.
+    - They are low-power mesh technologies whose security depends on key management and can suffer from weak or legacy commissioning.
+    - They are identical to NFC and operate only at a few centimetres range.
+  correct: 2
+  explanation: >-
+    Zigbee and Thread are 802.15.4-based low-power mesh technologies for home/IoT; their security hinges
+    on key management, and weak or legacy commissioning is a real concern.
+- id: q4
+  question: >-
+    At the awareness level, what is the key security distinction among RFID/NFC access cards?
+  options:
+    - All contactless cards are equally secure because they are encrypted by the reader on contact.
+    - NFC payments are trivially cloned, while access cards can never be duplicated at all.
+    - The card's colour and vendor branding determine whether it can be cloned.
+    - Legacy static or weak-cipher cards (e.g. Crypto1) are clonable, whereas modern AES-based cards are far stronger.
+  correct: 3
+  explanation: >-
+    The meaningful split is cryptographic: legacy static/weak-cipher cards are clonable, while modern
+    AES-based cards resist the simple cloning that affects the old ones.
+- id: q5
+  question: >-
+    What is the defining idea of software-defined radio?
+  options:
+    - A fixed-hardware radio that can only ever decode one protocol chosen at manufacture.
+    - A device that transmits continuously across all bands to guarantee coverage.
+    - A radio that needs no antenna because software synthesises the RF directly.
+    - A front-end that digitises spectrum while software does the demodulation, so one device handles many protocols.
+  correct: 3
+  explanation: >-
+    SDR shifts the demodulation into software, so changing software (not hardware) lets one device
+    receive many different protocols — much of the value being receive-side.
+- id: q6
+  question: >-
+    Why is choosing a receive-only SDR (like an RTL-SDR) over a transmit-capable one a safety control?
+  options:
+    - Because a receive-only device cannot transmit, removing the serious legal exposure of radiating on unlicensed bands.
+    - Because receive-only devices have better antennas and so intercept more communications legally.
+    - Because transmit-capable devices are banned worldwide and cannot be purchased at all.
+    - Because receive-only devices automatically encrypt everything they hear for you.
+  correct: 0
+  explanation: >-
+    A receive-only device physically cannot transmit, so it removes both the temptation and the
+    possibility of unlawfully radiating — the most legally dangerous SDR activity.
+- id: q7
+  question: >-
+    A learner plans to use a transmit-capable SDR to replay a signal "just to test." How should the
+    course's guidance be applied?
+  options:
+    - Go ahead, because owning the target device makes any transmission automatically lawful.
+    - Go ahead on any band below 1 GHz, since transmitting there is unregulated everywhere.
+    - Do not transmit without specific authorisation and a licence for the exact band and power; prefer receive-only and check local law.
+    - Transmit at maximum power so the test finishes quickly and the device can be powered off.
+  correct: 2
+  explanation: >-
+    Transmitting is heavily regulated regardless of owning the target; the course says do not transmit
+    without authorisation/licence for the exact band and power, and to prefer receive-only hardware.
+- id: q8
+  question: >-
+    Which best captures the legal nuance of merely receiving with an SDR?
+  options:
+    - Receiving is always completely unlimited and lawful in every country, so no caution is ever needed anywhere.
+    - Receiving is more permissive than transmitting, but some places restrict intercepting certain traffic even passively.
+    - Receiving is illegal everywhere unless you first hold a valid transmitting licence for the band.
+    - Receiving is only ever lawful if you never store, decode, or demodulate anything you happen to hear.
+  correct: 1
+  explanation: >-
+    Reception is generally more permissive than transmission, but it is not unlimited: intercepting some
+    communications (e.g. cellular, pager) can be restricted even passively, and it varies by country.

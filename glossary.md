@@ -43,6 +43,8 @@ reference. Terms are added here by the main session as modules land (agents prop
 - **Beacon** — a management frame an AP broadcasts periodically advertising its SSID and capabilities.
 - **BIP (Broadcast/Multicast Integrity Protocol)** — the mechanism PMF uses to protect the integrity (not
   confidentiality) of broadcast/multicast robust management frames, using the IGTK and carried in the MMIE.
+- **BLE (Bluetooth Low Energy)** — the low-power Bluetooth variant used by wearables, beacons and IoT; its
+  security rests on pairing and GATT access control, with a range of implementation-dependent issues.
 - **Bounded cracking case** — a teaching setup where the supplied wordlist contains the lab passphrase, so
   the crack has a known, achievable, terminating result (success = recovered key + correct method).
 - **BSS / BSSID / ESS** — a Basic Service Set is one AP's cell; the BSSID is usually the AP's MAC; an
@@ -141,6 +143,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   frequency; an open-space upper bound, since obstacles add further loss indoors.
 - **FreeRADIUS** — the common open-source RADIUS server used as the 802.1X authentication server here;
   its EAP module holds the server certificate and selects the default EAP method.
+- **GATT (Generic Attribute Profile)** — the BLE data model of services and characteristics a client
+  reads/writes; where much BLE functionality (and many misconfigurations) lives.
 - **Handshake (4-way)** — the WPA2/WPA3-PSK exchange that derives the PTK from the PMK and proves both
   sides know the key, without sending it.
 - **Hardware revision trap (TL-WN722N)** — the canonical example: v1 = AR9271 (monitor/injection) but
@@ -161,6 +165,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   RADIUS that accepts any client and logs the inner EAP credential in asleap/hashcat formats. Owned lab only.
 - **Hunting-and-pecking** — SAE's original password-to-group mapping, which iterates until it finds a
   valid curve point; its password-dependent timing was the basis of the Dragonblood side-channels.
+- **IEEE 802.15.4** — the low-rate wireless PAN standard underneath Zigbee and Thread; distinct from the
+  802.11 (Wi-Fi) family.
 - **`ieee80211w` / `sae_pwe`** — hostapd settings: `ieee80211w=2` sets PMF required; `sae_pwe` selects the
   SAE password-element method (hunting-and-pecking, H2E, or both).
 - **IGTK (Integrity Group Temporal Key)** — the key BIP uses to integrity-protect group-addressed robust
@@ -282,6 +288,8 @@ reference. Terms are added here by the main session as modules land (agents prop
   the effort (framed to the client's assets), each naming the control and the retest that proves it took effect.
 - **Residual risk** — the risk remaining after the agreed remediation and retest, stated specifically as
   what was fixed, what remains, and why, in a sentence a decision-maker can accept, mitigate, or budget to close.
+- **RFID / NFC** — proximity radio for access cards and contactless payments; legacy static or weak-cipher
+  cards (e.g. Crypto1) are clonable, while modern AES-based cards are far stronger.
 - **Robust management frames** — the management frames PMF protects: deauthentication, disassociation, and
   certain robust action frames (QoS, Block Ack, radio measurement, BSS transition).
 - **Rogue AP** — any AP not sanctioned by the network owner, whether an evil twin or an unmanaged one.
@@ -299,6 +307,10 @@ reference. Terms are added here by the main session as modules land (agents prop
   a new association request queries the existing one and accepts the new only if unanswered, blunting spoofed resets.
 - **SAE (Dragonfly)** — Simultaneous Authentication of Equals; WPA3-Personal's password-authenticated
   key exchange. Yields **no offline-crackable hash** from a passive capture.
+- **SDR (software-defined radio)** — hardware that digitises a slice of spectrum so software performs the
+  demodulation, letting one device receive many protocols; much of its value is receive-side.
+- **SDR hardware (receive-only vs transmit-capable)** — RTL-SDR (~24 MHz–1.7 GHz) can only receive;
+  HackRF/bladeRF/LimeSDR can also transmit. Transmitting is the legally dangerous capability — prefer receive-only.
 - **Server Authentication EKU** — the Extended Key Usage (OID 1.3.6.1.5.5.7.3.1) a RADIUS server
   certificate must carry; many supplicants (Windows, Android) reject a server cert that lacks it.
 - **Server certificate** — the certificate the RADIUS server presents inside the EAP TLS tunnel; the
@@ -360,3 +372,5 @@ reference. Terms are added here by the main session as modules land (agents prop
   digit a checksum), cutting the effective keyspace to ~10^4 + 10^3 instead of 10^8.
 - **WPS registrar / enrollee** — the two WPS roles: the registrar (usually the AP) hands credentials to
   an enrollee (the joining client) once the PIN or push-button exchange succeeds.
+- **Zigbee / Thread** — low-power mesh networking for home/IoT built on IEEE 802.15.4; security depends on
+  key management, and weak or legacy commissioning is a common concern.
