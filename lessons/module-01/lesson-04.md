@@ -75,6 +75,10 @@ flowchart LR
 
 To keep the sequence honest end to end for a WPA2-Personal network: beacon/probe (discovery) → open-system authentication (formality) → association → **4-way handshake** (the real cryptography, Module 6) → encrypted data. WPA3-Personal replaces the handshake stage with **SAE** and requires PMF, but the discovery/auth/association scaffolding is the same. Seeing that scaffold in every capture is the point of this lesson.
 
+Step through the exchange interactively (educational model):
+
+[Simulation: 802.11 join and frame exchange](../../simulations/wifi-join/index.html)
+
 ## Hands-on
 
 This lesson supports two paths. **R** proves you can *read* a join from a capture; **V** proves you can *reproduce* the protocol flow with simulated radios — neither proves anything about real RF, drivers, or injection (that is the physical path, later).

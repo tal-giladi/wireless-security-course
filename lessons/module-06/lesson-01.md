@@ -86,6 +86,10 @@ A match means the guess is the passphrase. No AP, no network, no further packets
 
 To run that check, a cracker needs: the **SSID** (the PBKDF2 salt), both **MACs** (AA, SPA), both **nonces** (ANonce, SNonce), and one captured **MIC** with the EAPOL frame it covers. ANonce comes from message 1; SNonce and a usable MIC come from message 2 (messages 2+3, or a well-formed pair, are the practical minimum — a lone message 1 has no MIC to test against). Lesson 06.2 is about obtaining a capture that actually contains these; lesson 06.3 shows a shortcut (PMKID) that skips the client nonce entirely; lesson 06.4 runs the check with `hashcat -m 22000`.
 
+Step through the handshake (and compare it with SAE) interactively (educational model):
+
+[Simulation: 4-way handshake and SAE visualiser](../../simulations/handshake/index.html)
+
 ## Hands-on
 
 This lesson is foundation and supports the recorded-data path only: you read a known-good handshake and locate every value the maths above consumes. No transmission, no attack tooling.

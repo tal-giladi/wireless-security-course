@@ -71,6 +71,10 @@ sudo iw reg set IL         # request a domain (country code) — Module 3 covers
 
 The domain is not cosmetic: it changes which channels your adapter will even transmit on and at what power, so it directly affects both what you can do and what is legal.
 
+Explore channels, widths, and overlap interactively (educational model):
+
+[Simulation: channel and band spectrum map](../../simulations/spectrum/index.html)
+
 ## Hands-on
 
 ### Guided walkthrough — map a capture to its band, channel, and width

@@ -35,7 +35,32 @@ Still-needed generators to add to `gen-captures.sh` (shared file, main session):
 security modes (`baseline-beacons.pcapng`, used by M2) and an SAE exchange (`wpa3-sae.pcapng`, M2);
 module-01 join/beacon/probe captures + V-path configs referenced by M1 labs.
 
-## Progress
-Done & verified (0 import problems): scaffolding, M0, M1, M2. See `BUILD_PROGRESS.md`.
+## Progress — content complete
+All content is written and **passes the Academy dry-run importer with 0 problems**: Modules 0–15
+(64 lessons, each with its `.quiz.yaml`; 16 module quizzes; 387 questions), both capstones in
+`projects/`, three simulations, the glossary, TOOLS.md, references, and templates. See `BUILD_PROGRESS.md`
+for the per-phase record of what was checked.
 
-Course is **not** ready to import yet.
+**The course is structurally ready to import** (repo: `tal-giladi/wireless-security-course`, public,
+free). The import itself will work with no edits. What remains before calling it *done* for learners is
+the hardware/teaching-quality QA below — none of which blocks the import, and all of which need you.
+
+## Still needs you (can't be done at build time)
+1. **Generate the shipped captures** on a Linux box (virtual path, no wireless HW needed):
+   `cd labs/common && sudo ./hwsim-up.sh 3 && sudo ./gen-captures.sh && sudo ./hwsim-down.sh`, then paste
+   the real SHA-256 values into `labs/common/CAPTURES.md` and commit the (small) capture files. Until
+   then every capture is marked **PENDING** and the recorded-data labs say so — **no checksum was invented.**
+   The generator still needs a beacon-set and SAE-exchange step added for the M2/M7 captures (noted below).
+2. **Run at least one end-to-end lab per major module** on real or virtual hardware and record the path
+   tested (plan §13). Mark anything that doesn't reproduce.
+3. **Re-verify volatile facts** before publishing: adapter driver/DKMS status per kernel, tool flags
+   (hcxdumptool/hashcat/eaphammer/hostapd-*), WPA3/Dragonblood status, and the current OSWP syllabus.
+   `last_verified` dates in the lessons are **2026-10-01/02 build-time checks** — re-date only what you re-check.
+4. **A pilot** by someone who didn't write the course (plan §13).
+5. Confirm the **jurisdiction/legal framing** reads acceptably for your audience.
+
+## Decisions (recommended defaults taken; change if you disagree)
+- Default adapter chipset: **MT7612U** (dual-band, mainline `mt76`). Verify a specific in-stock
+  model+revision before the course tells anyone to buy — the course already teaches the chipset-first rule.
+- Repo `tal-giladi/wireless-security-course`, **free** (your earlier decision). OSWP framing: covers most
+  objectives + modern material, disclosed gaps (no WEP hands-on, deep bettercap optional), no pass promise.

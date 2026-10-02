@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wi-Fi channel &amp; band map — educational model</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1b2330; --muted:#53617a; --line:#c7d0de;
+    --panel:#f3f6fb; --panel-br:#d6deea; --accent:#113a63; --focus:#0a5bd3;
+    --sel:#1d6fb8; --sel-fill:rgba(29,111,184,.18);
+    --ovl:#b85c00; --ovl-fill:rgba(184,92,0,.14);
+    --idle:#7c879b; --dfs:#7a3fb0;
+    --warn-bg:#fff4e0; --warn-br:#e3b25a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--fg); background:var(--bg); line-height:1.5;
+    padding:14px; max-width:900px; margin:0 auto;
+  }
+  h1{font-size:1.25rem; margin:0 0 2px}
+  .tag{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:#5a4100; background:var(--warn-bg);
+    border:1px solid var(--warn-br); border-radius:999px; padding:2px 10px; margin-bottom:10px}
+  .sub{color:var(--muted); font-size:.9rem; margin:0 0 12px}
+  .controls{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; margin-bottom:12px}
+  .field{display:flex; flex-direction:column; gap:3px}
+  .field label{font-size:.78rem; font-weight:600; color:var(--muted)}
+  select{font:inherit; padding:7px 9px; border:1.5px solid var(--panel-br); border-radius:8px;
+    background:#fff; color:var(--fg); min-width:120px}
+  select:focus-visible{outline:3px solid var(--focus); outline-offset:1px}
+  figure{margin:0}
+  svg{width:100%; height:auto; display:block; border:1px solid var(--panel-br);
+    border-radius:10px; background:var(--panel)}
+  .readout{border:1px solid var(--panel-br); border-top:none; border-radius:0 0 10px 10px;
+    background:#fff; padding:12px 14px; margin-top:-6px; font-size:.92rem}
+  .readout .k{color:var(--muted)}
+  .readout b{color:var(--accent)}
+  .pill{display:inline-block; font-size:.78rem; font-weight:700; border-radius:999px;
+    padding:1px 9px; margin-left:4px}
+  .pill.dfs{background:#efe4f6; color:#5e2a86; border:1px solid #cdb0e0}
+  .pill.ndfs{background:#e7f2ea; color:#1f6a44; border:1px solid #b2d6c0}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; font-size:.8rem; color:var(--muted); margin:10px 0 0}
+  .legend span{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:12px; height:12px; border-radius:3px; display:inline-block}
+  .hint{font-size:.8rem; color:var(--muted); margin:8px 0 0}
+  @media (max-width:420px){ select{min-width:0} .field{flex:1 1 42%} }
+</style>
+</head>
+<body>
+  <span class="tag">Educational model</span>
+  <h1>Wi-Fi channel &amp; band map — overlap and width</h1>
+  <p class="sub">Pick a band, channel, and width to see which neighbouring channels it overlaps. 2.4 GHz channels are only 5 MHz apart, so a 20 MHz signal spills across several — which is why 1 / 6 / 11 are the non-overlapping set.</p>
+
+  <div class="controls">
+    <div class="field">
+      <label for="band">Band</label>
+      <select id="band">
+        <option value="24">2.4 GHz</option>
+        <option value="5">5 GHz</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="channel">Channel</label>
+      <select id="channel"></select>
+    </div>
+    <div class="field">
+      <label for="width">Width</label>
+      <select id="width"></select>
+    </div>
+  </div>
+
+  <figure>
+    <svg id="stage" viewBox="0 0 720 260" role="img" aria-labelledby="svg-title svg-desc">
+      <title id="svg-title">Spectrum map</title>
+      <desc id="svg-desc">A frequency axis with each channel marked; the selected channel's occupied spectrum is shaded and overlapping channels are highlighted.</desc>
+      <g id="plot"></g>
+    </svg>
+    <div class="readout" aria-live="polite" id="readout"></div>
+  </figure>
+
+  <div class="legend" aria-hidden="true">
+    <span><i class="dot" style="background:var(--sel)"></i> Selected channel / span</span>
+    <span><i class="dot" style="background:var(--ovl)"></i> Overlapping neighbour</span>
+    <span><i class="dot" style="background:var(--idle)"></i> Other channel</span>
+    <span><i class="dot" style="background:var(--dfs)"></i> DFS (radar-shared)</span>
+  </div>
+  <p class="hint">Keyboard: <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> change channel, <kbd>&uarr;</kbd>/<kbd>&darr;</kbd> change width, <kbd>b</kbd> switch band. Simplified model: the occupied span is drawn centred on the selected channel; real 40/80 MHz bonding offsets the centre and is regulated per domain.</p>
+
+<script>
+"use strict";
+(function(){
+  // Channel definitions. freq = centre in MHz. dfs flag for 5 GHz radar-shared channels.
+  var BANDS = {
+    "24": {
+      label:"2.4 GHz",
+      fmin:2398, fmax:2496,
+      widths:[20,40],
+      channels:[1,2,3,4,5,6,7,8,9,10,11,12,13].map(function(ch){
+        return { ch:ch, freq:2412 + (ch-1)*5, dfs:false };
+      })
+    },
+    "5": {
+      label:"5 GHz",
+      fmin:5160, fmax:5885,
+      widths:[20,40,80],
+      channels:[
+        36,40,44,48,          // U-NII-1  (non-DFS)
+        52,56,60,64,          // U-NII-2A (DFS)
+        100,104,108,112,116,120,124,128,132,136,140, // U-NII-2C (DFS)
+        149,153,157,161,165   // U-NII-3  (non-DFS)
+      ].map(function(ch){
+        var dfs = (ch>=52 && ch<=64) || (ch>=100 && ch<=140);
+        return { ch:ch, freq:5000 + ch*5, dfs:dfs };
+      })
+    }
+  };
+
+  var state = { band:"24", chIdx:0, width:20 };
+  // default selections
+  BANDS["24"].defaultCh = 6;
+  BANDS["5"].defaultCh = 36;
+
+  var bandSel = document.getElementById("band");
+  var chSel = document.getElementById("channel");
+  var wSel = document.getElementById("width");
+  var plot = document.getElementById("plot");
+  var readout = document.getElementById("readout");
+
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var PLOT = { x0:46, x1:690, yAxis:150, barTop:60, barH:84 };
+
+  function band(){ return BANDS[state.band]; }
+  function chan(){ return band().channels[state.chIdx]; }
+  function fx(freq){
+    var b = band();
+    return PLOT.x0 + (freq - b.fmin)/(b.fmax - b.fmin) * (PLOT.x1 - PLOT.x0);
+  }
+
+  function el(name, attrs, text){
+    var e = document.createElementNS(SVGNS, name);
+    for(var k in attrs){ e.setAttribute(k, attrs[k]); }
+    if(text != null){ e.textContent = text; }
+    return e;
+  }
+
+  function overlaps(aLo, aHi, bLo, bHi){ return aLo < bHi && bLo < aHi; }
+
+  function populateChannels(){
+    chSel.innerHTML = "";
+    band().channels.forEach(function(c, idx){
+      var o = document.createElement("option");
+      o.value = idx;
+      o.textContent = "Ch " + c.ch + " (" + c.freq + " MHz)" + (c.dfs ? " · DFS" : "");
+      chSel.appendChild(o);
+    });
+    chSel.value = state.chIdx;
+  }
+  function populateWidths(){
+    wSel.innerHTML = "";
+    band().widths.forEach(function(w){
+      var o = document.createElement("option");
+      o.value = w; o.textContent = w + " MHz";
+      wSel.appendChild(o);
+    });
+    if(band().widths.indexOf(state.width) < 0){ state.width = band().widths[0]; }
+    wSel.value = state.width;
+  }
+
+  function draw(){
+    while(plot.firstChild){ plot.removeChild(plot.firstChild); }
+    var b = band();
+    var sel = chan();
+    var half = state.width/2;
+    var selLo = sel.freq - half, selHi = sel.freq + half;
+
+    // axis line
+    plot.appendChild(el("line",{x1:PLOT.x0, y1:PLOT.yAxis, x2:PLOT.x1, y2:PLOT.yAxis, stroke:"#9aa6ba", "stroke-width":1.5}));
+    // axis end labels
+    plot.appendChild(el("text",{x:PLOT.x0, y:PLOT.yAxis+34, "font-size":11, fill:"#53617a", "text-anchor":"start"}, b.fmin+" MHz"));
+    plot.appendChild(el("text",{x:PLOT.x1, y:PLOT.yAxis+34, "font-size":11, fill:"#53617a", "text-anchor":"end"}, b.fmax+" MHz"));
+    plot.appendChild(el("text",{x:(PLOT.x0+PLOT.x1)/2, y:18, "font-size":13, "font-weight":700, fill:"#113a63", "text-anchor":"middle"}, b.label + " band"));
+
+    // selected span (behind the ticks)
+    var spanX = fx(selLo), spanW = fx(selHi) - fx(selLo);
+    plot.appendChild(el("rect",{x:spanX, y:PLOT.barTop, width:Math.max(spanW,2), height:PLOT.barH,
+      fill:"rgba(29,111,184,.18)", stroke:"#1d6fb8", "stroke-width":1.5, rx:4}));
+    plot.appendChild(el("text",{x:spanX + spanW/2, y:PLOT.barTop-6, "font-size":11.5, "font-weight":700,
+      fill:"#1d6fb8", "text-anchor":"middle"}, state.width + " MHz span"));
+
+    var overlapCount = 0;
+
+    // each channel tick
+    b.channels.forEach(function(c, idx){
+      var x = fx(c.freq);
+      var isSel = (idx === state.chIdx);
+      var chLo = c.freq - 10, chHi = c.freq + 10; // a channel's nominal 20 MHz footprint
+      var isOvl = !isSel && overlaps(selLo, selHi, chLo, chHi);
+      if(isOvl){ overlapCount++; }
+
+      var color = isSel ? "#1d6fb8" : (isOvl ? "#b85c00" : (c.dfs ? "#7a3fb0" : "#7c879b"));
+      var tickTop = isSel ? PLOT.barTop-4 : PLOT.yAxis-30;
+      // tick
+      plot.appendChild(el("line",{x1:x, y1:tickTop, x2:x, y2:PLOT.yAxis, stroke:color,
+        "stroke-width": isSel?3:(isOvl?2.4:1.4)}));
+      // marker dot
+      plot.appendChild(el("circle",{cx:x, cy:PLOT.yAxis, r:isSel?5:3.4, fill:color}));
+      // channel number
+      var label = el("text",{x:x, y:PLOT.yAxis+18, "font-size": state.band==="5"?9.5:11,
+        "font-weight": isSel?700:(isOvl?600:400),
+        fill: isSel? "#1d6fb8" : (isOvl? "#8a4600" : "#53617a"), "text-anchor":"middle"}, String(c.ch));
+      plot.appendChild(label);
+      // DFS marker
+      if(c.dfs){
+        plot.appendChild(el("text",{x:x, y:PLOT.yAxis+30, "font-size":7.5, fill:"#7a3fb0", "text-anchor":"middle"}, "DFS"));
+      }
+    });
+
+    // readout
+    var dfsPill = sel.dfs
+      ? '<span class="pill dfs">DFS — radar-shared</span>'
+      : '<span class="pill ndfs">non-DFS</span>';
+    var overlapText;
+    if(state.band === "24"){
+      overlapText = overlapCount === 0
+        ? "<b>0 overlapping channels</b> — this is a non-overlapping choice."
+        : "<b>" + overlapCount + " overlapping channel" + (overlapCount>1?"s":"") + "</b> at this width.";
+    } else {
+      overlapText = overlapCount === 0
+        ? "<b>0 overlapping 20 MHz channels</b> at this width."
+        : "<b>spans " + (overlapCount+1) + " of the 20 MHz channels</b> (bonded at " + state.width + " MHz).";
+    }
+    var dfsNote = sel.dfs
+      ? " Bringing up an AP here requires a listening period, and the AP must vacate if radar appears."
+      : "";
+    var oneSixEleven = (state.band==="24" && (sel.ch===1||sel.ch===6||sel.ch===11) && state.width===20)
+      ? " Channels 1, 6, 11 are the classic non-overlapping set in 2.4 GHz." : "";
+    readout.innerHTML =
+      '<span class="k">Channel</span> <b>' + sel.ch + '</b> · ' +
+      '<span class="k">centre</span> <b>' + sel.freq + ' MHz</b> · ' +
+      '<span class="k">width</span> <b>' + state.width + ' MHz</b> ' + dfsPill +
+      '<br>' + overlapText + oneSixEleven + dfsNote;
+  }
+
+  function syncAndDraw(){
+    populateChannels();
+    populateWidths();
+    chSel.value = state.chIdx;
+    wSel.value = state.width;
+    draw();
+  }
+
+  function setBand(bk){
+    if(!BANDS[bk]) return;
+    state.band = bk;
+    // default channel index for this band
+    var def = BANDS[bk].defaultCh;
+    var idx = BANDS[bk].channels.findIndex(function(c){ return c.ch === def; });
+    state.chIdx = idx < 0 ? 0 : idx;
+    state.width = 20;
+    bandSel.value = bk;
+    syncAndDraw();
+  }
+
+  bandSel.addEventListener("change", function(){ setBand(bandSel.value); });
+  chSel.addEventListener("change", function(){ state.chIdx = parseInt(chSel.value,10)||0; draw(); });
+  wSel.addEventListener("change", function(){ state.width = parseInt(wSel.value,10)||20; draw(); });
+
+  document.addEventListener("keydown", function(e){
+    var tag = e.target && e.target.tagName;
+    if(tag === "SELECT") return; // let selects handle their own keys
+    var b = band();
+    switch(e.key){
+      case "ArrowRight": state.chIdx = Math.min(b.channels.length-1, state.chIdx+1); chSel.value=state.chIdx; draw(); e.preventDefault(); break;
+      case "ArrowLeft": state.chIdx = Math.max(0, state.chIdx-1); chSel.value=state.chIdx; draw(); e.preventDefault(); break;
+      case "ArrowUp": case "ArrowDown": {
+        var ws = b.widths, pos = ws.indexOf(state.width);
+        pos = e.key==="ArrowUp" ? Math.min(ws.length-1,pos+1) : Math.max(0,pos-1);
+        state.width = ws[pos]; wSel.value = state.width; draw(); e.preventDefault(); break;
+      }
+      case "b": case "B": setBand(state.band==="24" ? "5" : "24"); e.preventDefault(); break;
+    }
+  });
+
+  setBand("24");
+})();
+</script>
+</body>
+</html>

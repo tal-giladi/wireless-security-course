@@ -44,22 +44,35 @@ Run `npm run check-course` until 0 problems before declaring done.
 - [x] Capstone — physical-lab (projects/) — brief + rubric; plus projects/README.md + sample-report.md
 
 ## Phase 2 — simulations (optional)
-- [ ] 802.11 join / frame-exchange animation
-- [ ] 4-way-handshake & SAE visualiser
-- [ ] channel/band spectrum map
+- [x] 802.11 join / frame-exchange animation — `simulations/wifi-join/` (linked from 01.4)
+- [x] 4-way-handshake & SAE visualiser — `simulations/handshake/` (linked from 06.1 and 07.1)
+- [x] channel/band spectrum map — `simulations/spectrum/` (linked from 01.2)
+  All three: inline HTML/CSS/vanilla JS, no network, labelled "educational model", keyboard-operable.
 
 ## Phase 3 — QA (plan §13 — beyond import)
-- [ ] npm run check-course → 0 problems
-- [ ] instructions §10 checklist
-- [ ] end-to-end lab run per major module (record path tested)
-- [ ] quiz-answer review · capture validation (parse+checksum+result) · link checks · sim a11y checks
-- [ ] external pilot (someone who didn't write it)
-- [ ] TODO_FOR_TAL.md ready + repo + commit; unverified items marked
+Done at build time (recorded here; see TODO_FOR_TAL.md for what still needs Tal):
+- [x] `npm run check-course` → **0 problems** (64 lessons, 80 quiz files, 387 questions, A-D 96/95/97/99)
+- [x] instructions §10 structural checklist (H1s, front-matter incl. last_verified, 3–5/8–10 quiz counts,
+      4 options, correct 0–3 spread, explanations, no disallowed HTML/JSX, no quiz sections in markdown)
+- [x] Fixed `##` section set present in all 64 lessons; valid one-paragraph intro after every H1
+- [x] Quiz-answer review: per-file correct-position spread balanced; global A-D 96/95/97/99
+- [x] Link checks: no broken relative links (importer resolves all), no absolute course-page links, no
+      docsify-style links to course files, no progress-tool calls
+- [x] Simulation checks (static + in-pane load): no external/network resources, labelled, keyboard-operable,
+      no console errors on local load (NOT a full multi-browser a11y audit)
+- [x] Synthetic-data check: offensive content uses synthetic creds / owned-lab framing only; sample report synthetic
+- [ ] **End-to-end lab runs on real/virtual hardware** — NOT done (needs Linux + hwsim/adapters). Tal.
+- [ ] **Capture generation + SHA-256 + claimed-result validation** — captures are PENDING a real
+      `labs/common/gen-captures.sh` run; all checksums marked PENDING, none invented. Tal.
+- [ ] **External source URL re-verification** — `last_verified` dates reflect build-time checks
+      (2026-10-01 / 2026-10-02); volatile items (tool flags, driver/firmware, Dragonblood status) to re-check. Tal.
+- [ ] **External pilot** (someone who didn't write it). Tal.
 
 ## Decisions / open questions — see TODO_FOR_TAL.md
-- Default adapters; free/paid + repo name;
-  OSWP framing; how far virtual substitutes for physical; recorded-capture set per module.
+- Default adapter chipset: recommended **MT7612U** (verify a specific model+revision before buying).
+- Repo name: `tal-giladi/wireless-security-course` (recommended); free (decided).
 
 ## Who's working on what
-- (idle) — planning revised. Next writer: resolve TODO_FOR_TAL §1–2, then TOOLS.md + _sidebar.md
-  skeleton + labs/common, then M0.
+- (idle) — **all content complete and committed**: scaffolding, M0–M15 (64 lessons + quizzes + module
+  quizzes + labs), both capstones, three simulations, glossary. 0 import problems.
+  Remaining = the hardware/pilot QA items above, which only Tal can do.

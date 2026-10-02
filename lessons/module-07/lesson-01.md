@@ -88,6 +88,10 @@ WPA3 **requires** Protected Management Frames (PMF / 802.11w) — it is not opti
 
 In a beacon or probe response, the **RSN element** lists the AKM suites. **SAE** is AKM suite type 8 (shown by Wireshark as `SAE (SHA256)` / AKM 00-0F-AC:8); WPA2-PSK is type 2. A pure WPA3-SAE BSS advertises **only** SAE in the AKM list, with **MFPR (PMF Required)** set in the RSN Capabilities, and often an **RSNXE** element signalling H2E. During a join you will see 802.11 **Authentication** frames carrying **commit** then **confirm** (not the WPA2 Open-System two-frame auth), followed by the 4-way handshake. If you *also* see WPA2-PSK in the AKM list, you are looking at transition mode — the subject of 07.2.
 
+Compare SAE's commit/confirm with the WPA2 handshake side by side (educational model):
+
+[Simulation: 4-way handshake and SAE visualiser](../../simulations/handshake/index.html)
+
 ## Hands-on
 
 This lesson supports the recorded (R) and virtual (V) paths. You read a supplied SAE capture and confirm there is no offline-crackable quantity; optionally you bring up a virtual SAE AP and watch a real commit-confirm. Nothing here requires transmission against a real network, and nothing depends on a deauth.

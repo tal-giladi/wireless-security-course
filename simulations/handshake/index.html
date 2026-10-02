@@ -249,6 +249,8 @@
   tabSae.addEventListener("click", function(){ setTab("sae"); });
 
   document.addEventListener("keydown", function(e){
+    var onButton = e.target && e.target.tagName === "BUTTON";
+    if(e.key === "Enter" && onButton){ return; } // let the focused button/tab activate natively
     switch(e.key){
       case "ArrowRight": case "Enter": go(i+1); e.preventDefault(); break;
       case "ArrowLeft": go(i-1); e.preventDefault(); break;

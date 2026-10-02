@@ -225,9 +225,8 @@
   el.reset.addEventListener("click", function(){ go(0); });
 
   document.addEventListener("keydown", function(e){
-    if(e.target && (e.target.tagName === "BUTTON")) {
-      // let Enter/Space activate the focused button natively; only intercept arrows
-    }
+    var onButton = e.target && e.target.tagName === "BUTTON";
+    if(e.key === "Enter" && onButton){ return; } // let the focused button activate natively
     switch(e.key){
       case "ArrowRight": case "Enter": go(i+1); e.preventDefault(); break;
       case "ArrowLeft": go(i-1); e.preventDefault(); break;
